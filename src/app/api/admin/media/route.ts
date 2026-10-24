@@ -48,7 +48,10 @@ export async function POST(request: Request) {
     const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "-");
     let blob: Awaited<ReturnType<typeof put>> | undefined;
     try {
-      blob = await put(`media/${Date.now()}-${safeName}`, file, { access: "public", addRandomSuffix: true });
+      // The configured Vercel Blob store is private. Keep uploaded documents
+      // behind the authenticated admin download route instead of publishing
+      // invoices, templates, and other internal files to the public web.
+      blob = await put(`media/${Date.now()}-${safeName}`, file, { access: "private", addRandomSuffix: true });
       const asset = await prisma.mediaAsset.create({ data: { url: blob.url, storageKey: blob.pathname, filename: file.name, altText, mimeType: file.type || "application/octet-stream", size: file.size } });
       assets.push(asset);
     } catch (error) {
