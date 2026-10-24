@@ -15,7 +15,8 @@ export default function ContactPage() {
         setStatus('success');
         setMessage(result.message);
       } else {
-        throw new Error();
+        setStatus('error');
+        setMessage(result.message);
       }
     } catch {
       setStatus('error');

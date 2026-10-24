@@ -31,10 +31,15 @@ async function sendLeadEmails(data: z.infer<typeof inquirySchema>) {
   const payload = (to: string, subject: string, html: string) => ({ from: fromEmail, to: [to], subject, html });
   const summary = `<p><strong>${data.name}</strong> from <strong>${data.company}</strong> submitted an inquiry for <strong>${data.service}</strong>.</p><p>${data.challenge}</p>`;
 
-  await Promise.all([
-    fetch("https://api.resend.com/emails", { method: "POST", headers, body: JSON.stringify(payload(businessEmail, `New consulting inquiry from ${data.company}`, summary)) }),
-    fetch("https://api.resend.com/emails", { method: "POST", headers, body: JSON.stringify(payload(data.email, "We received your consulting inquiry", `<p>Thanks for reaching out. Your inquiry has been received and will be reviewed shortly.</p>`)) }),
-  ]);
+  try {
+    const responses = await Promise.all([
+      fetch("https://api.resend.com/emails", { method: "POST", headers, body: JSON.stringify(payload(businessEmail, `New consulting inquiry from ${data.company}`, summary)) }),
+      fetch("https://api.resend.com/emails", { method: "POST", headers, body: JSON.stringify(payload(data.email, "We received your consulting inquiry", `<p>Thanks for reaching out. Your inquiry has been received and will be reviewed shortly.</p>`)) }),
+    ]);
+    if (responses.some((response) => !response.ok)) console.error("Lead email notification was rejected by the provider.");
+  } catch {
+    console.error("Lead email notification could not be sent.");
+  }
 }
 
 export async function submitInquiry(formData: FormData): Promise<ActionResult> {
@@ -83,7 +88,8 @@ export async function submitInquiry(formData: FormData): Promise<ActionResult> {
     });
     await sendLeadEmails(data);
     return { success: true, message: "Your inquiry has been received. We will be in touch shortly." };
-  } catch {
+  } catch (error) {
+    console.error("Lead persistence failed.", error instanceof Error ? error.message : "Unknown database error");
     return { success: false, message: "We could not save your inquiry right now. Please try again or book a call directly." };
   }
 }
