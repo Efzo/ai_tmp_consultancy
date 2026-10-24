@@ -62,7 +62,7 @@ export default async function CaseStudyDetailPage({ params }: { params: Promise<
               <div className="grid grid-cols-1 gap-4">
                 {study.technicalDecisions.map((decision, idx) => (
                   <div key={idx} className="glass-card p-4 flex items-start gap-3">
-                    <span className="text-electric">✦</span>
+                    <span className="text-slate-muted">•</span>
                     <span className="text-slate-muted">{decision}</span>
                   </div>
                 ))}

@@ -66,7 +66,7 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {service.deliverables.map((item, idx) => (
                   <div key={idx} className="glass-card p-4 flex items-start gap-3">
-                    <span className="text-electric">✦</span>
+                    <span className="text-slate-muted">•</span>
                     <span className="text-slate-muted">{item}</span>
                   </div>
                 ))}

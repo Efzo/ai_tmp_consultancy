@@ -32,27 +32,12 @@ export default function AboutPage() {
             </div>
             <div className="glass-panel p-8 h-fit">
               <h3 className="text-xl font-bold mb-6">Core Expertise</h3>
-              <ul className="space-y-4 text-sm text-slate-muted">
-                <li className="flex items-start gap-3">
-                  <span className="text-electric">✦</span>
-                  <span>Technical Product Management & Roadmapping</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="text-electric">✦</span>
-                  <span>Enterprise SaaS Architecture</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="text-electric">✦</span>
-                  <span>Fractional TPM Leadership</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="text-electric">✦</span>
-                  <span>Cloud Platform Modernization</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="text-electric">✦</span>
-                  <span>AI Product Strategy & Evaluation</span>
-                </li>
+              <ul className="list-disc space-y-4 pl-5 text-sm text-slate-muted marker:text-slate-muted">
+                <li>Technical Product Management & Roadmapping</li>
+                <li>Enterprise SaaS Architecture</li>
+                <li>Fractional TPM Leadership</li>
+                <li>Cloud Platform Modernization</li>
+                <li>AI Product Strategy & Evaluation</li>
               </ul>
             </div>
           </div>
