@@ -55,6 +55,10 @@ body {
   background-color: var(--glass-surface-hover) !important;
 }
 
+:root[data-theme="light"] .btn-secondary {
+  color: var(--platinum);
+}
+
 @layer components {
   .glass-panel {
     background: var(--glass-surface);
