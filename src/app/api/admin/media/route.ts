@@ -21,6 +21,12 @@ const allowedExtensions = new Set([
   ".mp3", ".wav", ".ogg", ".m4a", ".mp4", ".webm", ".ogv",
 ]);
 const maxBytes = 10 * 1024 * 1024;
+const maxFiles = 10;
+
+function extensionFor(filename: string) {
+  const dot = filename.lastIndexOf(".");
+  return dot >= 0 ? filename.slice(dot).toLowerCase() : "";
+}
 
 export async function POST(request: Request) {
   const session = await getServerSession(authOptions);
@@ -30,20 +36,31 @@ export async function POST(request: Request) {
   if (process.env.DEMO_MODE === "true" || !process.env.DATABASE_URL || process.env.DATABASE_URL.includes("demo_")) return NextResponse.json({ message: "Connect PostgreSQL before uploading media." }, { status: 503 });
 
   const formData = await request.formData();
-  const file = formData.get("file");
+  const files = formData.getAll("files").filter((entry): entry is File => entry instanceof File);
   const altText = String(formData.get("altText") ?? "").trim();
-  const extension = file instanceof File ? file.name.slice(file.name.lastIndexOf(".")).toLowerCase() : "";
-  if (!(file instanceof File) || (!allowedTypes.has(file.type) && !allowedExtensions.has(extension)) || file.size > maxBytes || altText.length < 2) return NextResponse.json({ message: "Provide a supported document, image, audio, or video file under 10MB with a meaningful description. Executable and script files are not allowed." }, { status: 400 });
+  if (!files.length || files.length > maxFiles || altText.length < 2) return NextResponse.json({ message: `Choose between 1 and ${maxFiles} files and provide a meaningful description.` }, { status: 400 });
+  const invalidFile = files.find((file) => (!allowedTypes.has(file.type) && !allowedExtensions.has(extensionFor(file.name))) || file.size > maxBytes);
+  if (invalidFile) return NextResponse.json({ message: `“${invalidFile.name}” is not supported or exceeds the 10MB per-file limit. Executable and script files are not allowed.` }, { status: 400 });
 
-  const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "-");
-  const blob = await put(`media/${Date.now()}-${safeName}`, file, { access: "public", addRandomSuffix: true });
-  try {
-    const asset = await prisma.mediaAsset.create({ data: { url: blob.url, storageKey: blob.pathname, filename: file.name, altText, mimeType: file.type || "application/octet-stream", size: file.size } });
-    return NextResponse.json({ asset }, { status: 201 });
-  } catch {
-    await del(blob.url);
-    return NextResponse.json({ message: "The media record could not be saved." }, { status: 500 });
+  const assets = [];
+  const failures: string[] = [];
+  for (const file of files) {
+    const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "-");
+    let blob: Awaited<ReturnType<typeof put>> | undefined;
+    try {
+      blob = await put(`media/${Date.now()}-${safeName}`, file, { access: "public", addRandomSuffix: true });
+      const asset = await prisma.mediaAsset.create({ data: { url: blob.url, storageKey: blob.pathname, filename: file.name, altText, mimeType: file.type || "application/octet-stream", size: file.size } });
+      assets.push(asset);
+    } catch (error) {
+      if (blob) await del(blob.url).catch(() => undefined);
+      failures.push(file.name);
+      console.error(`Media upload failed for ${file.name}.`, error instanceof Error ? error.message : "Unknown upload error");
+    }
   }
+
+  if (!assets.length) return NextResponse.json({ message: "None of the files could be uploaded. Verify Vercel Blob and PostgreSQL configuration." }, { status: 500 });
+  const message = failures.length ? `${assets.length} file${assets.length === 1 ? "" : "s"} uploaded. Could not upload: ${failures.join(", " )}.` : `${assets.length} file${assets.length === 1 ? "" : "s"} uploaded successfully.`;
+  return NextResponse.json({ assets, failures, message }, { status: failures.length ? 207 : 201 });
 }
 
 export async function DELETE(request: Request) {
