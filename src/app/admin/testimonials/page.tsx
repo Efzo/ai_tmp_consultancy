@@ -1,3 +1,10 @@
-import { AdminModule, SetupCard } from "@/components/admin/AdminModule";
+import { AdminModule } from "@/components/admin/AdminModule";
+import TestimonialEditor from "@/components/admin/TestimonialEditor";
+import { getTestimonials } from "@/lib/site-settings";
 
-export default function TestimonialsAdminPage() { return <AdminModule title="Testimonials" description="Manage approved client feedback and attribution." status="No records"><SetupCard title="No testimonials published" body="Only add verifiable testimonials with client approval, attribution, and permission to publish." action="Add after approval" /></AdminModule>; }
+export const dynamic = "force-dynamic";
+
+export default async function TestimonialsAdminPage() {
+  const testimonials = await getTestimonials();
+  return <AdminModule title="Testimonials" description="Manage approved client feedback and decide which quotes appear on the homepage." status={`${testimonials.filter((item) => item.isPublished).length} published`}><TestimonialEditor testimonials={testimonials} /></AdminModule>;
+}

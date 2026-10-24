@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { blogPosts as fallbackPosts } from "@/data/blog";
 import { getPublicBlogPost } from "@/lib/content";
+import { sanitizeRichText } from "@/lib/rich-text";
 
 export const dynamicParams = true;
 export const revalidate = 60;
@@ -13,7 +14,10 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   return { title: `${post.title} | Efosa Ojomo`, description: post.excerpt, alternates: { canonical: `/blog/${post.slug}` }, openGraph: { title: post.title, description: post.excerpt, type: "article" } };
 }
 
-function renderContent(content: string) { return content.split("\n\n").map((block, index) => block.startsWith("## ") ? <h2 key={index} className="mt-10 text-2xl font-bold text-cyan-ai">{block.slice(3)}</h2> : block.split("\n").every((line) => line.startsWith("- ")) ? <ul key={index} className="my-6 list-disc space-y-2 pl-6 text-slate-muted">{block.split("\n").map((line) => <li key={line}>{line.slice(2)}</li>)}</ul> : <p key={index} className="mt-6 leading-8 text-slate-muted">{block}</p>); }
+function renderContent(content: string) {
+  if (/<(?:p|h[2-4]|ul|ol|strong|em|blockquote|div)\b/i.test(content)) return <div className="blog-rich-text" dangerouslySetInnerHTML={{ __html: sanitizeRichText(content) }} />;
+  return content.split("\n\n").map((block, index) => block.startsWith("## ") ? <h2 key={index} className="mt-10 text-2xl font-bold text-cyan-ai">{block.slice(3)}</h2> : block.split("\n").every((line) => line.startsWith("- ")) ? <ul key={index} className="my-6 list-disc space-y-2 pl-6 text-slate-muted">{block.split("\n").map((line) => <li key={line}>{line.slice(2)}</li>)}</ul> : <p key={index} className="mt-6 leading-8 text-slate-muted">{block}</p>);
+}
 
 export default async function BlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params; const post = await getPublicBlogPost(slug); if (!post) notFound();

@@ -2,9 +2,9 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "Efosa Ojomo AI Product & Technical Consulting",
+    name: "Efosa Ojomo Technology & Product Consulting",
     short_name: "Efosa Ojomo",
-    description: "AI product strategy, technical product leadership, and solution architecture consulting.",
+    description: "Technical product management, AI strategy, and technology advisory consulting.",
     start_url: "/",
     display: "standalone",
     background_color: "#080f1f",

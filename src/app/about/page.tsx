@@ -11,19 +11,18 @@ export default function AboutPage() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
             <div className="lg:col-span-2 space-y-6 text-lg text-slate-muted leading-relaxed">
               <p>
-                I am a Technical Product Manager and AI product leader with over 10 years of 
-                experience building at the intersection of cloud architecture, enterprise software, 
-                and cutting-edge AI systems.
+                I am a Technical Product Manager and technology product leader with over 10 years of
+                experience building at the intersection of product strategy, cloud architecture,
+                enterprise software, and AI systems.
               </p>
               <p>
                 Throughout my career—spanning leadership roles at Amazon, Microsoft, and Vertex—I have 
                 specialized in one specific challenge: <span className="text-white font-medium">reducing the distance between a high-level business vision and a production-ready technical implementation.</span>
               </p>
               <p>
-                My approach is rooted in the belief that AI should not be a "feature" added to a product, 
-                but a strategic core that transforms the user experience and operational efficiency. 
-                I combine deep technical fluency in LLMs, RAG, and Agentic workflows with a 
-                product-first mindset focused on measurable business outcomes.
+                My approach starts with the business and customer problem—not a particular technology.
+                I combine technical fluency in cloud platforms, enterprise software, and AI systems with
+                a product-first mindset focused on measurable business outcomes.
               </p>
               <p className="text-white font-medium">
                 Strongest where technical depth meets product judgment: clarifying ambiguous customer 
@@ -36,7 +35,7 @@ export default function AboutPage() {
               <ul className="space-y-4 text-sm text-slate-muted">
                 <li className="flex items-start gap-3">
                   <span className="text-electric">✦</span>
-                  <span>AI Product Strategy & Roadmapping</span>
+                  <span>Technical Product Management & Roadmapping</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <span className="text-electric">✦</span>
@@ -52,7 +51,7 @@ export default function AboutPage() {
                 </li>
                 <li className="flex items-start gap-3">
                   <span className="text-electric">✦</span>
-                  <span>AI Evaluation & Risk Management</span>
+                  <span>AI Product Strategy & Evaluation</span>
                 </li>
               </ul>
             </div>

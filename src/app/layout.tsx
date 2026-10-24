@@ -2,37 +2,43 @@ import type { Metadata } from "next";
 import "./globals.css";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
 import PublicChrome from "@/components/PublicChrome";
-import { getFooterSettings } from "@/lib/site-settings";
+import { getFooterSettings, getNavigationItems, getSeoSettings } from "@/lib/site-settings";
 
 export const dynamic = "force-dynamic";
 
-export const metadata: Metadata = {
-  title: "Efosa Ojomo | AI Product Strategy & Technical Consulting",
-  description: "Transforming AI ideas into validated product strategies and real business outcomes.",
+const metadataIcons: Metadata["icons"] = {
+  icon: [
+    { url: "/logo_pack/favicon.ico", type: "image/x-icon" },
+    { url: "/logo_pack/favicon-16.png", sizes: "16x16", type: "image/png" },
+    { url: "/logo_pack/favicon-32.png", sizes: "32x32", type: "image/png" },
+    { url: "/logo_pack/favicon-48.png", sizes: "48x48", type: "image/png" },
+    { url: "/logo_pack/favicon-96.png", sizes: "96x96", type: "image/png" },
+    { url: "/logo_pack/favicon-192.png", sizes: "192x192", type: "image/png" },
+    { url: "/logo_pack/favicon-512.png", sizes: "512x512", type: "image/png" },
+  ],
+  shortcut: "/logo_pack/favicon.ico",
+  apple: [{ url: "/logo_pack/favicon-180.png", sizes: "180x180", type: "image/png" }],
+};
+
+export async function generateMetadata(): Promise<Metadata> {
+  const seo = await getSeoSettings();
+  return {
+  title: seo.title,
+  description: seo.description,
   metadataBase: new URL("https://ojomoefosa.com"),
   alternates: { canonical: "/" },
-  icons: {
-    icon: [
-      { url: "/logo_pack/favicon.ico", type: "image/x-icon" },
-      { url: "/logo_pack/favicon-16.png", sizes: "16x16", type: "image/png" },
-      { url: "/logo_pack/favicon-32.png", sizes: "32x32", type: "image/png" },
-      { url: "/logo_pack/favicon-48.png", sizes: "48x48", type: "image/png" },
-      { url: "/logo_pack/favicon-96.png", sizes: "96x96", type: "image/png" },
-      { url: "/logo_pack/favicon-192.png", sizes: "192x192", type: "image/png" },
-      { url: "/logo_pack/favicon-512.png", sizes: "512x512", type: "image/png" },
-    ],
-    shortcut: "/logo_pack/favicon.ico",
-    apple: [{ url: "/logo_pack/favicon-180.png", sizes: "180x180", type: "image/png" }],
-  },
+  icons: metadataIcons,
   manifest: "/manifest.webmanifest",
   openGraph: {
     type: "website",
-    title: "Efosa Ojomo | AI Product Strategy & Technical Consulting",
-    description: "Transforming AI ideas into validated product strategies and real business outcomes.",
+    title: seo.title,
+    description: seo.description,
     url: "https://ojomoefosa.com",
-    siteName: "Efosa Ojomo AI Product & Technical Consulting",
+    siteName: "Efosa Ojomo Technology & Product Consulting",
+    images: [{ url: seo.ogImage }],
   },
 };
+}
 
 export default async function RootLayout({
   children,
@@ -40,19 +46,20 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   const footerSettings = await getFooterSettings();
+  const navigationItems = await getNavigationItems();
   return (
     <html lang="en" suppressHydrationWarning>
       <body className="antialiased bg-midnight text-platinum">
         <script dangerouslySetInnerHTML={{ __html: `(function(){try{var t=localStorage.getItem('site-theme');if(t==='light'||t==='dark'){document.documentElement.dataset.theme=t;}else if(window.matchMedia('(prefers-color-scheme: light)').matches){document.documentElement.dataset.theme='light';}}catch(e){}})();` }} />
         <GoogleAnalytics />
-        <PublicChrome footerSettings={footerSettings}>{children}</PublicChrome>
+        <PublicChrome footerSettings={footerSettings} navigationItems={navigationItems}>{children}</PublicChrome>
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
           "@context": "https://schema.org",
           "@type": "ProfessionalService",
-          name: "Efosa Ojomo AI Product & Technical Consulting",
+          name: "Efosa Ojomo Technology & Product Consulting",
           url: "https://ojomoefosa.com",
           areaServed: "Worldwide",
-          serviceType: ["AI Product Strategy", "Technical Product Management", "AI Solution Architecture"],
+          serviceType: ["Technical Product Management", "AI Product Strategy", "Technology Advisory", "Digital Transformation"],
         }) }} />
       </body>
     </html>

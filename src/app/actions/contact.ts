@@ -3,7 +3,6 @@
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 
-const serviceSlugs = ["ai-strategy", "fractional-tpm", "solution-architecture", "enterprise-search", "ai-audit"] as const;
 const recentSubmissions = new Map<string, number>();
 
 const inquirySchema = z.object({
@@ -11,10 +10,10 @@ const inquirySchema = z.object({
   email: z.string().trim().email().max(254),
   company: z.string().trim().min(2).max(160),
   website: z.union([z.literal(""), z.string().trim().url().max(300)]),
-  service: z.enum(serviceSlugs),
+  service: z.string().trim().min(1).max(100),
   challenge: z.string().trim().min(20).max(5000),
   timeline: z.enum(["immediate", "short-term", "long-term"]),
-  budget: z.enum(["undetermined", "5k-15k", "15k-50k", "50k-plus"]),
+  budget: z.string().trim().min(1).max(120),
   consent: z.literal("on"),
   botField: z.string().max(0),
 });
@@ -72,7 +71,7 @@ export async function submitInquiry(formData: FormData): Promise<ActionResult> {
   }
 
   try {
-    await prisma.lead.create({
+    const lead = await prisma.lead.create({
       data: {
         name: data.name,
         email: data.email,
@@ -86,6 +85,7 @@ export async function submitInquiry(formData: FormData): Promise<ActionResult> {
         consentAt: new Date(),
       },
     });
+    await prisma.auditEvent.create({ data: { action: "lead.created", target: lead.id, metadata: { source: "website-contact-form", service: data.service } } }).catch(() => undefined);
     await sendLeadEmails(data);
     return { success: true, message: "Your inquiry has been received. We will be in touch shortly." };
   } catch (error) {

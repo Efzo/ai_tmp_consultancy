@@ -20,7 +20,7 @@ export const authOptions: NextAuthOptions = {
         const databaseUser = databaseReady ? await prisma.user.findUnique({ where: { email: credentials.email } }).catch(() => null) : null;
         const email = databaseUser?.email ?? configuredEmail;
         const passwordHash = databaseUser?.password;
-        const passwordMatches = passwordHash ? await bcrypt.compare(credentials.password, passwordHash) : credentials.password === getDemoPassword();
+        const passwordMatches = databaseUser ? Boolean(passwordHash) && await bcrypt.compare(credentials.password, passwordHash as string) : credentials.password === getDemoPassword();
         if (credentials.email !== email || !passwordMatches) return null;
         return { id: databaseUser?.id ?? "owner", name: databaseUser?.name ?? "Efosa Ojomo", email, role: databaseUser?.role ?? "OWNER" };
       },

@@ -5,7 +5,7 @@ export const landingPages = {
     service: "ai-strategy",
   },
   "fractional-technical-product-manager": {
-    title: "Fractional Technical Product Manager for AI Teams",
+    title: "Fractional Technical Product Manager for Complex Products",
     description: "Add senior technical product leadership to your team without committing to a full-time hire.",
     service: "fractional-tpm",
   },

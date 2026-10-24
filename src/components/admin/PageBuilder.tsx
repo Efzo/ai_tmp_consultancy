@@ -31,8 +31,9 @@ export default function PageBuilder({ initialPage, initialVersions }: { initialP
   };
   const publish = async () => { if (!page) return setMessage("Save the page as a draft before publishing."); setBusy(true); const result = await publishPage(page.id); setMessage(result.message); setBusy(false); };
   const restore = async (versionId: string) => { if (!page) return; setBusy(true); const result = await restorePageVersion(page.id, versionId); setMessage(result.message); setBusy(false); };
-  const loadDraft = () => { const stored = window.localStorage.getItem("admin-page-builder-home"); if (stored) setBlocks(JSON.parse(stored)); };
-  const saveLocal = () => { window.localStorage.setItem("admin-page-builder-home", JSON.stringify(blocks)); setMessage("Saved local draft."); };
+  const localDraftKey = `admin-page-builder-${slug}`;
+  const loadDraft = () => { const stored = window.localStorage.getItem(localDraftKey); if (stored) setBlocks(JSON.parse(stored)); };
+  const saveLocal = () => { window.localStorage.setItem(localDraftKey, JSON.stringify(blocks)); setMessage("Saved local draft."); };
   const addBlock = (type: Block["type"]) => setBlocks((current) => [...current, { id: `${type}-${Date.now()}`, type, title: `${type.replace("-", " ")} section`, visible: true }]);
   const move = (index: number, direction: -1 | 1) => setBlocks((current) => { const target = index + direction; if (target < 0 || target >= current.length) return current; const next = [...current]; [next[index], next[target]] = [next[target], next[index]]; return next; });
 

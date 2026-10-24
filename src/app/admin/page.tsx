@@ -1,37 +1,22 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 
-async function getMetrics() {
+async function getDashboardData() {
   if (process.env.DEMO_MODE === "true" || !process.env.DATABASE_URL || process.env.DATABASE_URL.includes("demo_")) return null;
   try {
-    const [totalLeads, newLeads, qualifiedLeads, wonLeads] = await Promise.all([
-      prisma.lead.count(),
-      prisma.lead.count({ where: { status: "NEW" } }),
-      prisma.lead.count({ where: { status: "QUALIFIED" } }),
-      prisma.lead.count({ where: { status: "WON" } }),
+    const [totalLeads, newLeads, qualifiedLeads, wonLeads, publishedPosts, draftPosts, pages, services, media, recentLeads] = await Promise.all([
+      prisma.lead.count(), prisma.lead.count({ where: { status: "NEW" } }), prisma.lead.count({ where: { status: "QUALIFIED" } }), prisma.lead.count({ where: { status: "WON" } }),
+      prisma.blogPost.count({ where: { status: "PUBLISHED" } }), prisma.blogPost.count({ where: { status: "DRAFT" } }), prisma.page.count(), prisma.service.count({ where: { isPublished: true } }), prisma.mediaAsset.count(), prisma.lead.findMany({ orderBy: { createdAt: "desc" }, take: 5, select: { id: true, name: true, company: true, status: true, createdAt: true } }),
     ]);
-    return { totalLeads, newLeads, qualifiedLeads, wonLeads };
-  } catch {
-    return null;
-  }
+    return { totalLeads, newLeads, qualifiedLeads, wonLeads, publishedPosts, draftPosts, pages, services, media, recentLeads };
+  } catch { return null; }
 }
 
-export default async function AdminDashboard() {
-  const metrics = await getMetrics();
-  const stats = metrics
-    ? [
-        ["Total inquiries", metrics.totalLeads],
-        ["New leads", metrics.newLeads],
-        ["Qualified leads", metrics.qualifiedLeads],
-        ["Won engagements", metrics.wonLeads],
-      ]
-    : [];
+export const dynamic = "force-dynamic";
 
-  return (
-    <div className="space-y-8">
-      <div><h1 className="text-3xl font-bold tracking-tight">Business overview</h1><p className="text-slate-muted">Operational information from persisted website data.</p></div>
-      {metrics ? <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">{stats.map(([label, value]) => <div key={label} className="glass-card p-6"><p className="text-sm text-slate-muted">{label}</p><p className="mt-3 text-3xl font-bold">{value}</p></div>)}</div> : <div className="glass-panel p-8"><h2 className="text-xl font-bold">Connect the database to activate metrics</h2><p className="mt-3 max-w-2xl leading-relaxed text-slate-muted">The local project is running in demo mode, so no fabricated lead counts are shown. Set a real PostgreSQL <code className="text-electric">DATABASE_URL</code>, run the Prisma migration, and disable <code className="text-electric">DEMO_MODE</code>.</p></div>}
-      <div className="grid gap-6 md:grid-cols-2"><Link href="/admin/leads" className="glass-card p-7"><h2 className="text-xl font-bold">Leads & inquiries</h2><p className="mt-2 text-slate-muted">Review persisted inquiries and their status.</p><span className="mt-6 inline-block text-cyan-ai">Open lead management →</span></Link><Link href="/admin/services" className="glass-card p-7"><h2 className="text-xl font-bold">Services</h2><p className="mt-2 text-slate-muted">Review the current consulting service catalog.</p><span className="mt-6 inline-block text-cyan-ai">Open services →</span></Link></div>
-    </div>
-  );
+export default async function AdminDashboard() {
+  const data = await getDashboardData();
+  if (!data) return <div className="space-y-8"><div><h1 className="text-3xl font-bold tracking-tight">Business overview</h1><p className="mt-2 text-slate-muted">Your CMS command center for content, leads, and website operations.</p></div><div className="glass-panel p-8"><h2 className="text-xl font-bold">Connect the database to activate the dashboard</h2><p className="mt-3 max-w-2xl leading-relaxed text-slate-muted">Set a real PostgreSQL <code className="text-electric">DATABASE_URL</code>, run the Prisma migration and seed commands, and disable <code className="text-electric">DEMO_MODE</code>.</p></div></div>;
+  const cards = [["Total inquiries", data.totalLeads, "/admin/leads"], ["New leads", data.newLeads, "/admin/leads"], ["Qualified leads", data.qualifiedLeads, "/admin/leads"], ["Won engagements", data.wonLeads, "/admin/leads"], ["Published articles", data.publishedPosts, "/admin/blog"], ["Draft articles", data.draftPosts, "/admin/blog"], ["Public services", data.services, "/admin/services"], ["Media assets", data.media, "/admin/media"]];
+  return <div className="space-y-8"><div className="flex flex-wrap items-end justify-between gap-4"><div><h1 className="text-3xl font-bold tracking-tight">Business overview</h1><p className="mt-2 text-slate-muted">Monitor the website, content pipeline, and consulting opportunities from one place.</p></div><div className="flex gap-3"><Link href="/admin/blog" className="btn-secondary">Write article</Link><Link href="/admin/leads" className="btn-primary">Review leads</Link></div></div><div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">{cards.map(([label, value, href]) => <Link key={label} href={href as string} className="glass-card p-5"><p className="text-sm text-slate-muted">{label}</p><p className="mt-3 text-3xl font-bold">{value}</p><span className="mt-3 inline-block text-xs text-cyan-ai">Open module →</span></Link>)}</div><div className="grid gap-6 lg:grid-cols-[1.4fr_0.6fr]"><section className="glass-panel overflow-hidden"><div className="flex items-center justify-between border-b border-glass px-6 py-5"><div><h2 className="text-xl font-bold">Recent inquiries</h2><p className="mt-1 text-sm text-slate-muted">The latest opportunities requiring attention.</p></div><Link href="/admin/leads" className="text-sm text-cyan-ai">View all →</Link></div>{data.recentLeads.length ? <div className="divide-y divide-glass">{data.recentLeads.map((lead) => <Link href="/admin/leads" key={lead.id} className="flex flex-wrap items-center justify-between gap-3 px-6 py-4 hover:bg-white/5"><div><p className="font-medium">{lead.name} <span className="text-slate-muted">· {lead.company}</span></p><p className="mt-1 text-xs text-slate-muted">{lead.createdAt.toLocaleDateString()}</p></div><span className="rounded-full border border-electric/30 bg-electric/10 px-3 py-1 text-xs text-electric">{lead.status.replaceAll("_", " ")}</span></Link>)}</div> : <p className="p-8 text-sm text-slate-muted">No inquiries yet.</p>}</section><aside className="glass-panel p-6"><h2 className="text-xl font-bold">Operations checklist</h2><div className="mt-5 space-y-4 text-sm"><Link href="/admin/blog" className="flex items-center justify-between text-slate-muted hover:text-white"><span>Content pipeline</span><span className="text-cyan-ai">{data.draftPosts} drafts</span></Link><Link href="/admin/content" className="flex items-center justify-between text-slate-muted hover:text-white"><span>Managed pages</span><span className="text-cyan-ai">{data.pages}</span></Link><Link href="/admin/settings" className="flex items-center justify-between text-slate-muted hover:text-white"><span>Site configuration</span><span className="text-cyan-ai">Review</span></Link><Link href="/admin/audit-logs" className="flex items-center justify-between text-slate-muted hover:text-white"><span>Activity history</span><span className="text-cyan-ai">Open logs</span></Link></div></aside></div></div>;
 }

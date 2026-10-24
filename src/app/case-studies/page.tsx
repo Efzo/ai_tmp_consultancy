@@ -1,8 +1,11 @@
 import React from 'react';
 import Link from 'next/link';
-import { caseStudies } from '@/data/case-studies';
+import { getCaseStudies } from '@/lib/site-settings';
 
-export default function CaseStudiesPage() {
+export const dynamic = "force-dynamic";
+
+export default async function CaseStudiesPage() {
+  const caseStudies = await getCaseStudies();
   return (
     <main className="min-h-screen bg-midnight text-platinum pt-32 pb-20 px-6">
       <div className="max-w-6xl mx-auto">

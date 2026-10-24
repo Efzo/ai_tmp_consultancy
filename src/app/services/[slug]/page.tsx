@@ -1,9 +1,11 @@
-import React from 'react';
-import { services } from '@/data/services';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
+import { getManagedService, getManagedServices } from '@/lib/services';
+
+export const dynamic = 'force-dynamic';
 
 export async function generateStaticParams() {
+  const services = await getManagedServices();
   return services.map((service) => ({
     slug: service.slug,
   }));
@@ -11,7 +13,7 @@ export async function generateStaticParams() {
 
 export default async function ServiceDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const service = services.find((s) => s.slug === slug);
+  const service = await getManagedService(slug);
 
   if (!service) {
     notFound();

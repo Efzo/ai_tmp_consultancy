@@ -1,18 +1,20 @@
-import React from 'react';
 import Link from 'next/link';
-import { services } from '@/data/services';
+import { getManagedServices } from '@/lib/services';
 
-export default function ServicesPage() {
+export const dynamic = 'force-dynamic';
+
+export default async function ServicesPage() {
+  const services = await getManagedServices();
   return (
     <main className="min-h-screen bg-midnight text-platinum pt-32 pb-20 px-6">
       <div className="max-w-6xl mx-auto">
         <section className="text-center mb-20">
           <h1 className="text-4xl md:text-6xl font-bold mb-6 tracking-tight">
             Expert <span className="text-electric">Consulting</span> for <br />
-            AI-Powered Organizations
+            Technology-Driven Organizations
           </h1>
           <p className="text-slate-muted text-xl max-w-3xl mx-auto">
-            We provide the strategic and technical leadership necessary to move your AI initiatives from conceptual prototypes to high-impact business assets.
+            We provide the product strategy, technical leadership, and delivery guidance necessary to turn complex business challenges into valuable digital products.
           </p>
         </section>
 

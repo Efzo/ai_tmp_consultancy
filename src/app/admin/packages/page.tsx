@@ -1,4 +1,10 @@
 import { AdminModule } from "@/components/admin/AdminModule";
-import { pricingPlans } from "@/data/pricing";
+import PricingEditor from "@/components/admin/PricingEditor";
+import { getPricingPlans } from "@/lib/site-settings";
 
-export default function PackagesAdminPage() { return <AdminModule title="Consulting packages" description="Review provisional package definitions before connecting approved payment products." status="Provisional pricing"><div className="grid gap-4 md:grid-cols-3">{pricingPlans.map((plan) => <div key={plan.id} className="glass-card p-6"><p className="text-xs uppercase tracking-widest text-electric">{plan.type}</p><h2 className="mt-3 text-xl font-bold">{plan.name}</h2><p className="mt-3 text-2xl font-bold">{plan.price}</p><p className="mt-3 text-sm leading-relaxed text-slate-muted">{plan.description}</p><p className="mt-5 text-xs text-amber-300">Stripe price ID not connected</p></div>)}</div></AdminModule>; }
+export const dynamic = "force-dynamic";
+
+export default async function PackagesAdminPage() {
+  const plans = await getPricingPlans();
+  return <AdminModule title="Consulting packages" description="Manage public engagement packages, prices, inclusions, and calls to action." status={`${plans.length} packages`}><PricingEditor plans={plans} /></AdminModule>;
+}

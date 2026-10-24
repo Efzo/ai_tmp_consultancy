@@ -1,8 +1,11 @@
 import React from 'react';
-import { pricingPlans } from '@/data/pricing';
 import Link from 'next/link';
+import { getPricingPlans } from '@/lib/site-settings';
 
-export default function PricingPage() {
+export const dynamic = "force-dynamic";
+
+export default async function PricingPage() {
+  const pricingPlans = await getPricingPlans();
   return (
     <main className="min-h-screen bg-midnight text-platinum pt-32 pb-20 px-6">
       <div className="max-w-6xl mx-auto">

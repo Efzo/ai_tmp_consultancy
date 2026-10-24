@@ -1,3 +1,10 @@
 import { AdminModule } from "@/components/admin/AdminModule";
+import NavigationEditor from "@/components/admin/NavigationEditor";
+import { getNavigationItems } from "@/lib/site-settings";
 
-export default function NavigationAdminPage() { const items = ["Home", "Services", "Case Studies", "About", "Process", "Blog", "Pricing", "Contact"]; return <AdminModule title="Website navigation" description="Review the public information architecture." status="Read-only"><div className="glass-panel p-6"><div className="space-y-3">{items.map((item, index) => <div key={item} className="flex items-center justify-between rounded-lg border border-glass bg-white/5 px-4 py-3"><span>{index + 1}. {item}</span><span className="text-xs text-green-300">Published route</span></div>)}</div></div></AdminModule>; }
+export const dynamic = "force-dynamic";
+
+export default async function NavigationAdminPage() {
+  const items = await getNavigationItems();
+  return <AdminModule title="Website navigation" description="Manage the public navbar links across desktop and mobile layouts." status={`${items.length} links`}><NavigationEditor items={items} /></AdminModule>;
+}

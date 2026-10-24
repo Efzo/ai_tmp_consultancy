@@ -3,8 +3,8 @@ import BlogIndex from "@/components/BlogIndex";
 import { getPublicBlogPosts } from "@/lib/content";
 
 export const metadata: Metadata = {
-  title: "AI Product Management & Technical Strategy Blog | Efosa Ojomo",
-  description: "Practical writing on AI product strategy, technical product management, enterprise SaaS, RAG, and platform delivery.",
+  title: "Technology & Product Strategy Insights | Efosa Ojomo",
+  description: "Practical writing on technical product management, AI strategy, software architecture, digital transformation, and delivery.",
   alternates: { canonical: "/blog" },
 };
 
@@ -17,8 +17,8 @@ export default async function BlogPage() {
       <div className="mx-auto max-w-6xl">
         <header className="mb-16 max-w-3xl">
           <p className="mb-4 text-sm font-semibold uppercase tracking-[0.25em] text-electric">Insights</p>
-          <h1 className="mb-6 text-5xl font-bold tracking-tight md:text-6xl">Practical thinking for AI product teams.</h1>
-          <p className="text-xl leading-relaxed text-slate-muted">Ideas on AI product management, technical strategy, enterprise search, RAG, and delivering products that create measurable value.</p>
+          <h1 className="mb-6 text-5xl font-bold tracking-tight md:text-6xl">Practical thinking for product and technology teams.</h1>
+          <p className="text-xl leading-relaxed text-slate-muted">Ideas on technical product management, AI strategy, software architecture, digital transformation, and delivering products that create measurable value.</p>
         </header>
         <BlogIndex posts={blogPosts} />
       </div>

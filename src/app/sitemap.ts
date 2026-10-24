@@ -1,12 +1,15 @@
 import type { MetadataRoute } from "next";
-import { blogPosts } from "@/data/blog";
-import { caseStudies } from "@/data/case-studies";
-import { services } from "@/data/services";
 import { landingPages } from "@/data/landing-pages";
+import { getPublicBlogPosts } from "@/lib/content";
+import { getCaseStudies } from "@/lib/site-settings";
+import { getManagedServices } from "@/lib/services";
 
 const baseUrl = "https://ojomoefosa.com";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export const dynamic = "force-dynamic";
+
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const [blogPosts, caseStudies, services] = await Promise.all([getPublicBlogPosts(), getCaseStudies(), getManagedServices()]);
   const staticRoutes = ["", "/services", "/about", "/case-studies", "/process", "/pricing", "/book", "/contact", "/blog", "/privacy", "/terms"];
   return [
     ...staticRoutes.map((route) => ({ url: `${baseUrl}${route}`, lastModified: new Date() })),

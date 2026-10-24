@@ -24,7 +24,7 @@ This file records the current state against `root_backup/project_road_map.md`. I
 - Vercel Blob: set `BLOB_READ_WRITE_TOKEN` before using the Media Library upload form.
 - Calendly or Cal.com: set `NEXT_PUBLIC_BOOKING_URL`.
 - Resend: set `RESEND_API_KEY`, `BUSINESS_EMAIL`, `RESEND_FROM_EMAIL`, and verify the sending domain.
-- Stripe: checkout, webhook verification, idempotency, and payment records still need implementation and sandbox credentials before paid services are enabled.
+- Online card/ACH checkout is intentionally deferred. Clients are billed through approved proposals and invoices until a payment processor is needed.
 - GA4 and consent management: set a real measurement ID and choose the applicable cookie/consent policy before advertising.
 - Vercel deployment, DNS, domain verification, backups, and production secret rotation.
 - `npm audit --omit=dev` currently reports four high-severity advisories in the pinned Prisma 6 CLI/config dependency chain. Resolve the Prisma upgrade path and rerun the audit before production launch.

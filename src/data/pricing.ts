@@ -6,30 +6,28 @@ export interface PricingPlan {
   features: string[];
   type: 'fixed' | 'retainer';
   cta: string;
-  stripePriceId?: string;
 }
 
 export const pricingPlans: PricingPlan[] = [
   {
-    id: 'ai-discovery-workshop',
-    name: 'AI Opportunity Workshop',
-    price: ',500',
-    description: 'A focused 2-day engagement to identify your high-impact AI use-cases and create a validated execution roadmap.',
+    id: 'product-discovery-roadmap',
+    name: 'Product Discovery & Roadmap Sprint',
+    price: 'Custom',
+    description: 'A focused engagement to clarify the customer problem, evaluate options, and create a practical product and delivery roadmap.',
     features: [
       'Stakeholder Discovery Sessions',
-      'AI Feasibility Audit',
       'Prioritized Opportunity Map',
-      'Technical High-Level Design',
-      'Next-Steps Implementation Plan'
+      'Product Requirements and Technical Direction',
+      'Next-Steps Delivery Plan'
     ],
     type: 'fixed',
-    cta: 'Book Workshop',
+    cta: 'Request a Proposal',
   },
   {
     id: 'fractional-tpm-monthly',
-    name: 'Fractional TPM Retainer',
+    name: 'Fractional Technical Product Management',
     price: 'Custom',
-    description: 'Ongoing technical product leadership embedded in your team. Ideal for growth-stage startups scaling their AI products.',
+    description: 'Ongoing technical product leadership embedded in your team. Ideal for organizations delivering complex software or AI-enabled products.',
     features: [
       'Product Backlog Ownership',
       'Engineering Coordination',
@@ -41,18 +39,17 @@ export const pricingPlans: PricingPlan[] = [
     cta: 'Request Pricing',
   },
   {
-    id: 'ai-product-audit',
-    name: 'AI Product Technical Audit',
-    price: ',000',
-    description: 'A comprehensive review of your existing AI implementation to identify risks, quality gaps, and performance bottlenecks.',
+    id: 'product-technology-assessment',
+    name: 'Product & Technology Assessment',
+    price: 'Custom',
+    description: 'A practical review of your product, architecture, and delivery system to identify risks, gaps, and the highest-value improvements.',
     features: [
-      'Architecture Review',
-      'LLM Output Quality Audit',
-      'RAG Pipeline Evaluation',
-      'Risk & Security Assessment',
+      'Product and Technical Review',
+      'Architecture and Delivery Assessment',
+      'Risk and Opportunity Assessment',
       'Optimized Roadmap Report'
     ],
     type: 'fixed',
-    cta: 'Order Audit',
+    cta: 'Request an Assessment',
   }
 ];

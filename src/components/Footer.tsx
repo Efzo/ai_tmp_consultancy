@@ -28,8 +28,8 @@ const Footer = ({ settings }: { settings?: FooterSettings }) => {
               <span>Efosa <span className="text-electric">Ojomo</span></span>
             </Link>
             <p className="text-slate-muted max-w-sm mb-6">
-              AI Product Strategy. Technical Leadership. Real Business Outcomes. 
-              Helping organizations move from AI ideas to validated product strategies.
+              Technology & Product Consulting. Technical Leadership. Measurable Outcomes.
+              Helping organizations turn business challenges into products and technology solutions.
             </p>
             <div className="flex gap-4 text-slate-muted">
               <a href={footerSettings.linkedinUrl} target="_blank" rel="noopener noreferrer" className="hover:text-electric transition-colors">
@@ -45,9 +45,9 @@ const Footer = ({ settings }: { settings?: FooterSettings }) => {
             <h4 className="font-bold text-white mb-6">Services</h4>
             <ul className="space-y-4 text-slate-muted text-sm">
               <li><Link href={footerSettings.allServicesUrl} className="hover:text-white transition-colors">All Services</Link></li>
-              <li><Link href={footerSettings.aiStrategyUrl} className="hover:text-white transition-colors">AI Strategy</Link></li>
-              <li><Link href={footerSettings.fractionalTpmUrl} className="hover:text-white transition-colors">Fractional TPM</Link></li>
-              <li><Link href={footerSettings.aiArchitectureUrl} className="hover:text-white transition-colors">AI Architecture</Link></li>
+              <li><Link href={footerSettings.aiStrategyUrl} className="hover:text-white transition-colors">AI Product Strategy</Link></li>
+              <li><Link href={footerSettings.fractionalTpmUrl} className="hover:text-white transition-colors">Technical Product Management</Link></li>
+              <li><Link href={footerSettings.aiArchitectureUrl} className="hover:text-white transition-colors">Technology Advisory</Link></li>
             </ul>
           </div>
           

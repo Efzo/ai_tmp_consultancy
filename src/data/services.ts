@@ -12,6 +12,17 @@ export interface Service {
 
 export const services: Service[] = [
   {
+    slug: 'product-management',
+    title: 'Technical Product Management',
+    shortDescription: 'Turn complex business goals into clear product direction, rigorous requirements, and an executable delivery roadmap.',
+    fullDescription: 'I help product and engineering teams create clarity across discovery, prioritization, requirements, and delivery. The work connects customer needs and business outcomes to practical technical decisions without losing momentum.',
+    targetAudience: 'SaaS companies, enterprise product teams, and founders building or modernizing digital products.',
+    problemsSolved: ['Unclear product direction', 'Weak product and engineering alignment', 'Backlog and prioritization challenges', 'Requirements that create rework'],
+    deliverables: ['Product strategy and roadmap', 'PRDs and acceptance criteria', 'Prioritized backlog', 'Outcome and KPI framework', 'Stakeholder alignment plan'],
+    engagementProcess: ['Discovery', 'Product and technical assessment', 'Prioritization', 'Roadmap definition', 'Delivery support'],
+    ctaText: 'Discuss Product Leadership'
+  },
+  {
     slug: 'ai-strategy',
     title: 'AI Product Strategy & Roadmapping',
     shortDescription: 'Moving from AI ideas and business challenges to validated product strategies, technical requirements, and implementation roadmaps.',
@@ -40,10 +51,21 @@ export const services: Service[] = [
     ctaText: 'Get Your AI Roadmap'
   },
   {
+    slug: 'product-delivery',
+    title: 'Product Delivery & Digital Transformation',
+    shortDescription: 'Modernize workflows, align delivery teams, and turn strategic priorities into measurable product outcomes.',
+    fullDescription: 'Create the operating clarity needed to move from strategy to execution through delivery planning, process improvement, vendor coordination, and change leadership.',
+    targetAudience: 'Organizations improving delivery processes, modernizing operations, or launching new digital products.',
+    problemsSolved: ['Slow or unpredictable delivery', 'Fragmented operating processes', 'Vendor and stakeholder misalignment', 'Transformation initiatives without measurable outcomes'],
+    deliverables: ['Delivery operating model', 'Transformation roadmap', 'Cross-functional plan', 'Risk and dependency register', 'Outcome reporting'],
+    engagementProcess: ['Current-state assessment', 'Future-state design', 'Delivery planning', 'Execution support', 'Measurement and handover'],
+    ctaText: 'Discuss Delivery Support'
+  },
+  {
     slug: 'fractional-tpm',
-    title: 'Fractional AI Technical Product Management',
+    title: 'Fractional Technical Product Management',
     shortDescription: 'Ongoing technical product leadership for organizations that do not require a full-time senior TPM.',
-    fullDescription: 'Get the expertise of a senior Technical Product Manager without the overhead of a full-time executive hire. I embed with your team to drive engineering alignment, manage the product backlog, and ensure that every technical decision is tied to a measurable business outcome.',
+    fullDescription: 'Get the expertise of a senior Technical Product Manager without the overhead of a full-time executive hire. I embed with your team to drive product and engineering alignment, manage the product backlog, and ensure that technical decisions are tied to measurable business outcomes.',
     targetAudience: 'Growth-stage startups and mid-market SaaS companies.',
     problemsSolved: [
       'Lack of technical leadership in the product org',
@@ -69,9 +91,9 @@ export const services: Service[] = [
   },
   {
     slug: 'solution-architecture',
-    title: 'AI Solution Architecture & Implementation Advisory',
-    shortDescription: 'Architecting enterprise-grade AI systems with a focus on RAG, Agentic workflows, and scalable cloud integration.',
-    fullDescription: 'Designing AI systems is fundamentally different from designing traditional software. We provide the architectural blueprint for your AI application, focusing on data retrieval quality, LLM orchestration, and security, ensuring your system is scalable and maintainable.',
+    title: 'Technology Advisory & Solution Architecture',
+    shortDescription: 'Make sound architecture, integration, cloud, and modernization decisions for complex software and AI-enabled products.',
+    fullDescription: 'I provide the architectural perspective needed to improve an existing platform or design a new one. The work covers system boundaries, APIs, cloud integration, data flows, security, and—where relevant—AI architecture.',
     targetAudience: 'CTOs, Engineering VPs, and Product Architects.',
     problemsSolved: [
       'Inefficient RAG implementations',
@@ -97,9 +119,9 @@ export const services: Service[] = [
   },
   {
     slug: 'enterprise-search',
-    title: 'Enterprise Search & AI Knowledge Systems',
-    shortDescription: 'Transforming corporate knowledge into actionable intelligence through semantic and hybrid retrieval systems.',
-    fullDescription: 'The biggest hurdle to enterprise AI is data access. We specialize in building the "Knowledge Layer" for your business—integrating disparate data sources into a unified, semantic search system that powers AI assistants and internal productivity.',
+    title: 'Digital Transformation & Knowledge Systems',
+    shortDescription: 'Modernize workflows, connect enterprise knowledge, and create technology systems that improve how teams operate.',
+    fullDescription: 'I help organizations turn fragmented workflows and information into more effective digital systems. This may include enterprise search, knowledge platforms, process modernization, and AI-enabled productivity improvements.',
     targetAudience: 'Enterprise teams with large internal knowledge bases.',
     problemsSolved: [
       'Difficulty finding information across silos',
@@ -125,9 +147,9 @@ export const services: Service[] = [
   },
   {
     slug: 'ai-audit',
-    title: 'AI Product Audit & Technical Assessment',
-    shortDescription: 'Structured reviews of existing AI initiatives to identify risks, gaps, and optimization opportunities.',
-    fullDescription: 'Is your AI product performing as expected? We provide an unbiased, expert review of your existing AI initiatives—analyzing the product strategy, technical architecture, and output quality to provide a clear path to improvement.',
+    title: 'Product & Technology Assessment',
+    shortDescription: 'Structured reviews of existing products and technology systems to identify risks, gaps, and high-value improvements.',
+    fullDescription: 'I provide an unbiased review of your product strategy, technical architecture, delivery system, and—where relevant—AI capabilities. You receive a clear view of the most important risks and a prioritized path to improvement.',
     targetAudience: 'Companies with existing AI features in production or beta.',
     problemsSolved: [
       'Stagnant AI product growth',
@@ -149,6 +171,6 @@ export const services: Service[] = [
       'Gap Identification',
       'Recommendation Delivery'
     ],
-    ctaText: 'Audit Your AI Product'
+    ctaText: 'Request an Assessment'
   }
 ];

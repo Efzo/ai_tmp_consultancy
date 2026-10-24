@@ -3,8 +3,17 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import ThemeToggle from '@/components/ThemeToggle';
+import type { NavigationItem } from '@/lib/site-settings';
 
-const Navbar = () => {
+const defaultItems: NavigationItem[] = [
+  { label: "Services", href: "/services" },
+  { label: "Case Studies", href: "/case-studies" },
+  { label: "About", href: "/about" },
+  { label: "Process", href: "/process" },
+  { label: "Blog", href: "/blog" },
+];
+
+const Navbar = ({ items = defaultItems }: { items?: NavigationItem[] }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
 
@@ -26,11 +35,7 @@ const Navbar = () => {
           </Link>
           
           <div className="hidden items-center gap-8 text-sm font-medium text-slate-muted md:flex">
-            <Link href="/services" className="hover:text-white transition-colors">Services</Link>
-            <Link href="/case-studies" className="hover:text-white transition-colors">Case Studies</Link>
-            <Link href="/about" className="hover:text-white transition-colors">About</Link>
-            <Link href="/process" className="hover:text-white transition-colors">Process</Link>
-            <Link href="/blog" className="hover:text-white transition-colors">Blog</Link>
+            {items.map((item) => <Link key={`${item.label}-${item.href}`} href={item.href} className="hover:text-white transition-colors">{item.label}</Link>)}
           </div>
 
           <div className="flex items-center gap-3">
@@ -41,7 +46,7 @@ const Navbar = () => {
             <button type="button" aria-expanded={isOpen} aria-label="Toggle navigation" onClick={() => setIsOpen(!isOpen)} className="rounded-lg border border-glass px-3 py-2 text-white md:hidden">☰</button>
           </div>
         </div>
-        {isOpen && <div className="glass-panel mt-2 grid gap-2 p-4 text-sm text-slate-muted md:hidden"><Link onClick={() => setIsOpen(false)} href="/services">Services</Link><Link onClick={() => setIsOpen(false)} href="/case-studies">Case Studies</Link><Link onClick={() => setIsOpen(false)} href="/about">About</Link><Link onClick={() => setIsOpen(false)} href="/process">Process</Link><Link onClick={() => setIsOpen(false)} href="/blog">Blog</Link><Link onClick={() => setIsOpen(false)} href="/book" className="text-cyan-ai">Book a Call →</Link></div>}
+        {isOpen && <div className="glass-panel mt-2 grid gap-2 p-4 text-sm text-slate-muted md:hidden">{items.map((item) => <Link key={`${item.label}-${item.href}`} onClick={() => setIsOpen(false)} href={item.href}>{item.label}</Link>)}<Link onClick={() => setIsOpen(false)} href="/book" className="text-cyan-ai">Book a Call →</Link></div>}
       </div>
     </nav>
   );

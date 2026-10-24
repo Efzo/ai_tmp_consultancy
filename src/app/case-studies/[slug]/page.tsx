@@ -1,9 +1,12 @@
 import React from 'react';
-import { caseStudies } from '@/data/case-studies';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
+import { getCaseStudies } from '@/lib/site-settings';
+
+export const dynamic = "force-dynamic";
 
 export async function generateStaticParams() {
+  const caseStudies = await getCaseStudies();
   return caseStudies.map((study) => ({
     slug: study.slug,
   }));
@@ -11,6 +14,7 @@ export async function generateStaticParams() {
 
 export default async function CaseStudyDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
+  const caseStudies = await getCaseStudies();
   const study = caseStudies.find((s) => s.slug === slug);
 
   if (!study) {
