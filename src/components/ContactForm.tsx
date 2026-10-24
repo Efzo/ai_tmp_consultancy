@@ -33,19 +33,39 @@ const initialValues: FormValues = {
   consent: false,
 };
 
+const fieldLabels: Record<string, string> = {
+  name: "Full name",
+  email: "Business email",
+  company: "Company name",
+  website: "Company website",
+  service: "Consulting service",
+  challenge: "Business challenge",
+  timeline: "Expected timeline",
+  budget: "Estimated budget",
+  consent: "Consent",
+};
+
 export default function ContactForm({ budgetOptions, services }: { budgetOptions: ContactBudgetOption[]; services: ServiceOption[] }) {
   const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
   const [message, setMessage] = useState("");
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [values, setValues] = useState<FormValues>(initialValues);
 
   function update<K extends keyof FormValues>(key: K, value: FormValues[K]) {
     setValues((current) => ({ ...current, [key]: value }));
+    setFieldErrors((current) => {
+      if (!current[key]) return current;
+      const next = { ...current };
+      delete next[key];
+      return next;
+    });
   }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setStatus("submitting");
     setMessage("");
+    setFieldErrors({});
 
     const formData = new FormData();
     formData.set("name", values.name);
@@ -63,6 +83,7 @@ export default function ContactForm({ budgetOptions, services }: { budgetOptions
       const result = await submitInquiry(formData);
       setStatus(result.success ? "success" : "error");
       setMessage(result.message);
+      setFieldErrors(result.fieldErrors ?? {});
     } catch {
       setStatus("error");
       setMessage("We could not send your inquiry. Your entries are still here—please try again.");
@@ -108,8 +129,9 @@ export default function ContactForm({ budgetOptions, services }: { budgetOptions
                 <label className="space-y-2 text-sm font-medium text-slate-muted">Company Name
                   <input name="company" required value={values.company} onChange={(event) => update("company", event.target.value)} className="mt-2 w-full rounded-xl border border-glass bg-white/5 px-4 py-3 text-white outline-none transition-all focus:border-electric" placeholder="Enterprise AI Inc." />
                 </label>
-                <label className="space-y-2 text-sm font-medium text-slate-muted">Company Website
-                  <input name="website" value={values.website} onChange={(event) => update("website", event.target.value)} className="mt-2 w-full rounded-xl border border-glass bg-white/5 px-4 py-3 text-white outline-none transition-all focus:border-electric" placeholder="https://company.com" />
+                <label className="space-y-2 text-sm font-medium text-slate-muted">Company Website <span className="font-normal">(optional)</span>
+                  <input name="website" type="url" inputMode="url" value={values.website} onChange={(event) => update("website", event.target.value)} aria-invalid={Boolean(fieldErrors.website)} aria-describedby={fieldErrors.website ? "website-error" : undefined} className={`mt-2 w-full rounded-xl border bg-white/5 px-4 py-3 text-white outline-none transition-all focus:border-electric ${fieldErrors.website ? "border-red-400" : "border-glass"}`} placeholder="https://company.com" />
+                  {fieldErrors.website && <span id="website-error" className="block text-xs text-red-300">{fieldErrors.website}</span>}
                 </label>
               </div>
 
@@ -145,7 +167,7 @@ export default function ContactForm({ budgetOptions, services }: { budgetOptions
               <label className="flex items-start gap-3 text-sm text-slate-muted"><input name="consent" type="checkbox" required checked={values.consent} onChange={(event) => update("consent", event.target.checked)} className="mt-1 accent-electric" /><span>I consent to being contacted about this inquiry and understand that this form is not an agreement to begin paid work.</span></label>
 
               <button type="submit" disabled={status === "submitting"} className="btn-primary w-full py-4 text-lg font-bold disabled:opacity-50">{status === "submitting" ? "Sending Inquiry..." : "Request Consulting Proposal"}</button>
-              {status === "error" && <p role="alert" className="text-center text-sm text-red-400">{message}</p>}
+              {status === "error" && <div role="alert" className="rounded-xl border border-red-400/30 bg-red-400/10 p-4 text-sm text-red-200"><p className="font-medium">{message}</p>{Object.entries(fieldErrors).length > 0 && <ul className="mt-2 list-disc space-y-1 pl-5">{Object.entries(fieldErrors).map(([field, error]) => <li key={field}><span className="font-medium">{fieldLabels[field] ?? field}:</span> {error}</li>)}</ul>}</div>}
             </form>
           </div>
 

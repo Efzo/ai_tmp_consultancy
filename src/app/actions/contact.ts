@@ -5,11 +5,21 @@ import { prisma } from "@/lib/prisma";
 
 const recentSubmissions = new Map<string, number>();
 
+const websiteSchema = z.string().trim().max(300).transform((value) => value && !/^https?:\/\//i.test(value) ? `https://${value}` : value).refine((value) => {
+  if (!value) return true;
+  try {
+    const url = new URL(value);
+    return ["http:", "https:"].includes(url.protocol) && url.hostname.includes(".");
+  } catch {
+    return false;
+  }
+}, "Enter a valid website URL, such as https://company.com, or leave this field blank.");
+
 const inquirySchema = z.object({
   name: z.string().trim().min(2).max(120),
   email: z.string().trim().email().max(254),
   company: z.string().trim().min(2).max(160),
-  website: z.union([z.literal(""), z.string().trim().url().max(300)]),
+  website: websiteSchema,
   service: z.string().trim().min(1).max(100),
   challenge: z.string().trim().min(20).max(5000),
   timeline: z.enum(["immediate", "short-term", "long-term"]),
@@ -18,7 +28,7 @@ const inquirySchema = z.object({
   botField: z.string().max(0),
 });
 
-type ActionResult = { success: boolean; message: string };
+type ActionResult = { success: boolean; message: string; fieldErrors?: Record<string, string> };
 
 async function sendLeadEmails(data: z.infer<typeof inquirySchema>) {
   const apiKey = process.env.RESEND_API_KEY;
@@ -55,14 +65,35 @@ export async function submitInquiry(formData: FormData): Promise<ActionResult> {
     botField: formData.get("bot-field") ?? "",
   });
 
-  if (!parsed.success) return { success: false, message: "Please complete every required field and consent to being contacted." };
+  if (!parsed.success) {
+    const friendlyMessages: Record<string, string> = {
+      name: "Enter your full name.",
+      email: "Enter a valid business email address.",
+      company: "Enter your company name.",
+      website: "Enter a valid website URL, such as https://company.com, or leave this optional field blank.",
+      service: "Choose a consulting service.",
+      challenge: "Describe your business challenge in at least 20 characters.",
+      timeline: "Choose an expected timeline.",
+      budget: "Choose a budget range or enter a custom amount.",
+      consent: "Please check the consent box so we can contact you.",
+    };
+    const fieldErrors = Object.fromEntries(parsed.error.issues.map((issue) => {
+      const field = String(issue.path[0] ?? "form");
+      return [field, friendlyMessages[field] ?? issue.message];
+    }));
+    return {
+      success: false,
+      message: Object.keys(fieldErrors).length ? "Please check the highlighted fields and try again." : "Please complete every required field and consent to being contacted.",
+      fieldErrors,
+    };
+  }
   const data = parsed.data;
   const rateKey = data.email.toLowerCase();
   const lastSubmission = recentSubmissions.get(rateKey) ?? 0;
   if (Date.now() - lastSubmission < 60_000) return { success: false, message: "Please wait a minute before submitting another inquiry." };
-  recentSubmissions.set(rateKey, Date.now());
 
   if (process.env.DEMO_MODE === "true") {
+    recentSubmissions.set(rateKey, Date.now());
     return { success: true, message: "Demo inquiry received. Connect a database and email provider before accepting production leads." };
   }
 
@@ -85,6 +116,7 @@ export async function submitInquiry(formData: FormData): Promise<ActionResult> {
         consentAt: new Date(),
       },
     });
+    recentSubmissions.set(rateKey, Date.now());
     await prisma.auditEvent.create({ data: { action: "lead.created", target: lead.id, metadata: { source: "website-contact-form", service: data.service } } }).catch(() => undefined);
     await sendLeadEmails(data);
     return { success: true, message: "Your inquiry has been received. We will be in touch shortly." };
