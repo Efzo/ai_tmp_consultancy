@@ -1,0 +1,3 @@
+import { AdminModule } from "@/components/admin/AdminModule";
+
+export default function SeoAdminPage() { const checks = ["Unique titles and descriptions", "Canonical URLs", "Generated sitemap", "Robots rules", "Open Graph image", "Structured data", "Redirect inventory"]; return <AdminModule title="SEO manager" description="Review technical SEO readiness and content metadata." status="Core checks active"><div className="glass-panel overflow-hidden"><div className="divide-y divide-glass">{checks.map((check, index) => <div key={check} className="flex items-center justify-between px-6 py-5"><span>{check}</span><span className={index < 4 ? "text-green-300" : "text-amber-300"}>{index < 4 ? "Implemented" : "Needs review"}</span></div>)}</div></div></AdminModule>; }

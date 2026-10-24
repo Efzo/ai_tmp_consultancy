@@ -1,0 +1,7 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = { title: "Terms of Service | Efosa Ojomo", description: "Draft terms of service for Efosa Ojomo AI Product & Technical Consulting." };
+
+export default function TermsPage() {
+  return <main className="min-h-screen bg-midnight px-6 pb-24 pt-36 text-platinum"><article className="prose prose-invert mx-auto max-w-3xl"><p className="text-sm uppercase tracking-[0.25em] text-electric">Legal draft — review required</p><h1>Terms of Service</h1><p>This draft describes the general terms for using this website and exploring consulting services. It is not final legal advice and must be reviewed by qualified counsel before production publication.</p><h2>Consulting engagements</h2><p>Specific scope, deliverables, fees, timelines, assumptions, confidentiality, intellectual property, and termination terms should be defined in a written proposal or agreement accepted by both parties.</p><h2>Advisory scope</h2><p>Unless a signed agreement says otherwise, content on this site is general information and does not guarantee a particular technical, financial, operational, or business outcome.</p><h2>Payments and scheduling</h2><p>Any paid workshop or fixed-price service must be governed by the approved checkout terms and the applicable consulting agreement. Custom work and retainers should not be charged automatically without approval.</p><h2>Contact</h2><p>Update this section with the approved business contact address and governing-law language before publishing.</p></article></main>;
+}

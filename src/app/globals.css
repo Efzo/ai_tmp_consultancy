@@ -1,0 +1,107 @@
+@config "../../tailwind.config.js";
+@import "tailwindcss";
+
+:root {
+  --midnight: #0B1120;
+  --midnight-rgb: 11 17 32;
+  --slate-deep: #111C30;
+  --slate-deep-rgb: 17 28 48;
+  --electric: #397BFF;
+  --electric-rgb: 57 123 255;
+  --cyan-ai: #40D9E8;
+  --cyan-ai-rgb: 64 217 232;
+  --platinum: #F5F7FB;
+  --platinum-rgb: 245 247 251;
+  --slate-muted: #94A3B8;
+  --slate-muted-rgb: 148 163 184;
+  --glass-border: rgba(255,255,255,0.12);
+  --glass-surface: rgb(255 255 255 / 0.05);
+  --glass-surface-hover: rgb(255 255 255 / 0.1);
+  color-scheme: dark;
+}
+
+:root[data-theme="light"] {
+  --midnight: #F5F7FB;
+  --midnight-rgb: 245 247 251;
+  --slate-deep: #E9EEF7;
+  --slate-deep-rgb: 233 238 247;
+  --platinum: #0B1120;
+  --platinum-rgb: 11 17 32;
+  --slate-muted: #526176;
+  --slate-muted-rgb: 82 97 118;
+  --glass-border: rgba(15, 23, 42, 0.14);
+  --glass-surface: rgb(15 23 42 / 0.04);
+  --glass-surface-hover: rgb(15 23 42 / 0.08);
+  color-scheme: light;
+}
+
+body {
+  background-color: var(--midnight);
+  color: var(--platinum);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  transition: background-color 200ms ease, color 200ms ease;
+}
+
+:root[data-theme="light"] .text-white,
+:root[data-theme="light"] .hover\:text-white:hover {
+  color: var(--platinum) !important;
+}
+
+:root[data-theme="light"] .bg-white\/5 {
+  background-color: var(--glass-surface) !important;
+}
+
+:root[data-theme="light"] .bg-white\/10 {
+  background-color: var(--glass-surface-hover) !important;
+}
+
+@layer components {
+  .glass-panel {
+    background: var(--glass-surface);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+    border-radius: 1rem;
+  }
+  
+  .glass-card {
+    background: var(--glass-surface);
+    backdrop-filter: blur(8px);
+    border: 1px solid var(--glass-border);
+    border-radius: 0.75rem;
+    transition: all 300ms ease;
+  }
+
+  .glass-card:hover {
+    background: var(--glass-surface-hover);
+    border-color: rgb(57 123 255 / 0.5);
+  }
+  
+  .btn-primary {
+    background: var(--electric);
+    color: white;
+    padding: 0.5rem 1.5rem;
+    border-radius: 9999px;
+    font-weight: 500;
+    transition: all 300ms ease;
+  }
+
+  .btn-primary:hover {
+    background: rgb(57 123 255 / 0.8);
+    box-shadow: 0 0 15px rgb(57 123 255 / 0.4);
+  }
+  
+  .btn-secondary {
+    border: 1px solid var(--glass-border);
+    background: var(--glass-surface);
+    backdrop-filter: blur(12px);
+    color: white;
+    padding: 0.5rem 1.5rem;
+    border-radius: 9999px;
+    font-weight: 500;
+    transition: all 300ms ease;
+  }
+
+  .btn-secondary:hover {
+    background: var(--glass-surface-hover);
+  }
+}

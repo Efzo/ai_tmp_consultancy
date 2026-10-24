@@ -1,0 +1,3 @@
+import { AdminModule } from "@/components/admin/AdminModule";
+
+export default function BookingsAdminPage() { const configured = Boolean(process.env.NEXT_PUBLIC_BOOKING_URL); return <AdminModule title="Bookings" description="Review the consultation scheduling configuration." status={configured ? "Configured" : "Needs provider URL"}><div className="glass-panel p-8"><h2 className="text-xl font-bold">{configured ? "Booking provider connected" : "Connect Calendly or Cal.com"}</h2><p className="mt-3 text-slate-muted">Set <code className="text-electric">NEXT_PUBLIC_BOOKING_URL</code> to activate the public booking page. Provider confirmations, reminders, timezones, rescheduling, and cancellation policies remain managed by the selected provider.</p></div></AdminModule>; }

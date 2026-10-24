@@ -1,0 +1,3 @@
+import { AdminModule } from "@/components/admin/AdminModule";
+
+export default function NavigationAdminPage() { const items = ["Home", "Services", "Case Studies", "About", "Process", "Blog", "Pricing", "Contact"]; return <AdminModule title="Website navigation" description="Review the public information architecture." status="Read-only"><div className="glass-panel p-6"><div className="space-y-3">{items.map((item, index) => <div key={item} className="flex items-center justify-between rounded-lg border border-glass bg-white/5 px-4 py-3"><span>{index + 1}. {item}</span><span className="text-xs text-green-300">Published route</span></div>)}</div></div></AdminModule>; }

@@ -1,0 +1,19 @@
+# Local environment files
+.env
+.env.*
+!.env.example
+
+# Next.js build output
+.next/
+out/
+
+# Dependencies
+node_modules/
+
+# Local tooling and OS files
+.DS_Store
+*.log
+
+# Prisma local artifacts
+prisma/dev.db
+prisma/dev.db-journal
