@@ -19,15 +19,15 @@ const Footer = ({ settings }: { settings?: FooterSettings }) => {
     termsUrl: '/terms',
   } satisfies FooterSettings;
   return (
-    <footer className="bg-midnight border-t border-glass pt-16 pb-8 px-6">
+    <footer className="site-footer bg-midnight border-t border-glass px-6">
       <div className="max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-10 mb-12">
           <div className="col-span-1 md:col-span-2">
-            <Link href="/" aria-label="Efosa Ojomo home" className="mb-6 flex items-center gap-3 text-2xl font-bold tracking-tighter">
+            <Link href="/" aria-label="Efosa Ojomo home" className="mb-6 flex items-center gap-3 text-2xl font-semibold tracking-tight">
               <Image src="/logo_pack/logo.png" alt="Efosa Ojomo logo" width={44} height={44} className="h-11 w-11 rounded-xl object-cover" />
               <span>Efosa <span className="text-electric">Ojomo</span></span>
             </Link>
-            <p className="text-slate-muted max-w-sm mb-6">
+            <p className="text-slate-muted text-sm mb-6">
               Technology & Product Consulting. Technical Leadership. Measurable Outcomes.
               Helping organizations turn business challenges into products and technology solutions.
             </p>

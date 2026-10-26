@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import { caseStudies as fallbackCaseStudies, type CaseStudy } from "@/data/case-studies";
+
 import { pricingPlans as fallbackPricingPlans, type PricingPlan } from "@/data/pricing";
 
 export const footerSettingDefaults = {
@@ -26,9 +26,9 @@ export type ContactBudgetOption = {
 
 export const contactBudgetDefaults: ContactBudgetOption[] = [
   { value: "undetermined", label: "Undetermined" },
-  { value: "5k-15k", label: "k - k" },
-  { value: "15k-50k", label: "k - k" },
-  { value: "50k-plus", label: "k+" },
+  { value: "5k-15k", label: "$5k – $15k" },
+  { value: "15k-50k", label: "$15k – $50k" },
+  { value: "50k-plus", label: "$50k+" },
 ];
 
 export type NavigationItem = { label: string; href: string };
@@ -39,25 +39,20 @@ export const navigationDefaults: NavigationItem[] = [
   { label: "Services", href: "/services" },
   { label: "Case Studies", href: "/case-studies" },
   { label: "About", href: "/about" },
-  { label: "Process", href: "/process" },
+  { label: "Engagements", href: "/engagements" },
   { label: "Blog", href: "/blog" },
   { label: "Videos", href: "/videos" },
 ];
 
 export const seoDefaults: SeoSettings = {
   title: "Efosa Ojomo | Technology & Product Consulting",
-  description: "Technical product management, AI strategy, and technology advisory for organizations building and modernizing digital products.",
+  description: "Technical product management, custom software engineering, AI automation, and software architecture consulting for startups and businesses.",
   ogImage: "/logo_pack/logo.png",
 };
 
 export const testimonialDefaults: ManagedTestimonial[] = [];
 
-const trustLogosDefaults = [
-  { name: "Vertex AI", logoUrl: "/logo_pack/logo.png" },
-  { name: "Microsoft", logoUrl: "/logo_pack/logo.png" },
-  { name: "Amazon", logoUrl: "/logo_pack/logo.png" },
-  { name: "LTIMindtree", logoUrl: "/logo_pack/logo.png" },
-];
+const trustLogosDefaults: { name: string; logoUrl: string }[] = [];
 
 const demoOverrides = new Map<string, string>();
 
@@ -156,11 +151,6 @@ export async function getPricingPlans(): Promise<PricingPlan[]> {
   return Array.isArray(value) && value.length ? value as PricingPlan[] : fallbackPricingPlans;
 }
 
-export async function getCaseStudies(): Promise<CaseStudy[]> {
-  const value = await readJsonSetting<unknown>("caseStudies.items", fallbackCaseStudies);
-  return Array.isArray(value) && value.length ? value as CaseStudy[] : fallbackCaseStudies;
-}
-
 export async function getTestimonials(): Promise<ManagedTestimonial[]> {
   const value = await readJsonSetting<unknown>("testimonials.items", testimonialDefaults);
   return Array.isArray(value) && value.length ? value as ManagedTestimonial[] : testimonialDefaults;
@@ -176,4 +166,10 @@ export function setDemoSiteSetting(key: string, value: string) {
 
 export function isSiteSettingsDatabaseReady() {
   return dbReady();
+}
+
+export type ContactDetails = { email: string; availability: string };
+export async function getContactDetails(): Promise<ContactDetails> {
+  const value = await readJsonSetting<Partial<ContactDetails>>("contact.details", {});
+  return { email: typeof value.email === "string" ? value.email : "", availability: typeof value.availability === "string" ? value.availability : "" };
 }

@@ -3,6 +3,8 @@ import { prisma } from "@/lib/prisma";
 
 export type ManagedService = Service & {
   id?: string;
+  metaTitle?: string | null;
+  metaDescription?: string | null;
   price?: string | null;
   isPublished?: boolean;
 };
@@ -15,6 +17,7 @@ export async function getManagedServices(): Promise<ManagedService[]> {
   if (!databaseReady()) return fallbackServices;
   try {
     const records = await prisma.service.findMany({ orderBy: { createdAt: "asc" } });
+    if (!records.length && await prisma.siteSetting.findUnique({ where: { key: "consulting.initialized" } })) return [];
     return records.length ? records.filter((service) => service.isPublished) : fallbackServices;
   } catch {
     return fallbackServices;
@@ -22,12 +25,7 @@ export async function getManagedServices(): Promise<ManagedService[]> {
 }
 
 export async function getManagedService(slug: string): Promise<ManagedService | undefined> {
-  if (!databaseReady()) return fallbackServices.find((service) => service.slug === slug);
-  try {
-    const records = await prisma.service.findMany({ orderBy: { createdAt: "asc" } });
-    if (records.length) return records.find((service) => service.slug === slug && service.isPublished);
-    return fallbackServices.find((service) => service.slug === slug);
-  } catch {
-    return fallbackServices.find((service) => service.slug === slug);
-  }
+  const aliases: Record<string, string> = { "product-management": "technical-product-management", "ai-strategy": "ai-solutions", "solution-architecture": "software-architecture", "fractional-tpm": "technical-product-management" };
+  const services = await getManagedServices();
+  return services.find((service) => service.slug === slug) ?? (!services.some((service) => service.slug === slug) ? services.find((service) => service.slug === aliases[slug]) : undefined);
 }

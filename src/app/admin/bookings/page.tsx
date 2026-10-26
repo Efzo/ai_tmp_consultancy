@@ -5,7 +5,7 @@ export default function BookingsAdminPage() {
   const bookingUrl = process.env.NEXT_PUBLIC_BOOKING_URL;
   const configured = Boolean(bookingUrl);
 
-  return <AdminModule title="Bookings" description="Review the consultation scheduling configuration." status={configured ? "Configured" : "Needs provider URL"}>
+  return <AdminModule title="Booking Setup" description="Check the calendar connection for discovery calls. View and manage actual appointments in your calendar provider." status={configured ? "Configured" : "Needs provider URL"}>
     <div className="glass-panel p-8">
       <h2 className="text-xl font-bold">{configured ? "Booking provider connected" : "Connect Calendly or Cal.com"}</h2>
       <p className="mt-3 text-slate-muted">

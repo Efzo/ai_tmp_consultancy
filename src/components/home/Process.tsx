@@ -1,53 +1,10 @@
-import React from 'react';
-import { Search, PencilRuler, Hammer, Rocket, TrendingUp } from 'lucide-react';
-
 const steps = [
-  { title: "Discover", desc: "Problem definition, user research, and technical feasibility.", icon: Search },
-  { title: "Design", desc: "System architecture, data modeling, and product roadmapping.", icon: PencilRuler },
-  { title: "Build", desc: "Agile implementation with modern AI-augmented engineering.", icon: Hammer },
-  { title: "Launch", desc: "Deployment, QA, and operational readiness.", icon: Rocket },
-  { title: "Improve", desc: "Monitoring, iterative feedback, and scaling.", icon: TrendingUp },
+  { title: "Discover", description: "Define the problem, understand the users, and assess feasibility." },
+  { title: "Design", description: "Set the product direction, architecture, and delivery plan." },
+  { title: "Build", description: "Implement the agreed scope with regular reviews and feedback." },
+  { title: "Launch", description: "Test the solution and prepare for deployment and handover." },
+  { title: "Improve", description: "Review performance, gather feedback, and prioritize what comes next." },
 ];
-
-interface ProcessProps {
-  content: {
-    title: string;
-    subheadline: string;
-  };
-}
-
-export default function Process({ content }: ProcessProps) {
-  return (
-    <section className="py-32 px-6 bg-slate-900/30">
-      <div className="max-w-6xl mx-auto">
-        <div className="text-center mb-20">
-          <h2 className="text-4xl md:text-6xl font-bold mb-6 tracking-tight">
-            {content.title}
-          </h2>
-          <p className="text-slate-muted text-xl max-w-3xl mx-auto">
-            {content.subheadline}
-          </p>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-          {steps.map((step, idx) => {
-            const Icon = step.icon;
-            return (
-              <div key={step.title} className="relative p-6 text-center group">
-                <div className="w-12 h-12 mx-auto rounded-full bg-electric/10 flex items-center justify-center mb-4 text-electric group-hover:bg-electric group-hover:text-white transition-all">
-                  <Icon size={20} strokeWidth={2} />
-                </div>
-                <h3 className="text-xl font-bold mb-2">{step.title}</h3>
-                <p className="text-slate-muted text-sm leading-relaxed">{step.desc}</p>
-                {idx < steps.length - 1 && (
-                  <div className="hidden md:block absolute top-1/2 -right-4 transform -translate-y-1/2 text-electric/30 text-2xl">
-                    →
-                  </div>
-                )}
-              </div>
-            );
-          })}
-        </div>
-      </div>
-    </section>
-  );
+export default function Process({ content }: { content: { title: string; subheadline: string } }) {
+  return <section className="section-shell section-tint"><div className="section-inner"><div className="section-heading"><h2 className="section-title">{content.title}</h2><p className="section-intro">{content.subheadline}</p></div><ol className="grid gap-x-8 sm:grid-cols-2 lg:grid-cols-5">{steps.map((step, index) => <li className="process-step" key={step.title}><span className="process-step-number">0{index + 1}</span><h3 className="mb-3 mt-5 text-xl">{step.title}</h3><p className="text-sm text-slate-muted">{step.description}</p></li>)}</ol></div></section>;
 }

@@ -1,3 +1,4 @@
+import { pageMetadata } from "@/lib/seo";
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { getManagedService, getManagedServices } from '@/lib/services';
@@ -20,13 +21,13 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
   }
 
   return (
-    <main className="min-h-screen bg-midnight text-platinum pt-32 pb-20 px-6">
+    <main className="min-h-screen bg-midnight text-platinum pt-36 pb-20 px-6">
       <div className="max-w-5xl mx-auto">
         <div className="mb-12">
           <Link href="/services" className="text-slate-muted hover:text-white transition-colors text-sm mb-4 block">
             ← Back to All Services
           </Link>
-          <h1 className="text-4xl md:text-6xl font-bold tracking-tight mb-6">
+          <h1 className="text-4xl md:text-6xl font-semibold tracking-tight mb-6">
             {service.title}
           </h1>
           <p className="text-xl text-slate-muted max-w-3xl">
@@ -46,7 +47,7 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
             <section className="glass-panel p-6">
               <h2 className="text-xl font-bold mb-3">Best fit for</h2>
               <p className="text-slate-muted leading-relaxed">{service.targetAudience}</p>
-              <p className="mt-4 text-sm text-slate-muted">This is advisory and technical product leadership work. Hands-on implementation is scoped separately based on capacity, access, and the approved engagement.</p>
+              <p className="mt-4 text-sm text-slate-muted">The proposal defines responsibilities, deliverables, acceptance criteria, and exclusions. Advisory, hands-on implementation, and ongoing support are agreed explicitly. Maintenance and operational support require a separate scope unless included in the proposal.</p>
             </section>
 
             <section>
@@ -87,8 +88,8 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
                   </div>
                 ))}
               </div>
-              <Link 
-                href="/book" 
+              <Link
+                href="/book"
                 className="btn-primary block text-center w-full mt-10"
               >
                 {service.ctaText}
@@ -99,4 +100,10 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
       </div>
     </main>
   );
+}
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const service = await getManagedService(slug);
+  return service ? pageMetadata(service.metaTitle || service.title, service.metaDescription || service.shortDescription, `/services/${service.slug}`) : {};
 }

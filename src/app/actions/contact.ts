@@ -34,20 +34,23 @@ async function sendLeadEmails(data: z.infer<typeof inquirySchema>) {
   const apiKey = process.env.RESEND_API_KEY;
   const businessEmail = process.env.BUSINESS_EMAIL;
   const fromEmail = process.env.RESEND_FROM_EMAIL;
-  if (!apiKey || !businessEmail || !fromEmail || apiKey.includes("demo_")) return;
+  if (!apiKey || !businessEmail || !fromEmail || apiKey.includes("demo_")) return false;
 
   const headers = { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" };
-  const payload = (to: string, subject: string, html: string) => ({ from: fromEmail, to: [to], subject, html });
-  const summary = `<p><strong>${data.name}</strong> from <strong>${data.company}</strong> submitted an inquiry for <strong>${data.service}</strong>.</p><p>${data.challenge}</p>`;
+  const payload = (to: string, subject: string, text: string) => ({ from: fromEmail, to: [to], reply_to: data.email, subject, text });
+  const summary = `Name: ${data.name}\nCompany: ${data.company}\nEmail: ${data.email}\nWebsite: ${data.website}\nService: ${data.service}\nTimeline: ${data.timeline}\nBudget: ${data.budget}\n\n${data.challenge}`;
 
   try {
     const responses = await Promise.all([
-      fetch("https://api.resend.com/emails", { method: "POST", headers, body: JSON.stringify(payload(businessEmail, `New consulting inquiry from ${data.company}`, summary)) }),
-      fetch("https://api.resend.com/emails", { method: "POST", headers, body: JSON.stringify(payload(data.email, "We received your consulting inquiry", `<p>Thanks for reaching out. Your inquiry has been received and will be reviewed shortly.</p>`)) }),
+      fetch("https://api.resend.com/emails", { method: "POST", headers, signal: AbortSignal.timeout(10_000), body: JSON.stringify(payload(businessEmail, `New consulting inquiry from ${data.company}`, summary)) }),
+      fetch("https://api.resend.com/emails", { method: "POST", headers, signal: AbortSignal.timeout(10_000), body: JSON.stringify(payload(data.email, "We received your consulting inquiry", "Thanks for reaching out. Your inquiry has been received and will be reviewed shortly.")) }),
     ]);
-    if (responses.some((response) => !response.ok)) console.error("Lead email notification was rejected by the provider.");
+    const delivered = responses.every((response) => response.ok);
+    if (!delivered) console.error("Lead email notification was rejected by the provider.");
+    return delivered;
   } catch {
     console.error("Lead email notification could not be sent.");
+    return false;
   }
 }
 
@@ -88,6 +91,7 @@ export async function submitInquiry(formData: FormData): Promise<ActionResult> {
     };
   }
   const data = parsed.data;
+  for (const [key, timestamp] of recentSubmissions) if (Date.now() - timestamp > 60_000) recentSubmissions.delete(key);
   const rateKey = data.email.toLowerCase();
   const lastSubmission = recentSubmissions.get(rateKey) ?? 0;
   if (Date.now() - lastSubmission < 60_000) return { success: false, message: "Please wait a minute before submitting another inquiry." };
@@ -102,6 +106,9 @@ export async function submitInquiry(formData: FormData): Promise<ActionResult> {
   }
 
   try {
+    const recent = await prisma.lead.findFirst({ where: { email: { equals: data.email, mode: "insensitive" }, createdAt: { gte: new Date(Date.now() - 60_000) } }, select: { id: true } });
+    if (recent) return { success: false, message: "Please wait a minute before submitting another inquiry." };
+    recentSubmissions.set(rateKey, Date.now());
     const lead = await prisma.lead.create({
       data: {
         name: data.name,
@@ -118,7 +125,8 @@ export async function submitInquiry(formData: FormData): Promise<ActionResult> {
     });
     recentSubmissions.set(rateKey, Date.now());
     await prisma.auditEvent.create({ data: { action: "lead.created", target: lead.id, metadata: { source: "website-contact-form", service: data.service } } }).catch(() => undefined);
-    await sendLeadEmails(data);
+    const notified = await sendLeadEmails(data);
+    await prisma.auditEvent.create({ data: { action: notified ? "lead.notification_sent" : "lead.notification_failed", target: lead.id } }).catch(() => undefined);
     return { success: true, message: "Your inquiry has been received. We will be in touch shortly." };
   } catch (error) {
     console.error("Lead persistence failed.", error instanceof Error ? error.message : "Unknown database error");

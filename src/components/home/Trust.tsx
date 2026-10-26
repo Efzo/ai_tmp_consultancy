@@ -12,12 +12,12 @@ interface TrustProps {
 
 export default async function Trust({ content }: TrustProps) {
   const logosData = await getTrustLogos();
-  
+
   // Handle legacy data (string array) or current data (object array)
-  const logos = Array.isArray(logosData) 
-    ? logosData.map((item, idx) => 
-        typeof item === 'string' 
-          ? { name: item, logoUrl: '/logo_pack/logo.png' } 
+  const logos = Array.isArray(logosData)
+    ? logosData.map((item) =>
+        typeof item === 'string'
+          ? { name: item, logoUrl: '/logo_pack/logo.png' }
           : item
       )
     : [];
@@ -35,11 +35,11 @@ export default async function Trust({ content }: TrustProps) {
           <div className="flex flex-wrap justify-center gap-10 opacity-70 grayscale hover:grayscale-0 transition-all">
              {logos.map((logo, idx) => (
                <div key={idx} className="relative h-10 w-32 transition-all hover:opacity-100">
-                 <Image 
-                   src={logo.logoUrl} 
-                   alt={logo.name} 
-                   fill 
-                   className="object-contain" 
+                 <Image
+                   src={logo.logoUrl}
+                   alt={logo.name}
+                   fill
+                   className="object-contain"
                    sizes="128px"
                  />
                </div>

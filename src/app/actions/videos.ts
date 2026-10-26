@@ -19,7 +19,7 @@ const videoSchema = z.object({
 async function requireRole(roles: Array<"OWNER" | "EDITOR"> = ["OWNER", "EDITOR"]) {
   const session = await getServerSession(authOptions);
   const role = (session?.user as { role?: string })?.role;
-  if (!role || !roles.includes(role as any)) throw new Error("Unauthorized");
+  if (!role || !roles.some((allowed) => allowed === role)) throw new Error("Unauthorized");
 }
 
 export async function saveVideoInsight(input: unknown) {
@@ -37,8 +37,8 @@ export async function saveVideoInsight(input: unknown) {
     revalidatePath("/");
     revalidatePath("/admin/videos");
     return { success: true, message: "Video insight saved." };
-  } catch (e: any) {
-    return { success: false, message: e.message || "Database error. Please ensure the VideoInsight table is created." };
+  } catch {
+    return { success: false, message: "The video could not be saved. Check database configuration." };
   }
 }
 
@@ -49,8 +49,8 @@ export async function deleteVideoInsight(id: string) {
     revalidatePath("/");
     revalidatePath("/admin/videos");
     return { success: true, message: "Video insight deleted." };
-  } catch (e: any) {
-    return { success: false, message: e.message || "Deletion failed." };
+  } catch {
+    return { success: false, message: "Deletion failed." };
   }
 }
 

@@ -7,7 +7,7 @@ import { put } from "@vercel/blob";
 
 export async function getMediaAssets() {
   const session = await getServerSession(authOptions);
-  if (!session) throw new Error("Unauthorized");
+  if (!session || !["OWNER", "EDITOR"].includes((session.user as { role?: string })?.role ?? "")) throw new Error("Unauthorized");
 
   try {
     return await prisma.mediaAsset.findMany({
@@ -21,10 +21,11 @@ export async function getMediaAssets() {
 
 export async function uploadMediaAsset(formData: FormData) {
   const session = await getServerSession(authOptions);
-  if (!session) throw new Error("Unauthorized");
+  if (!session || !["OWNER", "EDITOR"].includes((session.user as { role?: string })?.role ?? "")) throw new Error("Unauthorized");
 
   const file = formData.get("file") as File;
-  if (!file) throw new Error("No file provided");
+  if (!(file instanceof File)) throw new Error("No file provided");
+  if (file.size > 10 * 1024 * 1024 || !/^(image\/(png|jpeg|webp|gif|avif)|video\/(mp4|webm))$/.test(file.type)) return { success: false, message: "Choose a supported image or video under 10MB." };
 
   try {
     // Upload to Vercel Blob
@@ -47,8 +48,8 @@ export async function uploadMediaAsset(formData: FormData) {
     });
 
     return { success: true, asset };
-  } catch (e: any) {
+  } catch (e) {
     console.error("Upload error:", e);
-    return { success: false, message: e.message || "Upload failed" };
+    return { success: false, message: e instanceof Error ? e.message : "Upload failed" };
   }
 }

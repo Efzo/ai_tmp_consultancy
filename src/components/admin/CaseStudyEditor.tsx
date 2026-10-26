@@ -1,35 +1,37 @@
 "use client";
 
+import CaseImageUpload from "./CaseImageUpload";
 import { useState } from "react";
 import { saveCaseStudy, deleteCaseStudy } from "@/app/actions/cms";
-import type { CaseStudy } from "@prisma/client";
+import type { CaseStudy } from "@/types";
+import { emptyCaseDetails } from "@/lib/case-details";
 
 export default function CaseStudyEditor({ studies }: { studies: CaseStudy[] }) {
   const [rows, setRows] = useState<Partial<CaseStudy>[]>(studies);
   const [message, setMessage] = useState("");
   const [saving, setSaving] = useState(false);
 
-  const update = (index: number, key: keyof CaseStudy, value: any) => 
+  const update = (index: number, key: keyof CaseStudy, value: CaseStudy[keyof CaseStudy]) =>
     setRows((current) => current.map((study, studyIndex) => studyIndex === index ? { ...study, [key]: value } : study));
 
   const add = () => {
-    setRows((current) => [...current, { 
-      slug: `case-study-${current.length + 1}`, 
-      title: "New case study", 
-      category: "Custom Software Engineering", 
-      summary: "Short summary of the project.", 
-      businessProblem: "What was the core challenge?", 
-      role: "Architect / Lead", 
-      requirements: "What were the main requirements?", 
-      architecture: "How was the system designed?", 
-      stack: [], 
-      implementation: "How was it implemented?", 
-      challenges: "What were the trade-offs?", 
-      outcomes: "What were the results?", 
-      images: [], 
-      relatedServices: [], 
-      isPublished: false, 
-      status: "DRAFT" 
+    setRows((current) => [...current, {
+      slug: `case-study-${current.length + 1}`,
+      title: "New case study",
+      category: "Custom Software Engineering",
+      summary: "Short summary of the project.",
+      businessProblem: "What was the core challenge?",
+      role: "Architect / Lead",
+      requirements: "What were the main requirements?",
+      architecture: "How was the system designed?",
+      stack: [],
+      implementation: "How was it implemented?",
+      challenges: "What were the trade-offs?",
+      outcomes: "What were the results?",
+      images: [],
+      relatedServices: [],
+      isPublished: false,
+      status: "DRAFT"
     }]);
   };
 
@@ -122,6 +124,11 @@ export default function CaseStudyEditor({ studies }: { studies: CaseStudy[] }) {
             </label>
           </div>
 
+          <label className="block text-sm">Screenshot URLs, one per line<textarea rows={3} className="block w-full mt-2 p-3 bg-midnight border border-glass rounded" value={(study.images ?? []).join("\n")} onChange={(e) => update(index, "images", e.target.value.split("\n").filter(Boolean))} /></label>
+          <label className="block text-sm">Technical trade-offs<textarea className="block w-full mt-2 p-3 bg-midnight border border-glass rounded" value={study.details?.tradeoffs ?? ""} onChange={(e) => update(index, "details", { ...emptyCaseDetails, ...study.details, tradeoffs: e.target.value })} /></label>
+          <label className="block text-sm">Product features, one per line<textarea className="block w-full mt-2 p-3 bg-midnight border border-glass rounded" value={(study.details?.features ?? []).join("\n")} onChange={(e) => update(index, "details", { ...emptyCaseDetails, ...study.details, features: e.target.value.split("\n").filter(Boolean) })} /></label>
+          <label className="block text-sm">Lessons learned<textarea className="block w-full mt-2 p-3 bg-midnight border border-glass rounded" value={study.details?.lessons ?? ""} onChange={(e) => update(index, "details", { ...emptyCaseDetails, ...study.details, lessons: e.target.value })} /></label>
+          <CaseImageUpload onUpload={(url) => update(index, "images", [...(study.images ?? []), url])} />
           <div className="flex items-center justify-between gap-4 border-t border-glass pt-4">
             <div className="flex items-center gap-4">
               <label className="flex items-center gap-2 text-sm text-slate-muted cursor-pointer">
@@ -144,7 +151,7 @@ export default function CaseStudyEditor({ studies }: { studies: CaseStudy[] }) {
           </div>
         </article>
       ))}
-      
+
       <div className="flex items-center justify-between gap-4 mt-8">
         <p className="text-sm text-cyan-ai">{message}</p>
       </div>

@@ -1,26 +1,5 @@
-import React from 'react';
-import Link from 'next/link';
-
-export default function FeaturedProject({ content }: { content: any }) {
-  return (
-    <section className="py-32 px-6">
-      <div className="max-w-6xl mx-auto">
-        <div className="glass-card overflow-hidden grid grid-cols-1 lg:grid-cols-2 gap-0 border-0">
-          <div className="p-12 flex flex-col justify-center">
-            <span className="text-xs font-bold tracking-widest uppercase text-electric mb-4 inline-block">{content.category}</span>
-            <h2 className="text-4xl font-bold mb-6 tracking-tight">{content.title}</h2>
-            <p className="text-slate-muted text-lg mb-8 leading-relaxed">
-              {content.description}
-            </p>
-            <Link href={`/case-studies/${content.slug}`} className="btn-primary w-fit">
-              {content.cta}
-            </Link>
-          </div>
-          <div className="bg-slate-800/50 min-h-[400px] relative flex items-center justify-center border-l border-electric/10">
-            <div className="text-slate-500 italic">Project Mockup / Screenshot</div>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
+import Link from "next/link";
+import Image from "next/image";
+export default function FeaturedProject({ content, image }: { content: { category: string; title: string; description: string; cta: string; slug: string }; image?: { url: string; alt: string } }) {
+  return <section className="section-shell"><div className="section-inner grid items-center gap-10 lg:grid-cols-2"><div><span className="section-eyebrow mb-5">{content.category}</span><h2 className="section-title">{content.title}</h2><p className="section-intro mb-7">{content.description}</p><Link href={`/case-studies/${content.slug}`} className="btn-secondary">{content.cta}<span aria-hidden="true">↗</span></Link></div><div className="project-overview overflow-hidden">{image ? <Image src={image.url} alt={image.alt} width={1000} height={750} unoptimized className="h-auto w-full object-contain" /> : <div className="p-6 md:p-10"><span className="section-eyebrow mb-8">Inside the case study</span><p className="mb-8 text-2xl font-semibold">{content.title}</p><ol className="space-y-5">{["The business problem", "Product objectives", "Architecture & implementation"].map((item, index) => <li key={item} className="flex gap-5 border-t border-glass pt-5"><span className="text-xs text-slate-muted">0{index + 1}</span><span>{item}</span></li>)}</ol><p className="mt-8 text-xs text-slate-muted">Project reading guide</p></div>}</div></div></section>;
 }

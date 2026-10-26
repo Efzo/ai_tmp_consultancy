@@ -1,0 +1,85 @@
+{
+  "hero": {
+    "title": "From Product Strategy to Production-Ready Software",
+    "subheadline": "I help startups and businesses plan, build, and scale digital products\u2014from product discovery and custom software engineering to AI automation and cloud architecture.",
+    "primaryCta": "Book a Discovery Call",
+    "primaryHref": "/book",
+    "secondaryCta": "Explore Services",
+    "contactCta": "Contact",
+    "contactHref": "/contact"
+  },
+  "pillars": {
+    "title": "Four Ways I Can Help",
+    "subheadline": "Define the product, build the software, and make informed technical decisions."
+  },
+  "problems": {
+    "title": "Problems I Solve",
+    "items": [
+      "You have a product idea but need clear requirements and an MVP scope.",
+      "Manual workflows and disconnected tools are slowing your business down.",
+      "Your team needs engineering capacity to build a custom application or integration.",
+      "You need product leadership or an architecture review before your next investment."
+    ]
+  },
+  "process": {
+    "title": "How I Work",
+    "subheadline": "Discover \u2192 Design \u2192 Build \u2192 Launch \u2192 Improve. Each engagement has an agreed scope, review points, and clear responsibilities."
+  },
+  "featured": {
+    "category": "Featured Work",
+    "title": "ClinchDesk",
+    "description": "A multi-tenant customer support SaaS platform with ticket management, role-based access control, customer portals, SLA workflows, knowledge management, and AI-assisted support.",
+    "cta": "View Case Study",
+    "slug": "clinchdesk"
+  },
+  "engagements": {
+    "title": "How You Can Hire Me",
+    "subheadline": "Start with discovery, scope a build, or bring in ongoing technical product leadership."
+  },
+  "differentiator": {
+    "title": "Why Work With Me",
+    "text": "Product decisions and engineering decisions belong in the same conversation. My work connects requirements, architecture, and implementation. Explore ClinchDesk for an example of the product scope, and use a discovery call to assess the fit for your project."
+  },
+  "insights": {
+    "title": "Product & Technology Insights"
+  },
+  "faq": {
+    "title": "Common Questions",
+    "items": [
+      {
+        "q": "Can you help define an MVP?",
+        "a": "Yes. Discovery engagements clarify requirements, priorities, feasibility, and a delivery roadmap before a build is scoped."
+      },
+      {
+        "q": "Do you build software as well as advise?",
+        "a": "Yes. Custom engineering includes hands-on implementation. Advisory provides recommendations and designs; the proposal makes the distinction explicit."
+      },
+      {
+        "q": "Is AI required for every project?",
+        "a": "No. AI is one capability. The solution should fit the business problem, whether that needs custom software, integrations, automation, or product leadership."
+      },
+      {
+        "q": "Is ongoing maintenance included?",
+        "a": "Support, maintenance, and operational responsibilities are agreed separately or explicitly included in the proposal. A product advisory retainer does not imply on-call engineering support."
+      }
+    ]
+  },
+  "finalCta": {
+    "title": "Let\u2019s discuss what your business needs next.",
+    "text": "Bring your product idea, delivery challenge, or technology question. We will explore the scope and practical next steps.",
+    "cta": "Book a Discovery Call",
+    "href": "/book"
+  },
+  "sections": [
+    "hero",
+    "pillars",
+    "problems",
+    "process",
+    "featured",
+    "engagements",
+    "differentiator",
+    "insights",
+    "faq",
+    "finalCta"
+  ]
+}

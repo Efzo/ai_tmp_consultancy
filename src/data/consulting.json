@@ -1,0 +1,190 @@
+{
+  "services": [
+    {
+      "slug": "technical-product-management",
+      "title": "Technical Product Management",
+      "shortDescription": "Turn a product idea or stalled roadmap into clear requirements, priorities, and a delivery plan.",
+      "fullDescription": "Turn a product idea or stalled roadmap into clear requirements, priorities, and a delivery plan. I work with your stakeholders and engineers to connect business decisions to buildable software.",
+      "targetAudience": "Founders, startups, and teams that need product direction or fractional technical product leadership.",
+      "problemsSolved": [
+        "Unclear MVP scope",
+        "Competing priorities",
+        "Requirements that cause rework",
+        "Product and engineering misalignment"
+      ],
+      "deliverables": [
+        "Discovery findings and product requirements document",
+        "Prioritized MVP scope and roadmap",
+        "Backlog and acceptance criteria",
+        "Stakeholder updates and product review framework"
+      ],
+      "engagementProcess": [
+        "Discover goals and constraints",
+        "Align stakeholders",
+        "Define requirements and priorities",
+        "Coordinate delivery",
+        "Review outcomes"
+      ],
+      "ctaText": "Book a Discovery Call"
+    },
+    {
+      "slug": "software-engineering",
+      "title": "Custom Software Engineering",
+      "shortDescription": "Build a custom web application, backend, or integration around your business workflows.",
+      "fullDescription": "Build a custom web application, backend, or integration around your business workflows. This is hands-on implementation, with architecture, testing, deployment preparation, documentation, and handover included in the agreed scope.",
+      "targetAudience": "Founders and businesses needing a new application, an MVP, or improvements to existing software.",
+      "problemsSolved": [
+        "Manual workflows",
+        "Disconnected systems",
+        "An MVP that needs implementation",
+        "Software that is difficult to maintain"
+      ],
+      "deliverables": [
+        "Solution design and working application code",
+        "APIs, integrations, and database implementation",
+        "Tests and deployment configuration",
+        "Documentation and handover"
+      ],
+      "engagementProcess": [
+        "Discover requirements",
+        "Agree architecture and milestones",
+        "Build and review increments",
+        "Test and prepare deployment",
+        "Handover and agree support"
+      ],
+      "ctaText": "Book a Discovery Call"
+    },
+    {
+      "slug": "ai-solutions",
+      "title": "AI Solutions & Automation",
+      "shortDescription": "Assess where AI or workflow automation can help, then design and implement the agreed solution.",
+      "fullDescription": "Assess where AI or workflow automation can help, then design and implement the agreed solution. Work can include support assistance, knowledge retrieval, and system integrations, with evaluation and human review appropriate to the use case.",
+      "targetAudience": "Businesses with repetitive workflows or a defined AI use case and access to suitable data.",
+      "problemsSolved": [
+        "Repetitive manual work",
+        "Information spread across systems",
+        "Unvalidated AI opportunities",
+        "Unreliable AI outputs"
+      ],
+      "deliverables": [
+        "Use-case and data feasibility assessment",
+        "Automation design or implementation as agreed",
+        "Integration and evaluation plan",
+        "Guardrails, operating documentation, and handover"
+      ],
+      "engagementProcess": [
+        "Identify a business problem",
+        "Review data and privacy constraints",
+        "Prototype and evaluate",
+        "Implement the agreed scope",
+        "Monitor and improve"
+      ],
+      "ctaText": "Book a Discovery Call"
+    },
+    {
+      "slug": "software-architecture",
+      "title": "Software Architecture & Technical Advisory",
+      "shortDescription": "Make informed decisions about system design, APIs, data, cloud infrastructure, and modernization.",
+      "fullDescription": "Make informed decisions about system design, APIs, data, cloud infrastructure, and modernization. Advisory engagements provide designs and recommendations; implementation and ongoing operational support are separate, explicitly scoped options.",
+      "targetAudience": "Founders, CTOs, and engineering teams designing a platform or reviewing an existing system.",
+      "problemsSolved": [
+        "Unclear architecture decisions",
+        "Integration complexity",
+        "Modernization risk",
+        "Scaling and maintainability concerns"
+      ],
+      "deliverables": [
+        "Architecture assessment and diagrams",
+        "Technical trade-off and risk register",
+        "API, data, and cloud recommendations",
+        "Prioritized implementation roadmap"
+      ],
+      "engagementProcess": [
+        "Assess the current system",
+        "Clarify requirements and constraints",
+        "Compare design options",
+        "Review trade-offs",
+        "Handover recommendations"
+      ],
+      "ctaText": "Book a Discovery Call"
+    }
+  ],
+  "engagements": [
+    {
+      "slug": "product-discovery-sprint",
+      "name": "Product Discovery Sprint",
+      "description": "For founders and teams with an idea, unclear requirements, or competing priorities. Resolve scope uncertainty before committing to a build. A fixed-scope engagement combines discovery sessions, written requirements, and a roadmap review; scope and schedule are agreed after discovery.",
+      "features": [
+        "Requirements discovery",
+        "Stakeholder alignment",
+        "Product requirements document",
+        "MVP scope and prioritization",
+        "Technical feasibility review",
+        "Delivery roadmap"
+      ],
+      "type": "FIXED",
+      "price": "",
+      "ctaText": "Book a Discovery Call",
+      "relatedServices": [],
+      "isPublished": true
+    },
+    {
+      "slug": "custom-engineering",
+      "name": "Custom Engineering Engagement",
+      "description": "For businesses that need a custom application, MVP, or integration implemented. Turn an agreed product scope into working software through reviewed delivery milestones. Scope, acceptance criteria, dependencies, deployment responsibilities, and support are agreed in the proposal.",
+      "features": [
+        "Solution architecture",
+        "Custom web application development",
+        "API and third-party integrations",
+        "Database and backend engineering",
+        "Testing and deployment preparation",
+        "Documentation and handover"
+      ],
+      "type": "FIXED",
+      "price": "",
+      "ctaText": "Book a Discovery Call",
+      "relatedServices": [],
+      "isPublished": true
+    },
+    {
+      "slug": "fractional-technical-product-management",
+      "name": "Fractional Technical Product Management",
+      "description": "For growing teams that need technical product leadership without a full-time hire. Address backlog uncertainty, delivery coordination, and stakeholder alignment through a retainer with an agreed allocation, meeting cadence, responsibilities, and review cycle.",
+      "features": [
+        "Product strategy and roadmaps",
+        "Backlog management and prioritization",
+        "Engineering coordination",
+        "Stakeholder communication",
+        "Delivery oversight",
+        "Product performance reviews"
+      ],
+      "type": "RETAINER",
+      "price": "",
+      "ctaText": "Book a Discovery Call",
+      "relatedServices": [],
+      "isPublished": true
+    }
+  ],
+  "caseStudy": {
+    "slug": "clinchdesk",
+    "title": "ClinchDesk",
+    "summary": "A multi-tenant customer support SaaS platform combining ticket management, role-based access, customer portals, SLA workflows, knowledge management, and AI-assisted support.",
+    "category": "Customer Support SaaS",
+    "businessProblem": "Customer support needs coordinated ticket handling, customer access, service-level workflows, and reusable knowledge within each organization. ClinchDesk brings these workflows together in a multi-tenant product.",
+    "role": "Product and engineering work on ClinchDesk; a detailed account of responsibilities is pending verification against the project repository.",
+    "requirements": "Bring ticket management, role-based access control, customer portals, SLA workflows, knowledge management, and AI-assisted support into one multi-tenant support platform.",
+    "architecture": "Multi-tenant SaaS with role-based access control and customer-facing portals. Infrastructure choices, tenant isolation mechanisms, and AI provider details require confirmation from the project repository.",
+    "stack": [],
+    "implementation": "The product brings support ticket workflows, customer portals, service-level processes, and knowledge management together, with AI-assisted support as one capability. A code-level implementation walkthrough is pending verification against the ClinchDesk repository.",
+    "challenges": "Tenant boundaries and role permissions need review across support workflows. AI assistance requires evaluation and human oversight. Specific implementation challenges and resolutions have not yet been verified.",
+    "outcomes": "The documented feature scope is a multi-tenant customer support platform. Customer adoption, revenue, performance measurements, deployment status, and project lessons are not asserted here; they require supporting evidence.",
+    "images": [],
+    "relatedServices": [
+      "software-engineering",
+      "technical-product-management",
+      "ai-solutions"
+    ],
+    "status": "PUBLISHED",
+    "isPublished": true
+  }
+}

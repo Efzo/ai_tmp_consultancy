@@ -1,3 +1,5 @@
+import { getManagedPageContent, managedPageMetadata } from "@/lib/managed-pages";
+import PagePreviewBanner from "@/components/admin/PagePreviewBanner";
 import React from 'react';
 import Link from 'next/link';
 import { getCaseStudies } from '@/lib/case-studies';
@@ -5,24 +7,20 @@ import { getCaseStudies } from '@/lib/case-studies';
 export const dynamic = "force-dynamic";
 
 export default async function CaseStudiesPage() {
+  const content = await getManagedPageContent("case-studies");
   const caseStudies = await getCaseStudies();
-  
+
   return (
-    <main className="min-h-screen bg-midnight text-platinum pt-32 pb-20 px-6">
+    <main className="min-h-screen bg-midnight text-platinum pt-36 pb-20 px-6"><PagePreviewBanner slug="case-studies" />
       <div className="max-w-6xl mx-auto">
-        <section className="text-center mb-20">
-          <h1 className="text-4xl md:text-6xl font-bold mb-6 tracking-tight">
-            Proven <span className="text-electric">Outcomes</span>
-          </h1>
-          <p className="text-slate-muted text-xl max-w-3xl mx-auto">
-            A showcase of technical leadership and product strategy in action—moving 
-            from complex challenges to measurable business results.
-          </p>
+        <section className="text-center mb-12 md:mb-16">
+          <h1 className="text-4xl md:text-6xl font-semibold mb-6 tracking-tight">{content.title}</h1>
+          <p className="section-intro mx-auto">{content.description}</p>
         </section>
 
         {caseStudies.length === 0 ? (
           <div className="text-center py-20 glass-card">
-            <p className="text-slate-muted text-lg">No case studies published yet.</p>
+            <p className="text-slate-muted text-lg">{content.emptyText}</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -37,11 +35,11 @@ export default async function CaseStudiesPage() {
                 <p className="text-slate-muted mb-8 flex-grow leading-relaxed">
                   {study.summary}
                 </p>
-                <Link 
-                  href={`/case-studies/${study.slug}`} 
+                <Link
+                  href={`/case-studies/${study.slug}`}
                   className="btn-secondary text-center w-full"
                 >
-                  Read Case Study
+                  {content.itemCta}
                 </Link>
               </div>
             ))}
@@ -51,3 +49,6 @@ export default async function CaseStudiesPage() {
     </main>
   );
 }
+
+
+export async function generateMetadata() { return managedPageMetadata("case-studies"); }

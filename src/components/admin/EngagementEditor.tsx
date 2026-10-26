@@ -9,18 +9,18 @@ export default function EngagementEditor({ models }: { models: EngagementModel[]
   const [message, setMessage] = useState("");
   const [saving, setSaving] = useState(false);
 
-  const update = (index: number, key: keyof EngagementModel, value: any) => 
+  const update = (index: number, key: keyof EngagementModel, value: EngagementModel[keyof EngagementModel]) =>
     setRows((current) => current.map((m, idx) => idx === index ? { ...m, [key]: value } : m));
 
-  const add = () => setRows((current) => [...current, { 
-    slug: `engagement-${current.length + 1}`, 
-    name: "New Engagement", 
-    description: "Detailed description of the offering.", 
-    price: "Custom", 
-    features: [], 
-    type: "FIXED", 
-    ctaText: "Request Proposal", 
-    isPublished: false 
+  const add = () => setRows((current) => [...current, {
+    slug: `engagement-${current.length + 1}`,
+    name: "New Engagement",
+    description: "Detailed description of the offering.",
+    price: "Custom",
+    features: [],
+    type: "FIXED",
+    ctaText: "Request Proposal",
+    isPublished: false
   }]);
 
   const remove = async (index: number) => {
@@ -53,10 +53,10 @@ export default function EngagementEditor({ models }: { models: EngagementModel[]
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <h2 className="text-lg font-semibold">Engagement Models</h2>
-          <p className="mt-1 text-sm text-slate-muted">Define your offerings, pricing, and features.</p>
+          <h2 className="text-lg font-semibold">Ways to Work Together</h2>
+          <p className="mt-1 text-sm text-slate-muted">Define audience, problems, structure, and deliverables. Prices are private reference notes; public pricing visibility is managed under Consulting Packages.</p>
         </div>
-        <button type="button" onClick={add} className="btn-secondary">Add Model</button>
+        <button type="button" onClick={add} className="btn-secondary">Add engagement</button>
       </div>
 
       {rows.map((model, index) => (

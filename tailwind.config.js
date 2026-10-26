@@ -16,7 +16,7 @@ module.exports = {
           ai: "rgb(var(--cyan-ai-rgb) / <alpha-value>)",
         },
         platinum: "rgb(var(--platinum-rgb) / <alpha-value>)",
-        glass: "rgba(255,255,255,0.12)",
+        glass: "var(--glass-border)",
       },
       backgroundImage: {
         'glass-gradient': 'linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05))',

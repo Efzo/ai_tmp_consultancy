@@ -6,5 +6,5 @@ export const dynamic = "force-dynamic";
 
 export default async function NavigationAdminPage() {
   const items = await getNavigationItems();
-  return <AdminModule title="Website navigation" description="Manage the public navbar links across desktop and mobile layouts." status={`${items.length} links`}><NavigationEditor items={items} /></AdminModule>;
+  return <AdminModule title="Menu Links" description="Manage the public navbar links across desktop and mobile layouts." status={`${items.length} links`}><NavigationEditor items={items} /></AdminModule>;
 }

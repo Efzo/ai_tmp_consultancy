@@ -6,5 +6,5 @@ export const dynamic = "force-dynamic";
 
 export default async function TestimonialsAdminPage() {
   const testimonials = await getTestimonials();
-  return <AdminModule title="Testimonials" description="Manage approved client feedback and decide which quotes appear on the homepage." status={`${testimonials.filter((item) => item.isPublished).length} published`}><TestimonialEditor testimonials={testimonials} /></AdminModule>;
+  return <AdminModule title="Client Testimonials" description="Manage approved client feedback and decide which quotes appear on the homepage." status={`${testimonials.filter((item) => item.isPublished).length} published`}><TestimonialEditor testimonials={testimonials} /></AdminModule>;
 }

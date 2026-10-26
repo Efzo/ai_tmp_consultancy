@@ -9,5 +9,5 @@ import type { FooterSettings, NavigationItem } from "@/lib/site-settings";
 export default function PublicChrome({ children, footerSettings, navigationItems }: { children: ReactNode; footerSettings: FooterSettings; navigationItems: NavigationItem[] }) {
   const pathname = usePathname();
   if (pathname.startsWith("/admin")) return <>{children}</>;
-  return <><Navbar items={navigationItems} /><main>{children}</main><Footer settings={footerSettings} /></>;
+  return <div className="public-site"><a href="#main-content" className="skip-link">Skip to content</a><Navbar items={navigationItems} /><div id="main-content" tabIndex={-1}>{children}</div><Footer settings={footerSettings} /></div>;
 }

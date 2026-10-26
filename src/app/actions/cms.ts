@@ -11,6 +11,10 @@ import { consumeDemoResetToken, createDemoResetToken, setDemoPassword } from "@/
 import { footerSettingDefaults, setDemoSiteSetting } from "@/lib/site-settings";
 import { sanitizeRichText } from "@/lib/rich-text";
 import { revalidatePath } from "next/cache";
+import { homeSchema } from "@/lib/home-content";
+import { caseDetailsSchema } from "@/lib/case-details";
+import { isManagedPageSlug } from "@/lib/page-content-schema";
+import consulting from "@/data/consulting.json";
 
 const pageSchema = z.object({
   id: z.string().optional(),
@@ -18,13 +22,17 @@ const pageSchema = z.object({
   title: z.string().trim().min(2).max(160),
   metaTitle: z.string().trim().max(160).optional(),
   metaDescription: z.string().trim().max(320).optional(),
-  content: z.array(z.object({ id: z.string(), type: z.enum(["hero", "rich-text", "services", "cta"]), title: z.string(), visible: z.boolean() })),
+  content: z.union([homeSchema, z.array(z.object({ id: z.string(), type: z.enum(["hero", "rich-text", "services", "cta"]), title: z.string(), visible: z.boolean() }))]),
 });
 const blogSchema = z.object({ id: z.string().optional(), slug: z.string().trim().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/), title: z.string().trim().min(2).max(180), excerpt: z.string().trim().min(10).max(500), content: z.string().trim().min(20).max(50000), category: z.string().trim().min(2).max(80) });
 
 async function requireRole(roles: Array<"OWNER" | "EDITOR" | "VIEWER"> = ["OWNER", "EDITOR"]) {
   const session = await getServerSession(authOptions);
-  const role = (session?.user as { role?: "OWNER" | "EDITOR" | "VIEWER" } | undefined)?.role;
+  let role = (session?.user as { role?: "OWNER" | "EDITOR" | "VIEWER" } | undefined)?.role;
+  if (dbReady()) {
+    const user = session?.user?.email ? await prisma.user.findUnique({ where: { email: session.user.email } }) : null;
+    role = user?.role;
+  }
   if (!role || !roles.includes(role)) throw new Error("Unauthorized");
   return { session, role };
 }
@@ -46,6 +54,7 @@ export async function savePageDraft(input: unknown) {
   const parsed = pageSchema.safeParse(input);
   if (!parsed.success) return { success: false, message: "The page content is invalid." };
   const data = parsed.data;
+  if (isManagedPageSlug(data.slug)) return { success: false, message: "Use the connected website page editor to save this page." };
   const content = data.content as Prisma.InputJsonValue;
   try {
     if (!data.id) {
@@ -70,7 +79,21 @@ export async function savePageDraft(input: unknown) {
 export async function publishPage(pageId: string) {
   await requireRole(["OWNER", "EDITOR"]);
   if (!dbReady()) return { success: false, message: "Connect PostgreSQL before publishing." };
-  await prisma.page.update({ where: { id: pageId }, data: { status: "PUBLISHED", isPublished: true, publishedAt: new Date() } });
+  const page = await prisma.page.findUnique({ where: { id: pageId } });
+  if (!page) return { success: false, message: "Page not found." };
+  if (isManagedPageSlug(page.slug)) return { success: false, message: "Publish this page from its connected page editor." };
+  if (page.slug === "home") {
+    const parsed = homeSchema.safeParse(page.content);
+    if (!parsed.success) return { success: false, message: "Use the homepage editor to save complete homepage content before publishing." };
+    await prisma.$transaction([
+      prisma.siteSetting.upsert({ where: { key: "homepage.seo" }, create: { key: "homepage.seo", value: { title: page.metaTitle, description: page.metaDescription } }, update: { value: { title: page.metaTitle, description: page.metaDescription } } }),
+      prisma.siteSetting.upsert({ where: { key: "homepage.published" }, create: { key: "homepage.published", value: parsed.data }, update: { value: parsed.data } }),
+      prisma.page.update({ where: { id: pageId }, data: { status: "PUBLISHED", isPublished: true, publishedAt: new Date() } }),
+    ]);
+  } else {
+    await prisma.page.update({ where: { id: pageId }, data: { status: "PUBLISHED", isPublished: true, publishedAt: new Date() } });
+  }
+  revalidatePath("/", "layout");
   await audit("page.published", pageId);
   return { success: true, message: "Page published." };
 }
@@ -80,9 +103,10 @@ export async function restorePageVersion(pageId: string, versionId: string) {
   if (!dbReady()) return { success: false, message: "Connect PostgreSQL before restoring a version." };
   const [page, version] = await Promise.all([prisma.page.findUnique({ where: { id: pageId }, include: { versions: { orderBy: { version: "desc" }, take: 1 } } }), prisma.pageVersion.findUnique({ where: { id: versionId } })]);
   if (!page || !version || version.pageId !== page.id) return { success: false, message: "Version not found." };
+  if (isManagedPageSlug(page.slug)) return { success: false, message: "Restore this page from its connected page editor." };
   const nextVersion = (page.versions[0]?.version ?? 0) + 1;
   const restoredContent = version.content as Prisma.InputJsonValue;
-  await prisma.$transaction([prisma.page.update({ where: { id: pageId }, data: { title: version.title, content: restoredContent, metaTitle: version.metaTitle, metaDescription: version.metaDescription } }), prisma.pageVersion.create({ data: { pageId, version: nextVersion, title: version.title, content: restoredContent, metaTitle: version.metaTitle, metaDescription: version.metaDescription } })]);
+  await prisma.$transaction([prisma.page.update({ where: { id: pageId }, data: { title: version.title, content: restoredContent, metaTitle: version.metaTitle, metaDescription: version.metaDescription, status: "DRAFT", isPublished: false } }), prisma.pageVersion.create({ data: { pageId, version: nextVersion, title: version.title, content: restoredContent, metaTitle: version.metaTitle, metaDescription: version.metaDescription } })]);
   await audit("page.version_restored", pageId, { versionId });
   return { success: true, message: "Version restored as a new draft." };
 }
@@ -90,7 +114,7 @@ export async function restorePageVersion(pageId: string, versionId: string) {
 export async function updateService(input: unknown) {
   await requireRole(["OWNER", "EDITOR"]);
   if (!dbReady()) return { success: false, message: "Connect PostgreSQL before editing services." };
-  const parsed = z.object({ id: z.string(), title: z.string().min(2).max(160), shortDescription: z.string().min(10).max(500), fullDescription: z.string().min(10).max(4000), targetAudience: z.string().min(2).max(500), ctaText: z.string().min(2).max(80), price: z.string().max(80).nullable().optional(), isPublished: z.boolean() }).safeParse(input);
+  const parsed = z.object({ id: z.string(), title: z.string().min(2).max(160), shortDescription: z.string().min(10).max(500), fullDescription: z.string().min(10).max(4000), targetAudience: z.string().min(2).max(500), ctaText: z.string().min(2).max(80), price: z.string().max(80).nullable().optional(), isPublished: z.boolean(), problemsSolved: z.array(z.string().trim().max(300)).max(30).optional(), deliverables: z.array(z.string().trim().max(300)).max(30).optional(), engagementProcess: z.array(z.string().trim().max(300)).max(20).optional(), metaTitle: z.string().trim().max(160).nullable().optional(), metaDescription: z.string().trim().max(320).nullable().optional() }).safeParse(input);
   if (!parsed.success) return { success: false, message: "Service data is invalid." };
   const { id, ...serviceData } = parsed.data;
   const updated = await prisma.service.update({ where: { id }, data: serviceData });
@@ -117,7 +141,7 @@ export async function createService(input: unknown) {
   const parsed = serviceCreateSchema.safeParse(input);
   if (!parsed.success) return { success: false, message: "Service data is invalid." };
   try {
-    const service = await prisma.service.create({ data: { ...parsed.data, price: parsed.data.price || null, problemsSolved: [], deliverables: [], engagementProcess: [] } });
+    const service = await prisma.service.create({ data: { ...parsed.data, isPublished: false, price: parsed.data.price || null, problemsSolved: [], deliverables: [], engagementProcess: [] } });
     await audit("service.created", service.id);
     revalidatePath("/services");
     revalidatePath("/");
@@ -207,13 +231,13 @@ export async function updateSeoSettings(values: unknown) {
     ogImage: z.string().trim().url().or(z.string().trim().startsWith("/")),
   }).safeParse(values);
   if (!parsed.success) return { success: false, message: "SEO data is invalid." };
-  
+
   if (!dbReady()) {
     setDemoSiteSetting("seo.settings", JSON.stringify(parsed.data));
     revalidatePath("/", "layout");
     return { success: true, message: "SEO settings updated for this running server." };
   }
-  
+
   await prisma.siteSetting.upsert({
     where: { key: "seo.settings" },
     update: { value: parsed.data as Prisma.InputJsonValue },
@@ -231,18 +255,18 @@ export async function updateContactBudgetOptions(input: unknown) {
     label: z.string().trim().min(1).max(120),
   })).min(1).max(20).safeParse(input);
   if (!parsed.success) return { success: false, message: "Add between 1 and 20 valid budget options." };
-  
+
   const values = parsed.data.map((option) => option.value);
   if (new Set(values).size !== values.length || values.includes("custom")) {
     return { success: false, message: "Budget option values must be unique and cannot use the reserved custom value." };
   }
-  
+
   if (!dbReady()) {
     setDemoSiteSetting("contact.budgetOptions", JSON.stringify(parsed.data));
     revalidatePath("/contact");
     return { success: true, message: "Budget options updated for this running server." };
   }
-  
+
   await prisma.siteSetting.upsert({
     where: { key: "contact.budgetOptions" },
     update: { value: parsed.data as Prisma.InputJsonValue },
@@ -268,8 +292,8 @@ export async function updateNavigationItems(input: unknown) {
 
 export async function updatePricingPlans(input: unknown) {
   await requireRole(["OWNER", "EDITOR"]);
-  const parsed = z.array(z.object({ id: z.string().trim().min(1).max(80), name: z.string().trim().min(2).max(120), price: z.string().trim().min(1).max(80), description: z.string().trim().min(10).max(500), features: z.array(z.string().trim().min(1).max(160)).max(20), type: z.enum(["fixed", "retainer"]), cta: z.string().trim().min(2).max(80) })).min(1).max(12).safeParse(input);
-  if (!parsed.success) return { success: false, message: "Each package needs a name, price, description, type, CTA, and valid features." };
+  const parsed = z.array(z.object({ id: z.string().trim().min(1).max(80), name: z.string().trim().min(2).max(120), price: z.string().trim().max(80).default(""), showPrice: z.boolean().default(false), isPublished: z.boolean().default(true), addOns: z.array(z.string().trim().min(1).max(160)).max(20).default([]), description: z.string().trim().min(10).max(500), features: z.array(z.string().trim().min(1).max(160)).max(20), type: z.enum(["fixed", "milestone", "retainer"]), cta: z.string().trim().min(2).max(80) })).min(1).max(12).safeParse(input);
+  if (!parsed.success) return { success: false, message: "Each package needs a name, description, pricing model, CTA, and valid deliverables. Prices are optional." };
   const value = parsed.data;
   if (!dbReady()) setDemoSiteSetting("pricing.plans", JSON.stringify(value));
   else await prisma.siteSetting.upsert({ where: { key: "pricing.plans" }, update: { value: value as Prisma.InputJsonValue }, create: { key: "pricing.plans", value: value as Prisma.InputJsonValue } });
@@ -281,13 +305,14 @@ export async function updatePricingPlans(input: unknown) {
 export async function saveCaseStudy(input: unknown) {
   await requireRole(["OWNER", "EDITOR"]);
   if (!dbReady()) return { success: false, message: "Connect PostgreSQL before saving case studies." };
-  
+
   const parsed = z.object({
     id: z.string().optional(),
     slug: z.string().trim().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/),
     title: z.string().trim().min(2).max(180),
     summary: z.string().trim().min(10).max(600),
     category: z.string().trim().min(2).max(80),
+    details: caseDetailsSchema.optional(),
     businessProblem: z.string().trim().min(10).max(3000),
     role: z.string().trim().min(1).max(200),
     requirements: z.string().trim().min(1).max(2000),
@@ -296,25 +321,29 @@ export async function saveCaseStudy(input: unknown) {
     implementation: z.string().trim().min(10).max(5000),
     challenges: z.string().trim().min(10).max(3000),
     outcomes: z.string().trim().min(10).max(2000),
-    images: z.array(z.string().trim()).max(20),
+    images: z.array(z.string().trim().refine((url) => /^\/api\/media\/[a-z0-9-]+$/.test(url) || /^https:\/\//.test(url), "Use an HTTPS image URL or a managed image.")).max(20),
     relatedServices: z.array(z.string().trim()).max(10),
     isPublished: z.boolean(),
     status: z.enum(["DRAFT", "IN_REVIEW", "SCHEDULED", "PUBLISHED", "ARCHIVED"]),
   }).safeParse(input);
 
   if (!parsed.success) return { success: false, message: "Case study data is invalid. Please check all required fields." };
-  
-  const data = parsed.data;
+
+  const { details, ...fields } = parsed.data;
+  const data = { ...fields, title: parsed.data.title.replace(/clincddesk/ig, "ClinchDesk"), isPublished: parsed.data.isPublished && parsed.data.status === "PUBLISHED" };
+  revalidatePath("/", "layout");
   try {
     if (!data.id) {
       const study = await prisma.caseStudy.create({ data });
+      if (details) await prisma.siteSetting.upsert({ where: { key: `caseStudy.${study.id}.details` }, create: { key: `caseStudy.${study.id}.details`, value: details }, update: { value: details } });
       await audit("case_study.created", study.id);
       return { success: true, id: study.id, message: "Case study created." };
     }
     const study = await prisma.caseStudy.update({ where: { id: data.id }, data });
+    if (details) await prisma.siteSetting.upsert({ where: { key: `caseStudy.${study.id}.details` }, create: { key: `caseStudy.${study.id}.details`, value: details }, update: { value: details } });
     await audit("case_study.updated", data.id);
     return { success: true, id: study.id, message: "Case study updated." };
-  } catch (e) {
+  } catch {
     return { success: false, message: "Could not save case study. Ensure the slug is unique." };
   }
 }
@@ -324,21 +353,18 @@ export async function deleteCaseStudy(id: string) {
   if (!dbReady()) return { success: false, message: "Connect PostgreSQL before deleting case studies." };
   try {
     await prisma.caseStudy.delete({ where: { id } });
+    revalidatePath("/", "layout");
     await audit("case_study.deleted", id);
     return { success: true, message: "Case study deleted." };
-  } catch (e) {
+  } catch {
     return { success: false, message: "Could not delete case study." };
   }
-}
-
-export async function updateCaseStudies(input: unknown) {
-  return { success: false, message: "Please use saveCaseStudy for individual records." };
 }
 
 export async function saveEngagement(input: unknown) {
   await requireRole(["OWNER", "EDITOR"]);
   if (!dbReady()) return { success: false, message: "Connect PostgreSQL before saving engagement models." };
-  
+
   const parsed = z.object({
     id: z.string().optional(),
     slug: z.string().trim().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/),
@@ -357,13 +383,15 @@ export async function saveEngagement(input: unknown) {
   try {
     if (!data.id) {
       const model = await prisma.engagementModel.create({ data });
+      revalidatePath("/", "layout");
       await audit("engagement_model.created", model.id);
       return { success: true, id: model.id, message: "Engagement model created." };
     }
     const model = await prisma.engagementModel.update({ where: { id: data.id }, data });
+    revalidatePath("/", "layout");
     await audit("engagement_model.updated", data.id);
     return { success: true, id: model.id, message: "Engagement model updated." };
-  } catch (e) {
+  } catch {
     return { success: false, message: "Could not save engagement model. Ensure the slug is unique." };
   }
 }
@@ -373,9 +401,10 @@ export async function deleteEngagement(id: string) {
   if (!dbReady()) return { success: false, message: "Connect PostgreSQL before deleting engagement models." };
   try {
     await prisma.engagementModel.delete({ where: { id } });
+    revalidatePath("/", "layout");
     await audit("engagement_model.deleted", id);
     return { success: true, message: "Engagement model deleted." };
-  } catch (e) {
+  } catch {
     return { success: false, message: "Could not delete engagement model." };
   }
 }
@@ -406,6 +435,7 @@ export async function updateLead(input: unknown) {
 export async function updateUserRole(userId: string, role: "OWNER" | "EDITOR" | "VIEWER") {
   await requireRole(["OWNER"]);
   if (!dbReady()) return { success: false, message: "Connect PostgreSQL before managing users." };
+  if (!z.enum(["OWNER", "EDITOR", "VIEWER"]).safeParse(role).success || !userId) return { success: false, message: "Invalid user or role." };
   await prisma.user.update({ where: { id: userId }, data: { role } });
   await audit("user.role_updated", userId, { role });
   return { success: true, message: "Role updated." };
@@ -423,7 +453,7 @@ export async function requestPasswordReset(emailInput: string) {
   }
   if (!dbReady()) return { success: false, message: "If that account exists, a reset email will be sent." };
   const user = await prisma.user.findUnique({ where: { email } });
-  if (!user) return { success: false, message: "If that account exists, a reset email will be sent." };
+  if (!user) return { success: true, message: "If that account exists, a reset email will be sent." };
   const rawToken = randomBytes(32).toString("hex");
   const tokenHash = createHash("sha256").update(rawToken).digest("hex");
   await prisma.passwordResetToken.create({ data: { tokenHash, userId: user.id, expiresAt: new Date(Date.now() + 30 * 60 * 1000) } });
@@ -449,4 +479,48 @@ export async function resetPassword(tokenInput: string, passwordInput: string) {
   if (!resetToken || resetToken.usedAt || resetToken.expiresAt < new Date()) return { success: false, message: "This reset link is invalid or expired." };
   await prisma.$transaction([prisma.user.update({ where: { id: resetToken.userId }, data: { password: await bcrypt.hash(password, 12) } }), prisma.passwordResetToken.update({ where: { id: resetToken.id }, data: { usedAt: new Date() } })]);
   return { success: true, message: "Password updated. You can now sign in." };
+}
+
+export async function initializeConsultingContent() {
+  await requireRole(["OWNER"]);
+  if (!dbReady()) return { success: false, message: "Connect PostgreSQL and disable demo mode before importing content." };
+  await prisma.$transaction(async (tx) => {
+    await tx.siteSetting.upsert({ where: { key: "consulting.initialized" }, create: { key: "consulting.initialized", value: true }, update: {} });
+    for (const service of consulting.services) await tx.service.upsert({ where: { slug: service.slug }, update: {}, create: service });
+    for (const model of consulting.engagements) await tx.engagementModel.upsert({ where: { slug: model.slug }, update: {}, create: { ...model, type: model.type as "FIXED" | "RETAINER" } });
+    const existing = await tx.caseStudy.findFirst({ where: { OR: [{ slug: { contains: "clinch", mode: "insensitive" } }, { title: { contains: "clinc", mode: "insensitive" } }] } });
+    if (!existing) await tx.caseStudy.create({ data: { ...consulting.caseStudy, status: "PUBLISHED" } });
+    else if (/clincddesk/i.test(existing.title)) await tx.caseStudy.update({ where: { id: existing.id }, data: { title: existing.title.replace(/clincddesk/ig, "ClinchDesk") } });
+  });
+  await audit("consulting.initialized", "catalog");
+  revalidatePath("/", "layout");
+  return { success: true, message: "Missing consulting content added. Existing content and publication choices preserved." };
+}
+
+export async function archiveBlogPost(id: string) {
+  await requireRole();
+  if (!dbReady()) return { success: false, message: "Connect PostgreSQL before archiving articles." };
+  await prisma.blogPost.update({ where: { id }, data: { status: "ARCHIVED" } });
+  await audit("blog.archived", id);
+  revalidatePath("/", "layout");
+  return { success: true, message: "Article unpublished and archived." };
+}
+export async function deleteBlogPost(id: string) {
+  await requireRole(["OWNER"]);
+  if (!dbReady()) return { success: false, message: "Connect PostgreSQL before deleting articles." };
+  await prisma.blogPost.delete({ where: { id } });
+  await audit("blog.deleted", id);
+  revalidatePath("/", "layout");
+  return { success: true, message: "Article deleted." };
+}
+
+export async function updateContactDetails(input: unknown) {
+  await requireRole(["OWNER"]);
+  const parsed = z.object({ email: z.string().trim().email().or(z.literal("")), availability: z.string().trim().max(300) }).safeParse(input);
+  if (!parsed.success) return { success: false, message: "Enter a valid contact email or leave it blank." };
+  if (!dbReady()) return { success: false, message: "Connect PostgreSQL before saving contact details." };
+  await prisma.siteSetting.upsert({ where: { key: "contact.details" }, create: { key: "contact.details", value: parsed.data }, update: { value: parsed.data } });
+  await audit("contact_details.updated", "contact.details");
+  revalidatePath("/contact");
+  return { success: true, message: "Contact details updated. Notification delivery still uses the server email settings." };
 }
