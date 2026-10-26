@@ -8,7 +8,7 @@ const stacks = [
   { category: "AI & Automation", items: ["OpenAI", "Claude", "LangChain", "Vector DBs", "Copilot Studio"] },
 ];
 
-export default function TechExpertise({ content }: { content: any }) {
+export default function TechExpertise({ content }: { content: { title: string; subheadline: string } }) {
   return (
     <section className="py-32 px-6 bg-slate-900/30">
       <div className="max-w-6xl mx-auto">

@@ -18,6 +18,7 @@ export const authOptions: NextAuthOptions = {
         const databaseUrl = process.env.DATABASE_URL;
         const databaseReady = process.env.DEMO_MODE !== "true" && Boolean(databaseUrl) && !databaseUrl?.includes("demo_");
         const databaseUser = databaseReady ? await prisma.user.findUnique({ where: { email: credentials.email } }).catch(() => null) : null;
+        if (!databaseUser && process.env.DEMO_MODE !== "true") return null;
         const email = databaseUser?.email ?? configuredEmail;
         const passwordHash = databaseUser?.password;
         const passwordMatches = databaseUser ? Boolean(passwordHash) && await bcrypt.compare(credentials.password, passwordHash as string) : credentials.password === getDemoPassword();
@@ -32,7 +33,16 @@ export const authOptions: NextAuthOptions = {
       return token;
     },
     async session({ session, token }) {
-      if (session.user) (session.user as { role?: string }).role = token.role as string | undefined;
+      if (session.user) {
+        const user = session.user as { role?: string; id?: string };
+        user.role = token.role as string | undefined;
+        user.id = token.sub;
+        if (process.env.DEMO_MODE !== "true") {
+          const record = session.user.email ? await prisma.user.findUnique({ where: { email: session.user.email } }).catch(() => null) : null;
+          user.role = record?.role;
+          user.id = record?.id;
+        }
+      }
       return session;
     },
   },

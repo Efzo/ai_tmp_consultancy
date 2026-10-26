@@ -8,6 +8,7 @@ export interface CaseStudy {
   title: string;
   summary: string;
   category: string;
+  details?: import("@/lib/case-details").CaseDetails;
   businessProblem: string;
   role: string;
   requirements: string;

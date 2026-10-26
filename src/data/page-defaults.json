@@ -1,0 +1,236 @@
+{
+  "about": {
+    "headline": "Bridging Engineering, Product & Business",
+    "bio": [
+      "I am a Technical Product Manager and technology product leader with over 10 years of experience building at the intersection of product strategy, cloud architecture, enterprise software, and AI systems.",
+      "Throughout my career—spanning leadership roles at Amazon, Microsoft, and Vertex—I have specialized in one specific challenge: reducing the distance between a high-level business vision and a production-ready technical implementation.",
+      "My approach starts with the business and customer problem—not a particular technology. I combine technical fluency in cloud platforms, enterprise software, and AI systems with a product-first mindset focused on measurable business outcomes.",
+      "Strongest where technical depth meets product judgment: clarifying ambiguous customer problems, defining rigorous PRDs, prioritizing high-impact trade-offs, and aligning cross-functional teams to deliver on a roadmap."
+    ],
+    "expertise": [
+      "Technical Product Management & Roadmapping",
+      "Enterprise SaaS Architecture",
+      "Fractional TPM Leadership",
+      "Cloud Platform Modernization",
+      "AI Product Strategy & Evaluation"
+    ],
+    "pedigree": [
+      {
+        "title": "Enterprise Leadership",
+        "desc": "Proven track record at global technology leaders (Amazon, Microsoft, Vertex) delivering scalable cloud and platform products."
+      },
+      {
+        "title": "AI Innovation",
+        "desc": "Deep experience in LLM integration, RAG systems, and Agentic AI strategy for modern SaaS platforms."
+      },
+      {
+        "title": "Product Rigor",
+        "desc": "Expertise in PRDs, backlog ownership, and OKR-driven delivery for complex enterprise environments."
+      }
+    ],
+    "certs": [
+      {
+        "name": "AWS Solutions Architect Associate",
+        "status": "Certified"
+      },
+      {
+        "name": "Professional Scrum Master (PSM I)",
+        "status": "Certified"
+      },
+      {
+        "name": "Professional Scrum Product Owner (PSPO I)",
+        "status": "Certified"
+      },
+      {
+        "name": "Azure App Service Development",
+        "status": "Certified"
+      }
+    ],
+    "expertiseHeading": "Core Expertise",
+    "pedigreeHeading": "Professional Pedigree",
+    "certsHeading": "Certifications",
+    "imageUrl": "",
+    "imageAlt": ""
+  },
+  "process": {
+    "title": "How We Work",
+    "description": "A structured, outcome-driven engagement lifecycle designed to move you from uncertainty to a clearly scoped product or technology solution.",
+    "steps": [
+      {
+        "step": "01",
+        "title": "Discovery",
+        "description": "We start with an intensive discovery phase to understand your current state, existing data silos, and the underlying business objectives. This involves stakeholder interviews and technical audits of your current stack."
+      },
+      {
+        "step": "02",
+        "title": "Business Problem Assessment",
+        "description": "We strip away the AI hype to identify the actual problem. We define the 'Job to be Done' and determine if AI is the most effective tool for the solution, or if a simpler architectural change is required."
+      },
+      {
+        "step": "03",
+        "title": "Scope & Proposal",
+        "description": "I provide a detailed project proposal including a defined scope, target outcomes, timeline, and resource requirements. This ensures total alignment on expectations before any engineering begins."
+      },
+      {
+        "step": "04",
+        "title": "Product Strategy & Technical Planning",
+        "description": "The core design phase. We create the product roadmap, define the architecture and integration approach, and write the high-fidelity PRDs that engineering teams can execute against."
+      },
+      {
+        "step": "05",
+        "title": "Execution & Implementation Oversight",
+        "description": "Whether building software, acting as a fractional TPM, or providing advice, I work to keep delivery aligned with the agreed scope. I manage the backlog, resolve technical trade-offs, and conduct rigorous quality evaluations."
+      },
+      {
+        "step": "06",
+        "title": "Evaluation & Handover",
+        "description": "We measure the results against the initial KPIs. I provide the final documentation, operational guidelines, and a handover plan to ensure your internal team can maintain and scale the system."
+      }
+    ],
+    "cta": {
+      "title": "Ready to start your transformation?",
+      "description": "Whether you need a one-time strategy roadmap or ongoing fractional leadership, let's determine the best way to work together.",
+      "primaryText": "Book a Discovery Call",
+      "primaryUrl": "/book",
+      "secondaryText": "Request a Proposal",
+      "secondaryUrl": "/contact"
+    }
+  },
+  "book": {
+    "title": "Book a Discovery Call",
+    "description": "Book a discovery consultation to discuss your business challenges, product requirements, technology needs, or potential software and AI solutions.",
+    "bookingUrl": "",
+    "calendarText": "Open Booking Calendar",
+    "unavailableTitle": "Scheduling is being connected.",
+    "unavailableDescription": "Send a project inquiry to arrange a consultation and discuss your goals.",
+    "fallbackText": "Request a Proposal Instead",
+    "fallbackUrl": "/contact",
+    "cards": [
+      {
+        "title": "No Commitment",
+        "description": "The discovery call is a zero-pressure exploration of your needs."
+      },
+      {
+        "title": "Strategic Focus",
+        "description": "We focus on outcomes, not features, during our initial call."
+      },
+      {
+        "title": "Expert Guidance",
+        "description": "We will discuss your goals, constraints, and practical next steps."
+      }
+    ]
+  },
+  "contact": {
+    "title": "Start a Conversation",
+    "description": "Have a product, technology, or transformation challenge? Share the context and I'll prepare a tailored perspective for our first call.",
+    "submitText": "Request Consulting Proposal",
+    "successTitle": "Inquiry Received",
+    "returnText": "Return Home",
+    "returnUrl": "/",
+    "callTitle": "Prefer a call?",
+    "callDescription": "If you'd prefer to skip the form and speak directly, you can book a slot in my calendar.",
+    "callText": "Book a Discovery Call",
+    "callUrl": "/book",
+    "note": "I prioritize inquiries with detailed business challenges to ensure we maximize our time together."
+  },
+  "services": {
+    "title": "Expert Consulting for Technology-Driven Organizations",
+    "description": "We provide the product strategy, technical leadership, and delivery guidance necessary to turn complex business challenges into valuable digital products.",
+    "itemCta": "Explore Service"
+  },
+  "engagements": {
+    "title": "How to Engage",
+    "description": "Flexible engagement models designed to fit your organization's current stage, from rapid discovery to long-term technical leadership.",
+    "emptyText": "No engagement models published yet.",
+    "itemCta": "Book a Discovery Call",
+    "itemUrl": "/book",
+    "cta": {
+      "title": "Need a custom proposal?",
+      "description": "If none of these models perfectly fit your needs, I'm happy to scope a custom engagement tailored to your specific business objectives.",
+      "primaryText": "Request a Custom Proposal",
+      "primaryUrl": "/contact",
+      "secondaryText": "",
+      "secondaryUrl": ""
+    }
+  },
+  "pricing": {
+    "title": "Investment Options",
+    "description": "Structured engagements designed to provide immediate technical clarity and long-term strategic value.",
+    "notice": "Scope, milestones, responsibilities, and fees are confirmed in a written proposal.",
+    "featuresTitle": "What's Included",
+    "addOnsTitle": "Optional add-ons",
+    "consultationText": "Book a Consultation",
+    "consultationUrl": "/book",
+    "cta": {
+      "title": "Need a Custom Solution?",
+      "description": "Every business is different. If none of these packages fit your current needs, I'm happy to build a custom engagement tailored to your specific goals.",
+      "primaryText": "Request Custom Proposal",
+      "primaryUrl": "/contact",
+      "secondaryText": "",
+      "secondaryUrl": ""
+    }
+  },
+  "case-studies": {
+    "title": "Selected Work",
+    "description": "Explore product and engineering work, with project scope and the limits of available evidence made clear.",
+    "itemCta": "Read Case Study",
+    "emptyText": "No case studies published yet."
+  },
+  "blog": {
+    "title": "Practical thinking for product and technology teams.",
+    "description": "Ideas on technical product management, AI strategy, software architecture, digital transformation, and delivering products that create measurable value.",
+    "eyebrow": "Insights"
+  },
+  "videos": {
+    "title": "Video Insights",
+    "description": "Deep dives into product strategy, technical delivery, and how we build production-ready software.",
+    "emptyTitle": "No Insights Yet",
+    "emptyText": "We are currently preparing our strategic video briefings."
+  },
+  "privacy": {
+    "label": "Legal draft — review required",
+    "title": "Privacy Policy",
+    "introduction": "This draft explains how Efosa Ojomo Technology & Product Consulting may collect and use information submitted through this website. It must be reviewed and approved for the applicable business, jurisdiction, vendors, and data-retention practices before publication.",
+    "sections": [
+      {
+        "title": "Information you submit",
+        "body": "When you submit an inquiry or request a consultation, the site may collect your name, business email, company, website, requested service, project details, timeline, budget range, and consent record."
+      },
+      {
+        "title": "How information may be used",
+        "body": "Information may be used to respond to inquiries, evaluate a potential engagement, schedule calls, provide requested services, maintain security, and measure website conversions where consent and applicable law permit."
+      },
+      {
+        "title": "Service providers",
+        "body": "Production integrations may include a hosting provider, scheduling provider, email provider, database, and analytics provider. Their use must be configured and documented before launch."
+      },
+      {
+        "title": "Contact",
+        "body": "Update this section with the approved business contact address and privacy-request process before publishing."
+      }
+    ]
+  },
+  "terms": {
+    "label": "Legal draft — review required",
+    "title": "Terms of Service",
+    "introduction": "This draft describes the general terms for using this website and exploring consulting services. It is not final legal advice and must be reviewed by qualified counsel before production publication.",
+    "sections": [
+      {
+        "title": "Consulting engagements",
+        "body": "Specific scope, deliverables, fees, timelines, assumptions, confidentiality, intellectual property, and termination terms should be defined in a written proposal or agreement accepted by both parties."
+      },
+      {
+        "title": "Advisory scope",
+        "body": "Unless a signed agreement says otherwise, content on this site is general information and does not guarantee a particular technical, financial, operational, or business outcome."
+      },
+      {
+        "title": "Payments and scheduling",
+        "body": "Any paid workshop or fixed-price service must be governed by the approved proposal, invoice, and consulting agreement. Custom work and retainers should not be charged automatically without approval."
+      },
+      {
+        "title": "Contact",
+        "body": "Update this section with the approved business contact address and governing-law language before publishing."
+      }
+    ]
+  }
+}

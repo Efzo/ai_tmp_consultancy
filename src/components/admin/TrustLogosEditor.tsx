@@ -1,4 +1,5 @@
 "use client";
+import type { MediaAsset } from "@prisma/client";
 
 import { useState, useEffect } from "react";
 import { updateSiteSetting } from "@/app/actions/cms";
@@ -7,7 +8,7 @@ import TrustLogoItem from "./TrustLogoItem";
 
 export default function TrustLogosEditor({ logos }: { logos: { name: string; logoUrl: string }[] }) {
   const [rows, setRows] = useState(logos);
-  const [assets, setAssets] = useState<any[]>([]);
+  const [assets, setAssets] = useState<MediaAsset[]>([]);
   const [message, setMessage] = useState("");
   const [saving, setSaving] = useState(false);
 
@@ -19,7 +20,7 @@ export default function TrustLogosEditor({ logos }: { logos: { name: string; log
     loadAssets();
   }, []);
 
-  const update = (index: number, updates: Partial<{ name: string; logoUrl: string }>) => 
+  const update = (index: number, updates: Partial<{ name: string; logoUrl: string }>) =>
     setRows((current) => current.map((logo, logoIndex) => logoIndex === index ? { ...logo, ...updates } : logo));
 
   const add = () => setRows((current) => [...current, { name: "New Company", logoUrl: "/logo_pack/logo.png" }]);
@@ -44,12 +45,12 @@ export default function TrustLogosEditor({ logos }: { logos: { name: string; log
 
       <div className="grid gap-4">
         {rows.map((logo, index) => (
-          <TrustLogoItem 
-            key={index} 
-            index={index} 
-            logo={logo} 
-            assets={assets} 
-            updateLogo={update} 
+          <TrustLogoItem
+            key={index}
+            index={index}
+            logo={logo}
+            assets={assets}
+            updateLogo={update}
             removeLogo={remove}
           />
         ))}

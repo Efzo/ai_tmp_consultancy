@@ -1,26 +1,4 @@
-import React from 'react';
-
-export default function Differentiator({ content }: { content: any }) {
-  return (
-    <section className="py-32 px-6 bg-slate-900/30">
-      <div className="max-w-4xl mx-auto text-center">
-        <h2 className="text-4xl md:text-6xl font-bold mb-8 tracking-tight">
-          {content.title}
-        </h2>
-        <p className="text-slate-muted text-xl leading-relaxed mb-12">
-          {content.text}
-        </p>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 text-left">
-          <div className="glass-card p-8">
-            <h3 className="text-xl font-bold mb-4 text-electric">Product Leadership</h3>
-            <p className="text-slate-muted">Reducing risk through discovery, rigorous requirements, and strategic alignment.</p>
-          </div>
-          <div className="glass-card p-8">
-            <h3 className="text-xl font-bold mb-4 text-electric">Engineering Rigor</h3>
-            <p className="text-slate-muted">Ensuring stability, scalability, and maintainability through professional software architecture.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
+import Link from "next/link";
+export default function Differentiator({ content }: { content: { title: string; text: string } }) {
+  return <section className="section-shell section-tint"><div className="section-inner grid gap-10 lg:grid-cols-2"><div><h2 className="section-title">{content.title}</h2><p className="section-intro">{content.text}</p><Link href="/about" className="mt-6 inline-block text-sm font-semibold text-electric">More about my approach ↗</Link></div><div className="space-y-8"><div className="border-t border-glass pt-6"><h3 className="mb-3 text-xl">Product Leadership</h3><p className="text-slate-muted">Discovery, clear requirements, and stakeholder alignment connect the work to the business problem.</p></div><div className="border-t border-glass pt-6"><h3 className="mb-3 text-xl">Engineering Rigor</h3><p className="text-slate-muted">Practical architecture and maintainable software support the product beyond its first release.</p></div></div></div></section>;
 }

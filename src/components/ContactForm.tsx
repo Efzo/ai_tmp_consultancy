@@ -1,9 +1,12 @@
 "use client";
 
 import Link from "next/link";
+import { trackEvent } from "@/lib/analytics";
 import { FormEvent, useState } from "react";
 import { submitInquiry } from "@/app/actions/contact";
-import type { ContactBudgetOption } from "@/lib/site-settings";
+import type { ContactBudgetOption, ContactDetails } from "@/lib/site-settings";
+
+import type { ManagedPageContent } from "@/lib/page-content-schema";
 
 type FormValues = {
   name: string;
@@ -45,11 +48,11 @@ const fieldLabels: Record<string, string> = {
   consent: "Consent",
 };
 
-export default function ContactForm({ budgetOptions, services }: { budgetOptions: ContactBudgetOption[]; services: ServiceOption[] }) {
+export default function ContactForm({ budgetOptions, services, initialService, offer, details, content }: { budgetOptions: ContactBudgetOption[]; services: ServiceOption[]; initialService?: string; offer?: string; details?: ContactDetails; content: ManagedPageContent<"contact"> }) {
   const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
   const [message, setMessage] = useState("");
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
-  const [values, setValues] = useState<FormValues>(initialValues);
+  const [values, setValues] = useState<FormValues>({ ...initialValues, service: initialService ?? services[0]?.slug ?? "", challenge: offer ? `I would like to discuss ${offer}. ` : "" });
 
   function update<K extends keyof FormValues>(key: K, value: FormValues[K]) {
     setValues((current) => ({ ...current, [key]: value }));
@@ -77,10 +80,11 @@ export default function ContactForm({ budgetOptions, services }: { budgetOptions
     formData.set("timeline", values.timeline);
     formData.set("budget", values.budget === "custom" ? values.budgetCustom : values.budget);
     formData.set("consent", values.consent ? "on" : "");
-    formData.set("bot-field", "");
+    formData.set("bot-field", String(new FormData(event.currentTarget).get("bot-field") ?? ""));
 
     try {
       const result = await submitInquiry(formData);
+      if (result.success && !result.message.startsWith("Demo")) trackEvent("generate_lead", { form_name: "consulting_inquiry" });
       setStatus(result.success ? "success" : "error");
       setMessage(result.message);
       setFieldErrors(result.fieldErrors ?? {});
@@ -96,9 +100,9 @@ export default function ContactForm({ budgetOptions, services }: { budgetOptions
         <div className="glass-panel mx-auto flex max-w-2xl items-center justify-center p-12 text-center">
           <div>
             <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full border border-electric/30 bg-electric/20 text-3xl text-electric">✓</div>
-            <h1 className="mb-4 text-3xl font-bold">Inquiry Received</h1>
+            <h1 className="mb-4 text-3xl font-bold">{content.successTitle}</h1>
             <p className="mb-10 text-lg text-slate-muted">{message}</p>
-            <Link href="/" className="btn-primary inline-block">Return Home</Link>
+            <Link href={content.returnUrl} className="btn-primary inline-block">{content.returnText}</Link>
           </div>
         </div>
       </main>
@@ -108,9 +112,11 @@ export default function ContactForm({ budgetOptions, services }: { budgetOptions
   return (
     <main className="min-h-screen bg-midnight px-6 pb-20 pt-32 text-platinum">
       <div className="mx-auto max-w-4xl">
-        <section className="mb-16 text-center">
-          <h1 className="mb-6 text-4xl font-bold tracking-tight md:text-6xl">Start a <span className="text-electric">Conversation</span></h1>
-          <p className="mx-auto max-w-2xl text-xl text-slate-muted">Have a product, technology, or transformation challenge? Share the context and I&apos;ll prepare a tailored perspective for our first call.</p>
+        <section className="mb-12 text-center">
+          <h1 className="mb-6 text-4xl font-bold tracking-tight md:text-6xl">{content.title}</h1>
+          <p className="mx-auto max-w-2xl text-xl text-slate-muted">{content.description}</p>
+          {details?.email && <a className="mt-4 inline-block text-electric" href={`mailto:${details.email}`}>{details.email}</a>}
+          {details?.availability && <p className="mt-3 text-slate-muted">{details.availability}</p>}
         </section>
 
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-3">
@@ -127,7 +133,7 @@ export default function ContactForm({ budgetOptions, services }: { budgetOptions
 
               <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                 <label className="space-y-2 text-sm font-medium text-slate-muted">Company Name
-                  <input name="company" required value={values.company} onChange={(event) => update("company", event.target.value)} className="mt-2 w-full rounded-xl border border-glass bg-white/5 px-4 py-3 text-white outline-none transition-all focus:border-electric" placeholder="Enterprise AI Inc." />
+                  <input name="company" required value={values.company} onChange={(event) => update("company", event.target.value)} className="mt-2 w-full rounded-xl border border-glass bg-white/5 px-4 py-3 text-white outline-none transition-all focus:border-electric" placeholder="Company name" />
                 </label>
                 <label className="space-y-2 text-sm font-medium text-slate-muted">Company Website <span className="font-normal">(optional)</span>
                   <input name="website" type="url" inputMode="url" value={values.website} onChange={(event) => update("website", event.target.value)} aria-invalid={Boolean(fieldErrors.website)} aria-describedby={fieldErrors.website ? "website-error" : undefined} className={`mt-2 w-full rounded-xl border bg-white/5 px-4 py-3 text-white outline-none transition-all focus:border-electric ${fieldErrors.website ? "border-red-400" : "border-glass"}`} placeholder="https://company.com" />
@@ -145,7 +151,7 @@ export default function ContactForm({ budgetOptions, services }: { budgetOptions
                 <textarea name="challenge" required minLength={20} rows={4} value={values.challenge} onChange={(event) => update("challenge", event.target.value)} className="mt-2 w-full rounded-xl border border-glass bg-white/5 px-4 py-3 text-white outline-none transition-all focus:border-electric" placeholder="Describe the product, technology, or business challenge you are trying to solve..." />
               </label>
 
-              <div className="hidden" aria-hidden="true"><label htmlFor="bot-field">Leave this field empty</label><input id="bot-field" name="bot-field" tabIndex={-1} autoComplete="off" /></div>
+              <div className="absolute -left-[10000px]" aria-hidden="true"><label htmlFor="bot-field">Leave this field empty</label><input id="bot-field" name="bot-field" tabIndex={-1} autoComplete="off" /></div>
 
               <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                 <label className="space-y-2 text-sm font-medium text-slate-muted">Expected Timeline
@@ -166,12 +172,12 @@ export default function ContactForm({ budgetOptions, services }: { budgetOptions
 
               <label className="flex items-start gap-3 text-sm text-slate-muted"><input name="consent" type="checkbox" required checked={values.consent} onChange={(event) => update("consent", event.target.checked)} className="mt-1 accent-electric" /><span>I consent to being contacted about this inquiry and understand that this form is not an agreement to begin paid work.</span></label>
 
-              <button type="submit" disabled={status === "submitting"} className="btn-primary w-full py-4 text-lg font-bold disabled:opacity-50">{status === "submitting" ? "Sending Inquiry..." : "Request Consulting Proposal"}</button>
+              <button type="submit" disabled={status === "submitting"} className="btn-primary w-full py-4 text-lg font-bold disabled:opacity-50">{status === "submitting" ? "Sending Inquiry..." : content.submitText}</button>
               {status === "error" && <div role="alert" className="rounded-xl border border-red-400/30 bg-red-400/10 p-4 text-sm text-red-200"><p className="font-medium">{message}</p>{Object.entries(fieldErrors).length > 0 && <ul className="mt-2 list-disc space-y-1 pl-5">{Object.entries(fieldErrors).map(([field, error]) => <li key={field}><span className="font-medium">{fieldLabels[field] ?? field}:</span> {error}</li>)}</ul>}</div>}
             </form>
           </div>
 
-          <div className="space-y-8"><div className="glass-panel sticky top-32 p-8"><h3 className="mb-6 text-xl font-bold">Prefer a call?</h3><p className="mb-8 text-sm leading-relaxed text-slate-muted">If you&apos;d prefer to skip the form and speak directly, you can book a slot in my calendar instantly.</p><Link href="/book" className="btn-secondary mb-4 block w-full text-center">Book a Call</Link><div className="rounded-xl border border-electric/20 bg-electric/10 p-4"><p className="text-xs italic text-slate-muted">Note: I prioritize inquiries with detailed business challenges to ensure we maximize our time together.</p></div></div></div>
+          <div className="space-y-8"><div className="glass-panel sticky top-32 p-8"><h3 className="mb-6 text-xl font-bold">{content.callTitle}</h3><p className="mb-8 text-sm leading-relaxed text-slate-muted">{content.callDescription}</p><Link href={content.callUrl} className="btn-secondary mb-4 block w-full text-center">{content.callText}</Link><div className="rounded-xl border border-electric/20 bg-electric/10 p-4"><p className="text-xs italic text-slate-muted">{content.note}</p></div></div></div>
         </div>
       </div>
     </main>

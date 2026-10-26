@@ -1,8 +1,11 @@
 import type { Metadata } from "next";
+import localFont from "next/font/local";
 import "./globals.css";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
 import PublicChrome from "@/components/PublicChrome";
 import { getFooterSettings, getNavigationItems, getSeoSettings } from "@/lib/site-settings";
+
+const inter = localFont({ src: "../../public/fonts/InterVariable.woff2", variable: "--font-inter", weight: "100 900", style: "normal", display: "swap", fallback: ["Arial", "sans-serif"], adjustFontFallback: "Arial" });
 
 export const dynamic = "force-dynamic";
 
@@ -26,7 +29,7 @@ export async function generateMetadata(): Promise<Metadata> {
   title: seo.title,
   description: seo.description,
   metadataBase: new URL("https://ojomoefosa.com"),
-  alternates: { canonical: "/" },
+
   icons: metadataIcons,
   manifest: "/manifest.webmanifest",
   openGraph: {
@@ -48,7 +51,7 @@ export default async function RootLayout({
   const footerSettings = await getFooterSettings();
   const navigationItems = await getNavigationItems();
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" className={inter.variable} suppressHydrationWarning>
       <body className="antialiased bg-midnight text-platinum">
         <script dangerouslySetInnerHTML={{ __html: `(function(){try{var t=localStorage.getItem('site-theme');if(t==='light'||t==='dark'){document.documentElement.dataset.theme=t;}else if(window.matchMedia('(prefers-color-scheme: light)').matches){document.documentElement.dataset.theme='light';}}catch(e){}})();` }} />
         <GoogleAnalytics />
@@ -59,7 +62,7 @@ export default async function RootLayout({
           name: "Efosa Ojomo Technology & Product Consulting",
           url: "https://ojomoefosa.com",
           areaServed: "Worldwide",
-          serviceType: ["Technical Product Management", "AI Product Strategy", "Technology Advisory", "Digital Transformation"],
+          serviceType: ["Technical Product Management", "Custom Software Engineering", "AI Solutions and Automation", "Software Architecture and Technical Advisory"],
         }) }} />
       </body>
     </html>
