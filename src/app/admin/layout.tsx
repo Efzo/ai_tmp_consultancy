@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BarChart3, BookOpen, BriefcaseBusiness, CalendarDays, ChevronLeft, FileCog, FileText, FolderOpen, LayoutDashboard, LogOut, Menu, Package, PanelLeft, Search, Settings, ShieldCheck, SlidersHorizontal, Users, Workflow } from "lucide-react";
+import { BarChart3, BookOpen, BriefcaseBusiness, CalendarDays, ChevronLeft, FileCog, FileText, FolderOpen, LayoutDashboard, LogOut, Menu, Package, PanelLeft, Search, Settings, ShieldCheck, SlidersHorizontal, Users, Workflow, Video } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
@@ -18,6 +18,7 @@ const navItems = [
   { name: "Leads & Inquiries", href: "/admin/leads", icon: Users },
   { name: "Bookings", href: "/admin/bookings", icon: CalendarDays },
   { name: "Consulting Packages", href: "/admin/packages", icon: Package },
+  { name: "Video Insights", href: "/admin/videos", icon: Video },
   { name: "Testimonials", href: "/admin/testimonials", icon: FileText },
   { name: "Analytics", href: "/admin/analytics", icon: BarChart3 },
   { name: "SEO Manager", href: "/admin/seo", icon: Search },

@@ -26,9 +26,9 @@ export type ContactBudgetOption = {
 
 export const contactBudgetDefaults: ContactBudgetOption[] = [
   { value: "undetermined", label: "Undetermined" },
-  { value: "5k-15k", label: "$5k - $15k" },
-  { value: "15k-50k", label: "$15k - $50k" },
-  { value: "50k-plus", label: "$50k+" },
+  { value: "5k-15k", label: "k - k" },
+  { value: "15k-50k", label: "k - k" },
+  { value: "50k-plus", label: "k+" },
 ];
 
 export type NavigationItem = { label: string; href: string };
@@ -41,6 +41,7 @@ export const navigationDefaults: NavigationItem[] = [
   { label: "About", href: "/about" },
   { label: "Process", href: "/process" },
   { label: "Blog", href: "/blog" },
+  { label: "Videos", href: "/videos" },
 ];
 
 export const seoDefaults: SeoSettings = {
@@ -50,6 +51,13 @@ export const seoDefaults: SeoSettings = {
 };
 
 export const testimonialDefaults: ManagedTestimonial[] = [];
+
+const trustLogosDefaults = [
+  { name: "Vertex AI", logoUrl: "/logo_pack/logo.png" },
+  { name: "Microsoft", logoUrl: "/logo_pack/logo.png" },
+  { name: "Amazon", logoUrl: "/logo_pack/logo.png" },
+  { name: "LTIMindtree", logoUrl: "/logo_pack/logo.png" },
+];
 
 const demoOverrides = new Map<string, string>();
 
@@ -155,7 +163,11 @@ export async function getCaseStudies(): Promise<CaseStudy[]> {
 
 export async function getTestimonials(): Promise<ManagedTestimonial[]> {
   const value = await readJsonSetting<unknown>("testimonials.items", testimonialDefaults);
-  return Array.isArray(value) ? value as ManagedTestimonial[] : testimonialDefaults;
+  return Array.isArray(value) && value.length ? value as ManagedTestimonial[] : testimonialDefaults;
+}
+
+export async function getTrustLogos(): Promise<{ name: string; logoUrl: string }[]> {
+  return readJsonSetting<{ name: string; logoUrl: string }[]>("trust.logos", trustLogosDefaults);
 }
 
 export function setDemoSiteSetting(key: string, value: string) {

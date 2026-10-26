@@ -7,10 +7,12 @@ import type { NavigationItem } from '@/lib/site-settings';
 
 const defaultItems: NavigationItem[] = [
   { label: "Services", href: "/services" },
-  { label: "Case Studies", href: "/case-studies" },
+  { label: "Portfolio", href: "/case-studies" },
+  { label: "Engagements", href: "/engagements" },
   { label: "About", href: "/about" },
-  { label: "Process", href: "/process" },
-  { label: "Blog", href: "/blog" },
+  { label: "Insights", href: "/blog" },
+  { label: "Videos", href: "/videos" },
+  { label: "Contact", href: "/contact" },
 ];
 
 const Navbar = ({ items = defaultItems }: { items?: NavigationItem[] }) => {

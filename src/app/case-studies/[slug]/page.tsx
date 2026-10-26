@@ -1,21 +1,13 @@
 import React from 'react';
+import { getCaseStudy } from '@/lib/case-studies';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import { getCaseStudies } from '@/lib/site-settings';
 
 export const dynamic = "force-dynamic";
 
-export async function generateStaticParams() {
-  const caseStudies = await getCaseStudies();
-  return caseStudies.map((study) => ({
-    slug: study.slug,
-  }));
-}
-
-export default async function CaseStudyDetailPage({ params }: { params: Promise<{ slug: string }> }) {
+export default async function CaseStudyPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const caseStudies = await getCaseStudies();
-  const study = caseStudies.find((s) => s.slug === slug);
+  const study = await getCaseStudy(slug);
 
   if (!study) {
     notFound();
@@ -23,79 +15,80 @@ export default async function CaseStudyDetailPage({ params }: { params: Promise<
 
   return (
     <main className="min-h-screen bg-midnight text-platinum pt-32 pb-20 px-6">
-      <div className="max-w-5xl mx-auto">
-        <div className="mb-12">
-          <Link href="/case-studies" className="text-slate-muted hover:text-white transition-colors text-sm mb-4 block">
-            ← Back to Case Studies
-          </Link>
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
-            <span className="text-xs font-bold tracking-widest uppercase text-electric bg-electric/10 px-3 py-1 rounded-full border border-electric/20 w-fit">
-              {study.category}
-            </span>
-          </div>
-          <h1 className="text-4xl md:text-6xl font-bold tracking-tight mb-6">
-            {study.title}
-          </h1>
-          <p className="text-xl text-slate-muted max-w-3xl leading-relaxed">
-            {study.summary}
-          </p>
-        </div>
+      <div className="max-w-4xl mx-auto">
+        <Link href="/case-studies" className="text-electric hover:underline mb-8 inline-block">
+          \u2190 Back to Portfolio
+        </Link>
+
+        <header className="mb-16 text-center">
+          <span className="text-xs font-bold tracking-widest uppercase text-electric bg-electric/10 px-3 py-1 rounded-full border border-electric/20 mb-4 inline-block">
+            {study.category}
+          </span>
+          <h1 className="text-4xl md:text-6xl font-bold mb-6 tracking-tight">{study.title}</h1>
+          <p className="text-slate-muted text-xl leading-relaxed">{study.summary}</p>
+        </header>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
           <div className="lg:col-span-2 space-y-12">
             <section>
-              <h2 className="text-2xl font-bold mb-4 text-cyan-ai">The Challenge</h2>
-              <p className="text-slate-muted leading-relaxed text-lg">
-                {study.challenge}
-              </p>
+              <h2 className="text-2xl font-bold mb-4 text-electric">The Challenge</h2>
+              <p className="text-slate-muted leading-relaxed">{study.businessProblem}</p>
             </section>
 
             <section>
-              <h2 className="text-2xl font-bold mb-4 text-cyan-ai">The Solution</h2>
-              <p className="text-slate-muted leading-relaxed text-lg">
-                {study.solution}
-              </p>
+              <h2 className="text-2xl font-bold mb-4 text-electric">Implementation Approach</h2>
+              <p className="text-slate-muted leading-relaxed">{study.implementation}</p>
             </section>
 
             <section>
-              <h2 className="text-2xl font-bold mb-6 text-cyan-ai">Technical Decisions</h2>
-              <div className="grid grid-cols-1 gap-4">
-                {study.technicalDecisions.map((decision, idx) => (
-                  <div key={idx} className="glass-card p-4 flex items-start gap-3">
-                    <span className="text-slate-muted">•</span>
-                    <span className="text-slate-muted">{decision}</span>
-                  </div>
-                ))}
-              </div>
+              <h2 className="text-2xl font-bold mb-4 text-electric">Trade-offs & Challenges</h2>
+              <p className="text-slate-muted leading-relaxed">{study.challenges}</p>
+            </section>
+
+            <section>
+              <h2 className="text-2xl font-bold mb-4 text-electric">The Outcome</h2>
+              <p className="text-slate-muted leading-relaxed">{study.outcomes}</p>
             </section>
           </div>
 
-          <div className="space-y-8">
-            <div className="glass-panel p-8 sticky top-32">
-              <h3 className="text-xl font-bold mb-6">Key Outcomes</h3>
-              <div className="space-y-6 mb-10">
-                {study.metrics.map((metric, idx) => (
-                  <div key={idx} className="flex justify-between items-center border-b border-glass pb-4">
-                    <span className="text-sm text-slate-muted">{metric.label}</span>
-                    <span className="font-bold text-electric">{metric.value}</span>
-                  </div>
-                ))}
+          <aside className="space-y-8">
+            <div className="glass-card p-6">
+              <h3 className="text-lg font-bold mb-4 border-b border-electric/20 pb-2">Project Details</h3>
+              <div className="space-y-4">
+                <div>
+                  <label className="text-xs uppercase tracking-wider text-slate-muted font-bold">Role</label>
+                  <p className="text-sm">{study.role}</p>
+                </div>
+                <div>
+                  <label className="text-xs uppercase tracking-wider text-slate-muted font-bold">Requirements</label>
+                  <p className="text-sm">{study.requirements}</p>
+                </div>
+                <div>
+                  <label className="text-xs uppercase tracking-wider text-slate-muted font-bold">Architecture</label>
+                  <p className="text-sm">{study.architecture}</p>
+                </div>
               </div>
-              <div className="p-4 bg-electric/10 rounded-xl border border-electric/20 mb-8">
-                <h4 className="text-sm font-bold text-white mb-2">Bottom Line:</h4>
-                <p className="text-sm text-slate-muted italic leading-relaxed">
-                  "{study.outcome}"
-                </p>
-              </div>
-              <Link 
-                href="/book" 
-                className="btn-primary block text-center w-full"
-              >
-                Book a Consultation
-              </Link>
             </div>
-          </div>
+
+            <div className="glass-card p-6">
+              <h3 className="text-lg font-bold mb-4 border-b border-electric/20 pb-2">Technology Stack</h3>
+              <div className="flex flex-wrap gap-2">
+                {study.stack.map((tech) => (
+                  <span key={tech} className="text-xs bg-electric/10 text-electric px-2 py-1 rounded border border-electric/20">
+                    {tech}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </aside>
         </div>
+
+        <section className="mt-20 pt-10 border-t border-electric/20 text-center">
+          <h3 className="text-2xl font-bold mb-6">Interested in a similar result?</h3>
+          <Link href="/contact" className="btn-primary inline-block">
+            Discuss Your Project
+          </Link>
+        </section>
       </div>
     </main>
   );

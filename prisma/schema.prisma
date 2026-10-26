@@ -80,9 +80,52 @@ model Service {
   price            String?
   metaTitle        String?
   metaDescription  String?
-  createdAt        DateTime @default(now())
+  createdAt       DateTime @default(now())
   isPublished      Boolean  @default(true)
   updatedAt       DateTime @updatedAt
+}
+
+model CaseStudy {
+  id                String   @id @default(cuid())
+  slug              String   @unique
+  title             String
+  summary           String
+  category          String
+  businessProblem   String
+  role              String
+  requirements      String
+  architecture      String
+  stack             String[]
+  implementation    String
+  challenges        String
+  outcomes          String
+  images            String[]
+  relatedServices   String[]
+  status            ContentStatus @default(DRAFT)
+  isPublished       Boolean  @default(false)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
+
+model EngagementModel {
+  id                String   @id @default(cuid())
+  slug              String   @unique
+  name              String
+  description       String
+  price             String
+  features          String[]
+  type              EngagementType @default(FIXED)
+  ctaText           String
+  relatedServices   String[]
+  isPublished       Boolean  @default(true)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
+
+enum EngagementType {
+  FIXED
+  RETAINER
+  HOURLY
 }
 
 model BlogPost {
@@ -116,8 +159,6 @@ model BlogPostVersion {
   content    String
   category   String
   createdAt  DateTime @default(now())
-
-  @@unique([blogPostId, version])
 }
 
 model Page {
@@ -193,4 +234,16 @@ model AuditEvent {
 
   @@index([createdAt])
   @@index([target])
+}
+
+model VideoInsight {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  url         String
+  category    String
+  order       Int      @default(0)
+  isPublished Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
