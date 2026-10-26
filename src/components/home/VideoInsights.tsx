@@ -17,21 +17,24 @@ interface VideoInsightsProps {
 
 function getEmbedUrl(url: string) {
   if (url.includes('youtube.com/watch?v=')) {
-    return url.replace('watch?v=', 'embed/');
+    return { type: 'iframe', url: url.replace('watch?v=', 'embed/') };
   }
   if (url.includes('youtu.be/')) {
     const id = url.split('/').pop();
-    return `https://www.youtube.com/embed/${id}`;
+    return { type: 'iframe', url: `https://www.youtube.com/embed/${id}` };
   }
-  if (url.includes('vimeo.com/')) {
+  if (url.includes('vimeo.com/') || url.includes('player.vimeo.com')) {
     const id = url.split('/').pop();
-    return `https://player.vimeo.com/video/${id}`;
+    return { type: 'iframe', url: `https://player.vimeo.com/video/${id}` };
   }
-  return url;
+  if (url.match(/\.(mp4|webm|ogg)$/i) || url.includes('blob.vercel-storage.com')) {
+    return { type: 'video', url: url };
+  }
+  return { type: 'iframe', url: url };
 }
 
 export default function VideoInsights({ content }: VideoInsightsProps) {
-  if (!content.videos || content.videos.length === 0) return null;
+  if (!content || !content.videos || content.videos.length === 0) return null;
 
   return (
     <section className="py-32 px-6">
@@ -49,29 +52,41 @@ export default function VideoInsights({ content }: VideoInsightsProps) {
           </div>
         )}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-          {content.videos.map((video, idx) => (
-            <div key={idx} className="glass-card overflow-hidden group">
-              <div className="aspect-video relative bg-midnight">
-                <iframe 
-                  src={getEmbedUrl(video.url)} 
-                  className="absolute inset-0 w-full h-full" 
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                  allowFullScreen
-                />
-              </div>
-              <div className="p-8">
-                <div className="flex items-center gap-3 mb-4">
-                  <span className="text-xs font-bold uppercase tracking-widest text-electric bg-electric/10 px-3 py-1 rounded-full border border-electric/20">
-                    {video.category}
-                  </span>
+          {content.videos.map((video, idx) => {
+            const { type, url } = getEmbedUrl(video.url);
+            return (
+              <div key={idx} className="glass-card overflow-hidden group">
+                <div className="aspect-video relative bg-midnight">
+                  {type === 'iframe' ? (
+                    <iframe 
+                      src={url} 
+                      className="absolute inset-0 w-full h-full" 
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                      allowFullScreen
+                    />
+                  ) : (
+                    <video 
+                      src={url} 
+                      controls 
+                      className="absolute inset-0 w-full h-full object-cover"
+                      preload="none"
+                    />
+                  )}
                 </div>
-                <h3 className="text-2xl font-bold mb-3 tracking-tight">{video.title}</h3>
-                <p className="text-slate-muted leading-relaxed">
-                  {video.description}
-                </p>
+                <div className="p-8">
+                  <div className="flex items-center gap-3 mb-4">
+                    <span className="text-xs font-bold uppercase tracking-widest text-electric bg-electric/10 px-3 py-1 rounded-full border border-electric/20">
+                      {video.category}
+                    </span>
+                  </div>
+                  <h3 className="text-2xl font-bold mb-3 tracking-tight">{video.title}</h3>
+                  <p className="text-slate-muted leading-relaxed">
+                    {video.description}
+                  </p>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </section>

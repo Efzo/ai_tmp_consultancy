@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState, useRef } from "react";
 import { saveVideoInsight, deleteVideoInsight } from "@/app/actions/videos";
+import { uploadMediaAsset } from "@/app/actions/media";
 
 interface Video {
   id: string;
@@ -17,6 +18,8 @@ export default function VideoEditor({ videos }: { videos: Video[] }) {
   const [rows, setRows] = useState(videos);
   const [message, setMessage] = useState("");
   const [saving, setSaving] = useState(false);
+  const [uploadingIdx, setUploadingIdx] = useState<number | null>(null);
+  const fileInputs = useRef<{ [key: number]: HTMLInputElement | null }>({});
 
   const update = (index: number, key: keyof Video, value: any) => {
     setRows((current) => current.map((v, i) => i === index ? { ...v, [key]: value } : v));
@@ -32,6 +35,28 @@ export default function VideoEditor({ videos }: { videos: Video[] }) {
       order: rows.length,
       isPublished: true,
     }]);
+  };
+
+  const handleFileUpload = async (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploadingIdx(index);
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      
+      const result = await uploadMediaAsset(formData);
+      if (result.success && result.asset) {
+        update(index, "url", result.asset.url);
+      } else {
+        alert(result.message || "Upload failed");
+      }
+    } catch (e: any) {
+      alert(e.message || "An error occurred during upload");
+    } finally {
+      setUploadingIdx(null);
+    }
   };
 
   const remove = async (id: string) => {
@@ -87,9 +112,26 @@ export default function VideoEditor({ videos }: { videos: Video[] }) {
               <textarea value={video.description} onChange={(e) => update(index, "description", e.target.value)} rows={2} className="mt-1 w-full rounded-lg border border-glass bg-white/5 px-3 py-2 text-white outline-none focus:border-electric" />
             </label>
             <div className="flex items-center justify-between gap-4">
-              <label className="text-sm text-slate-muted flex-1">Video URL (YouTube/Vimeo)
-                <input value={video.url} onChange={(e) => update(index, "url", e.target.value)} className="mt-1 w-full rounded-lg border border-glass bg-white/5 px-3 py-2 text-white outline-none focus:border-electric" />
-              </label>
+              <div className="flex-1 flex items-center gap-2">
+                <label className="text-sm text-slate-muted whitespace-nowrap">Video URL (YouTube/Vimeo)</label>
+                <input value={video.url} onChange={(e) => update(index, "url", e.target.value)} className="flex-1 rounded-lg border border-glass bg-white/5 px-3 py-2 text-white outline-none focus:border-electric" />
+                
+                <div className="relative">
+                  <input 
+                    type="file" 
+                    accept="video/*"
+                    onChange={(e) => handleFileUpload(index, e)} 
+                    className="hidden" 
+                    id={`video-upload-${index}`}
+                  />
+                  <label 
+                    htmlFor={`video-upload-${index}`} 
+                    className="btn-secondary px-3 py-2 text-xs h-fit cursor-pointer flex items-center gap-2 disabled:opacity-50"
+                  >
+                    {uploadingIdx === index ? "..." : "Upload File"}
+                  </label>
+                </div>
+              </div>
               <div className="flex items-center gap-4">
                 <label className="flex items-center gap-2 text-sm text-slate-muted cursor-pointer">
                   <input type="checkbox" checked={video.isPublished} onChange={(e) => update(index, "isPublished", e.target.checked)} className="rounded border-glass bg-white/5 text-electric focus:ring-electric" />
