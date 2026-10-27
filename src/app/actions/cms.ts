@@ -14,6 +14,7 @@ import { homeSchema } from "@/lib/home-content";
 import { caseDetailsSchema } from "@/lib/case-details";
 import { isManagedPageSlug } from "@/lib/page-content-schema";
 import consulting from "@/data/consulting.json";
+import { serviceAliases } from "@/data/services";
 import { pricingPlansSchema, pricingCatalogKey } from "@/data/pricing";
 
 const pageSchema = z.object({
@@ -111,6 +112,14 @@ export async function restorePageVersion(pageId: string, versionId: string) {
   return { success: true, message: "Version restored as a new draft." };
 }
 
+function refreshServicePages(slug: string) {
+  revalidatePath("/services");
+  revalidatePath(`/services/${slug}`);
+  revalidatePath("/");
+  revalidatePath("/sitemap.xml");
+  revalidatePath("/admin/services");
+}
+
 export async function updateService(input: unknown) {
   await requireRole(["OWNER", "EDITOR"]);
   if (!dbReady()) return { success: false, message: "Connect PostgreSQL before editing services." };
@@ -119,10 +128,8 @@ export async function updateService(input: unknown) {
   const { id, ...serviceData } = parsed.data;
   const updated = await prisma.service.update({ where: { id }, data: serviceData });
   await audit("service.updated", id);
-  revalidatePath("/services");
-  revalidatePath(`/services/${updated.slug}`);
-  revalidatePath("/");
-  return { success: true, message: "Service updated." };
+  refreshServicePages(updated.slug);
+  return { success: true, message: Object.hasOwn(serviceAliases, updated.slug) ? "Historical service alias saved. It remains hidden from public listings; edit its current service for public changes." : updated.isPublished ? "Service saved and published. It is visible on /services." : "Service saved as a draft. It is hidden from the public website." };
 }
 
 const serviceCreateSchema = z.object({
@@ -133,6 +140,7 @@ const serviceCreateSchema = z.object({
   targetAudience: z.string().trim().min(2).max(500),
   ctaText: z.string().trim().min(2).max(80),
   price: z.string().trim().max(80).nullable().optional(),
+  isPublished: z.boolean().default(false),
 });
 
 export async function createService(input: unknown) {
@@ -140,12 +148,12 @@ export async function createService(input: unknown) {
   if (!dbReady()) return { success: false, message: "Connect PostgreSQL before creating services." };
   const parsed = serviceCreateSchema.safeParse(input);
   if (!parsed.success) return { success: false, message: "Service data is invalid." };
+  if (Object.hasOwn(serviceAliases, parsed.data.slug)) return { success: false, message: "That slug is reserved for a historical service URL. Choose a different slug for your new service." };
   try {
-    const service = await prisma.service.create({ data: { ...parsed.data, isPublished: false, price: parsed.data.price || null, problemsSolved: [], deliverables: [], engagementProcess: [] } });
+    const service = await prisma.service.create({ data: { ...parsed.data, price: parsed.data.price || null, problemsSolved: [], deliverables: [], engagementProcess: [] } });
     await audit("service.created", service.id);
-    revalidatePath("/services");
-    revalidatePath("/");
-    return { success: true, id: service.id, message: "Service created." };
+    refreshServicePages(service.slug);
+    return { success: true, id: service.id, service, message: service.isPublished ? "Service created and published. It is visible on /services." : "Service created as a draft. Publish it below when it is ready to appear on the public website." };
   } catch {
     return { success: false, message: "The service could not be created. Slugs must be unique." };
   }
@@ -157,9 +165,7 @@ export async function deleteService(serviceId: string) {
   try {
     const service = await prisma.service.delete({ where: { id: serviceId } });
     await audit("service.deleted", serviceId, { slug: service.slug });
-    revalidatePath("/services");
-    revalidatePath(`/services/${service.slug}`);
-    revalidatePath("/");
+    refreshServicePages(service.slug);
     return { success: true, message: "Service deleted." };
   } catch {
     return { success: false, message: "The service could not be deleted." };

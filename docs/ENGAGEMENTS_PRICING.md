@@ -37,6 +37,12 @@ Existing legacy engagement-model and service database records remain intact. The
 
 Seven historical service slugs (`ai-strategy`, `fractional-tpm`, `solution-architecture`, `enterprise-search`, `ai-audit`, `product-management`, and `product-delivery`) are omitted from public service listings and the sitemap. Their routes resolve to the published current capability. Service Pages in admin labels them as historical aliases. Core service records and other intentionally created services remain editable. The four current capabilities cover technical product management, custom software engineering, AI solutions/automation, and software architecture/advisory; the six offers describe how clients buy those capabilities.
 
+## Publish a new service capability
+
+On **Admin → Service Pages**, choose **Save draft** to keep a new service private or **Create & publish** to show it immediately on `/services`. The editor keeps the saved service and confirmation on screen. For an existing draft, check **Published on public site** and click **Save service**. Refreshing the public page does not publish a draft.
+
+Saving a service refreshes the service list, its detail page, the homepage, sitemap, and admin list. Historical alias slugs cannot be used for new services, because those URLs resolve to current capabilities. Adding a service capability does not create a priced offer automatically; use **Engagements & Pricing** for prices and contact choices.
+
 ## Edit the page introduction and SEO
 
 Use **Edit page introduction & SEO** in the offer editor, or open `/admin/pages/engagements`. The existing draft, preview, revision, and publication workflow applies to the introduction and SEO. `/admin/pages/pricing` redirects to this editor. Custom engagement metadata is retained; the old default heading “How to Engage” is read as “Engagements & Pricing.”

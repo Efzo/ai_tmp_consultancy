@@ -75,7 +75,7 @@ test('CMS changes persist all fields, refresh public consumers, and enforce role
     '@/lib/site-settings': { setDemoSiteSetting: (key, value) => { stored = { key, value: JSON.parse(value) }; } },
     '@/lib/rich-text': {}, 'next/cache': { revalidatePath: (path) => revalidated.push(path) },
     '@/lib/home-content': { homeSchema: require('zod').z.object({}) }, '@/lib/case-details': {},
-    '@/lib/page-content-schema': {}, '@/data/consulting.json': {}, '@/data/pricing': pricing,
+    '@/lib/page-content-schema': {}, '@/data/consulting.json': {}, '@/data/services': serviceData, '@/data/pricing': pricing,
   });
   try {
     assert.equal((await cms.updatePricingPlans(offers)).success, true);
@@ -159,4 +159,71 @@ test('contact choices match published pricing offers, preselect requested offers
   renderToStaticMarkup(await contact.default({ searchParams: Promise.resolve({ offer: 'custom-software-engineering' }) }));
   assert.equal(props.initialService, undefined);
   assert.deepEqual(props.services, [{ slug: 'general-inquiry', title: 'General inquiry' }]);
+});
+
+test('service creation explicitly publishes or saves a draft, and publication updates the public list and detail', async () => {
+  const original = { ...process.env };
+  Object.assign(process.env, { DEMO_MODE: 'false', DATABASE_URL: 'postgresql://test' });
+  const rows = []; const refreshed = []; let role = 'OWNER';
+  const prisma = {
+    user: { findUnique: async () => ({ role }) },
+    service: {
+      create: async ({ data }) => {
+        const row = { id: `service-${rows.length}`, metaTitle: null, metaDescription: null, ...data };
+        rows.push(row); return row;
+      },
+      update: async ({ where, data }) => { const row = rows.find((item) => item.id === where.id); Object.assign(row, data); return row; },
+      findMany: async () => rows,
+    },
+    auditEvent: { create: async () => ({}) },
+  };
+  const cms = load('src/app/actions/cms.ts', {
+    'next-auth': { getServerSession: async () => ({ user: { email: 'owner@example.com', role } }) },
+    '@/lib/password-reset': {}, '@/lib/auth': {}, '@/lib/prisma': { prisma }, '@/lib/demo-password': {},
+    '@/lib/site-settings': {}, '@/lib/rich-text': {}, 'next/cache': { revalidatePath: (path) => refreshed.push(path) },
+    '@/lib/home-content': { homeSchema: require('zod').z.object({}) }, '@/lib/case-details': {},
+    '@/lib/page-content-schema': {}, '@/data/consulting.json': consulting, '@/data/services': serviceData, '@/data/pricing': pricing,
+  });
+  const services = load('src/lib/services.ts', { '@/data/services': serviceData, '@/lib/prisma': { prisma } });
+  const input = {
+    slug: 'new-consulting-capability', title: 'New Consulting Capability', shortDescription: 'A new custom consulting capability.',
+    fullDescription: 'Detailed description of a new consulting capability.', targetAudience: 'Business leaders', ctaText: 'Book a call', price: '',
+  };
+  try {
+    const draft = await cms.createService(input);
+    assert.equal(draft.success, true);
+    assert.equal(draft.service.isPublished, false);
+    assert.match(draft.message, /draft/);
+    assert.deepEqual(await services.getManagedServices(), []);
+    assert.equal(await services.getManagedService(input.slug), undefined);
+    const live = await cms.createService({ ...input, slug: 'another-new-service', isPublished: true });
+    assert.equal(live.service.isPublished, true);
+    assert.match(live.message, /published/);
+    assert.deepEqual((await services.getManagedServices()).map((row) => row.slug), ['another-new-service']);
+    assert.equal((await services.getManagedService('another-new-service')).id, live.id);
+    assert.equal((await cms.updateService({ ...draft.service, isPublished: true })).success, true);
+    assert.equal((await services.getManagedServices()).length, 2);
+    assert.equal((await cms.updateService({ ...live.service, isPublished: false })).success, true);
+    assert.equal(await services.getManagedService('another-new-service'), undefined);
+    for (const path of ['/services', '/services/new-consulting-capability', '/services/another-new-service', '/', '/sitemap.xml', '/admin/services']) assert.ok(refreshed.includes(path), path);
+    const count = rows.length;
+    assert.equal((await cms.createService({ ...input, slug: 'ai-strategy', isPublished: true })).success, false);
+    role = 'VIEWER';
+    await assert.rejects(cms.createService({ ...input, isPublished: true }), /Unauthorized/);
+    assert.equal(rows.length, count);
+  } finally { process.env = original; }
+});
+
+test('an empty connected service catalog still offers the admin creation form', async () => {
+  const original = { ...process.env };
+  Object.assign(process.env, { DEMO_MODE: 'false', DATABASE_URL: 'postgresql://test' });
+  try {
+    const page = load('src/app/admin/services/page.tsx', {
+      '@/components/admin/AdminModule': { AdminModule: ({ children }) => children },
+      '@/components/admin/ServiceEditor': ({ services }) => createElement('p', null, `Creation form available: ${services.length} records`),
+      '@/data/services': serviceData,
+      '@/lib/prisma': { prisma: { service: { findMany: async () => [] } } },
+    });
+    assert.match(renderToStaticMarkup(await page.default()), /Creation form available: 0 records/);
+  } finally { process.env = original; }
 });
