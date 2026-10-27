@@ -454,6 +454,13 @@ export async function requestPasswordReset(emailInput: string): Promise<{ succes
   return sendPasswordReset(email);
 }
 
+export async function requestAdminAccount(emailInput: string) {
+  const email = emailInput.trim().toLowerCase();
+  if (!z.string().email().safeParse(email).success) return { success: false, message: "Enter a valid email address." };
+  if (!dbReady()) return { success: false, message: "Account setup requires a configured database with demo mode disabled." };
+  return sendPasswordReset(email, true);
+}
+
 export async function resetPassword(tokenInput: string, passwordInput: string) {
   const token = tokenInput.trim();
   const password = passwordInput;

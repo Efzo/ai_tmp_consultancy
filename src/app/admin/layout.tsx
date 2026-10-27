@@ -19,7 +19,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   function closeMobile() { setIsMobileOpen(false); menuButton.current?.focus(); }
 
-  if (["/admin/login", "/admin/forgot-password", "/admin/reset-password"].includes(pathname)) return <div className="min-h-screen bg-midnight text-platinum"><Navbar /><main>{children}</main><Footer /></div>;
+  if (["/admin/login", "/admin/setup", "/admin/forgot-password", "/admin/reset-password"].includes(pathname)) return <div className="min-h-screen bg-midnight text-platinum"><Navbar /><main>{children}</main><Footer /></div>;
 
   return <div className="min-h-screen bg-slate-deep text-platinum">
     <a href="#admin-main" className="skip-link">Skip to page content</a>

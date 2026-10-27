@@ -4,7 +4,11 @@ import { prisma } from "@/lib/prisma";
 
 async function getUsers() {
   if (process.env.DEMO_MODE === "true" || !process.env.DATABASE_URL || process.env.DATABASE_URL.includes("demo_")) return [];
-  try { return await prisma.user.findMany({ select: { id: true, name: true, email: true, role: true }, orderBy: { createdAt: "asc" } }); } catch { return []; }
+  try {
+    const users = await prisma.user.findMany({ select: { id: true, name: true, email: true, role: true, password: true }, orderBy: { createdAt: "asc" } });
+    // Only send a status flag to the client, never a password hash.
+    return users.map(({ password, ...user }) => ({ ...user, hasPassword: Boolean(password) }));
+  } catch { return []; }
 }
 
 export default async function UsersAdminPage() {

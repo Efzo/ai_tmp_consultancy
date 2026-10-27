@@ -13,18 +13,39 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        const configuredEmail = process.env.ADMIN_EMAIL;
-        if (!configuredEmail || !credentials?.email || !credentials.password) return null;
-        const databaseUrl = process.env.DATABASE_URL;
-        const databaseReady = process.env.DEMO_MODE !== "true" && Boolean(databaseUrl) && !databaseUrl?.includes("demo_");
+        if (!credentials?.email || !credentials.password) {
+          console.warn("[admin-auth] missing_credentials");
+          return null;
+        }
         const submittedEmail = credentials.email.trim().toLowerCase();
-        const databaseUser = databaseReady ? await prisma.user.findFirst({ where: { email: { equals: submittedEmail, mode: "insensitive" } } }).catch(() => null) : null;
-        if (!databaseUser && process.env.DEMO_MODE !== "true") return null;
-        const email = databaseUser?.email ?? configuredEmail;
-        const passwordHash = databaseUser?.password;
-        const passwordMatches = databaseUser ? Boolean(passwordHash) && await bcrypt.compare(credentials.password, passwordHash as string) : credentials.password === getDemoPassword();
-        if (submittedEmail !== email.trim().toLowerCase() || !passwordMatches) return null;
-        return { id: databaseUser?.id ?? "owner", name: databaseUser?.name ?? "Efosa Ojomo", email, role: databaseUser?.role ?? "OWNER" };
+        // Environment credentials belong to demo/setup only. Production has one
+        // source of truth: the user record and its stored bcrypt password.
+        if (process.env.DEMO_MODE === "true") {
+          const email = process.env.ADMIN_EMAIL?.trim().toLowerCase();
+          if (!email || submittedEmail !== email || credentials.password !== getDemoPassword()) return null;
+          return { id: "owner", name: "Efosa Ojomo", email, role: "OWNER" };
+        }
+        const databaseUrl = process.env.DATABASE_URL;
+        if (!databaseUrl || databaseUrl.includes("demo_")) {
+          console.error("[admin-auth] database_not_configured");
+          return null;
+        }
+        try {
+          const user = await prisma.user.findFirst({ where: { email: { equals: submittedEmail, mode: "insensitive" } } });
+          if (!user?.password) {
+            console.warn("[admin-auth] account_missing_or_password_not_set");
+            return null;
+          }
+          if (!await bcrypt.compare(credentials.password, user.password)) {
+            console.warn("[admin-auth] password_mismatch");
+            return null;
+          }
+          return { id: user.id, name: user.name ?? "Administrator", email: user.email, role: user.role };
+        } catch {
+          // Do not log credentials, connection strings or raw database errors.
+          console.error("[admin-auth] database_or_password_verification_failed");
+          return null;
+        }
       },
     }),
   ],

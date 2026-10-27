@@ -2,7 +2,60 @@
 
 Production admin accounts live in PostgreSQL. `ADMIN_EMAIL` and `ADMIN_PASSWORD`
 are setup credentials; changing those environment variables does not change an
-existing account's password. There is no public admin registration page.
+existing account's password. Account setup is invitation-only: the request page
+is public, but only approved email addresses can receive setup links.
+
+## Recommended email setup workflow
+
+Configure this in the **production hosting dashboard**, then deploy these changes:
+
+```dotenv
+ADMIN_EMAIL="hello@ojomoefosa.com"
+ADMIN_EMAILS="another-trusted-admin@example.com,third-trusted-admin@example.com"
+NEXTAUTH_URL="https://www.ojomoefosa.com"
+RESEND_API_KEY="your-resend-api-key"
+RESEND_FROM_EMAIL="Website Admin <admin@your-verified-domain>"
+DEMO_MODE="false"
+```
+
+Keep the correct `DATABASE_URL` and a strong, stable `NEXTAUTH_SECRET` configured
+as well. Use a Resend-verified sender domain. Never prefix these variables with
+`NEXT_PUBLIC_`. Changing local `.env` does not change the deployed environment.
+
+1. Add your approved administrator email (or emails) to the server configuration.
+   `ADMIN_EMAIL` and `ADMIN_EMAILS` both contribute to the setup allowlist, which
+   accepts comma-separated addresses and ignores capitalization and whitespace.
+   The terminal account setup command still requires a single `ADMIN_EMAIL`.
+2. Open `/admin/setup`, or choose **First time here? Set up admin access** on login.
+3. Enter an approved email. The site creates a pending database account and sends
+   a 30-minute, single-use link. It cannot sign in until a password is set.
+4. Open the email link and choose a password of at least 8 characters (maximum
+   72 UTF-8 bytes). The database stores only its bcrypt hash.
+5. Sign in at `/admin/login`. For later password changes, select **Forgot password?**
+   or **Change or reset my password** under Security Settings.
+
+No shared `ADMIN_PASSWORD` is needed for this workflow. Each person has their own
+password. Unapproved email requests receive the same acknowledgement but create
+no account and send no email. Raw setup/reset links are never returned in production.
+
+**Access policy:** every NEW approved account receives `OWNER` (full admin access).
+Only list people you trust with full control. Existing accounts retain their role
+when requesting a setup link; this cannot upgrade a Viewer or Editor. Use Admin
+Users and Roles to assign reduced permissions after onboarding. Pending accounts
+show **Pending password setup** there. The setup link also rechecks the allowlist
+before setting the password of a pending account.
+
+The environment list controls new enrollment. Removing an email from it blocks
+new setup requests but does not disable an existing active database account.
+Manage active permissions in Admin Users and Roles; revoking all access requires
+removing the database account. Existing accounts can still reset their passwords
+through their verified mailbox. Email delivery must be tested after deployment;
+the generic acknowledgement alone does not prove delivery.
+
+For daily use, sign in with the password saved in the database. Change it through
+Forgot password. Environment credentials are for initial setup and terminal
+recovery only. `--check` reports whether the configured setup password matches
+the saved password; it never displays either password.
 
 ## Create your first administrator
 
@@ -68,7 +121,8 @@ the old account. This command requires privileged database access; do not expose
 it as a public endpoint or execute it on every build/deployment.
 
 After provisioning, remove `ADMIN_PASSWORD` from the production app's runtime
-environment if it is no longer needed for setup. Keep `ADMIN_EMAIL`, database and
+environment if it is no longer needed for setup. `ADMIN_EMAIL` is also only needed
+for setup and demo mode; production login uses database accounts. Keep database and
 authentication settings. The old create-only seed also accepts these credentials,
 but it seeds content too and never resets an existing password.
 
@@ -109,6 +163,16 @@ each token can only be used once. Only a hash of the reset token is stored.
 - **Login keeps redirecting:** confirm the runtime `DATABASE_URL`, HTTPS
   `NEXTAUTH_URL`, stable `NEXTAUTH_SECRET`, and that `DEMO_MODE=false`. Clear old
   site cookies after correcting the configuration.
+- **Production domain:** for the current website's canonical hostname, set
+  `NEXTAUTH_URL=https://www.ojomoefosa.com` in the production hosting environment
+  and redeploy. A change to local `.env` does not update hosting settings.
+- **Credentials rejected:** check deployed server logs for `[admin-auth]`.
+  `password_mismatch` means the submitted password differs from that deployment's
+  saved password. `account_missing_or_password_not_set` means that deployment's
+  database has no usable account for the submitted email.
+  `database_not_configured` and `database_or_password_verification_failed` identify
+  server configuration or verification failures. These messages do not include
+  submitted credentials, account identifiers, or database URLs.
 - **Email capitalization:** login and recovery match emails case-insensitively.
   Avoid creating multiple accounts that differ only by case.
 

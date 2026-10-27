@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 export async function proxy(request: NextRequest) {
-  const publicAdminRoutes = ["/admin/login", "/admin/forgot-password", "/admin/reset-password"];
+  const publicAdminRoutes = ["/admin/login", "/admin/setup", "/admin/forgot-password", "/admin/reset-password"];
   if (!request.nextUrl.pathname.startsWith("/admin") || publicAdminRoutes.includes(request.nextUrl.pathname)) return NextResponse.next();
   const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET });
   if (!token) return NextResponse.redirect(new URL("/admin/login", request.url));
