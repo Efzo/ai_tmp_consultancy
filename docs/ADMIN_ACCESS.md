@@ -34,6 +34,11 @@ as well. Use a Resend-verified sender domain. Never prefix these variables with
 5. Sign in at `/admin/login`. For later password changes, select **Forgot password?**
    or **Change or reset my password** under Security Settings.
 
+Bookmark `https://www.ojomoefosa.com/admin/login`. That page links to **Set up an
+admin account** and **Forgot password?**, so there is no need to remember the
+separate setup URL. Successful password setup or recovery shows a confirmation
+screen with a **Sign in to admin** button.
+
 No shared `ADMIN_PASSWORD` is needed for this workflow. Each person has their own
 password. Unapproved email requests receive the same acknowledgement but create
 no account and send no email. Raw setup/reset links are never returned in production.

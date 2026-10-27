@@ -77,8 +77,12 @@ export default function AdminLoginPage() {
             {pending ? 'Signing in...' : 'Sign In to Console'}
           </button>
           <Link href="/admin/forgot-password" className="block text-center text-sm text-cyan-ai hover:text-white">Forgot password?</Link>
-          <Link href="/admin/setup" className="block text-center text-sm text-slate-muted hover:text-white">First time here? Set up admin access</Link>
         </form>
+        <div className="mt-8 border-t border-glass pt-6 text-center">
+          <h2 className="text-sm font-semibold">First time accessing the admin?</h2>
+          <Link href="/admin/setup" className="mt-3 flex w-full justify-center rounded-xl border border-glass px-4 py-3 text-sm font-medium text-cyan-ai transition-colors hover:border-electric hover:bg-white/5">Set up an admin account</Link>
+          <p className="mt-3 text-xs leading-relaxed text-slate-muted">For approved administrator emails. Bookmark this login page to find sign-in, setup, and password recovery in one place.</p>
+        </div>
       </div>
     </main>
   );
