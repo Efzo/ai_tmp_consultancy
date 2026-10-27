@@ -1,3 +1,4 @@
+import { getConsultantPortrait, portraitPreviewUrl } from "@/lib/portraits";
 import { getManagedPageContent, managedPageMetadata, canPreviewPages } from "@/lib/managed-pages";
 import PagePreviewBanner from "@/components/admin/PagePreviewBanner";
 import Image from "next/image";
@@ -7,7 +8,8 @@ export const dynamic = "force-dynamic";
 
 export default async function AboutPage() {
   const content = await getManagedPageContent("about");
-  const imageUrl = content.imageUrl.startsWith("/api/media/") && await canPreviewPages() ? content.imageUrl.replace("/api/media/", "/api/admin/media/") : content.imageUrl;
+  const portrait = getConsultantPortrait(content, "about");
+  const imageUrl = portraitPreviewUrl(portrait.url, await canPreviewPages());
 
   return (
     <main className="min-h-screen bg-midnight text-platinum pt-36 pb-20 px-6">
@@ -18,12 +20,13 @@ export default async function AboutPage() {
           </h1>
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
             <div className="lg:col-span-2 space-y-6 text-lg text-slate-muted leading-relaxed">
-              {content.imageUrl && <Image src={imageUrl} alt={content.imageAlt} width={600} height={600} unoptimized className="mb-6 max-h-80 w-auto rounded-2xl object-cover" />}
               {content.bio.map((para: string, i: number) => (
                 <p key={i}>{para}</p>
               ))}
             </div>
-            <div className="glass-panel p-8 h-fit">
+            <aside className="space-y-6">
+              <figure className="about-portrait"><Image src={imageUrl} alt={portrait.alt} width={600} height={800} sizes="(max-width: 639px) calc(100vw - 40px), (max-width: 1023px) 384px, 310px" unoptimized={!imageUrl.startsWith("/photos/")} className="h-auto w-full rounded-2xl" /><figcaption>Efosa Ojomo · Technology & Product Consultant</figcaption></figure>
+            <div className="glass-panel p-6 h-fit">
               <h3 className="text-xl font-bold mb-6">{content.expertiseHeading}</h3>
               <ul className="list-disc space-y-4 pl-5 text-sm text-slate-muted marker:text-slate-muted">
                 {content.expertise.map((item: string, i: number) => (
@@ -31,6 +34,7 @@ export default async function AboutPage() {
                 ))}
               </ul>
             </div>
+            </aside>
           </div>
         </section>
 

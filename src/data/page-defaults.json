@@ -49,8 +49,10 @@
     "expertiseHeading": "Core Expertise",
     "pedigreeHeading": "Professional Pedigree",
     "certsHeading": "Certifications",
-    "imageUrl": "",
-    "imageAlt": ""
+    "imageUrl": "/photos/Efosa.jpg",
+    "imageAlt": "Efosa Ojomo smiling in a navy suit with his hands clasped",
+    "aboutImageUrl": "/photos/IMG_1180.jpg",
+    "aboutImageAlt": "Full-length portrait of Efosa Ojomo in a navy suit"
   },
   "process": {
     "title": "How We Work",

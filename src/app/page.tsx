@@ -1,3 +1,4 @@
+import { getConsultantPortrait } from "@/lib/portraits";
 import { getManagedPageContent } from "@/lib/managed-pages";
 import { canPreviewPages } from "@/lib/managed-pages";
 import PagePreviewBanner from "@/components/admin/PagePreviewBanner";
@@ -24,7 +25,8 @@ export default async function HomePage() {
   const featured = studies.find((study) => study.slug === content.featured.slug);
   const preview = await canPreviewPages();
   const imageUrl = (url: string) => preview && url.startsWith("/api/media/") ? url.replace("/api/media/", "/api/admin/media/") : url;
-  const portrait = about.imageUrl ? { url: imageUrl(about.imageUrl), alt: about.imageAlt } : undefined;
+  const selectedPortrait = getConsultantPortrait(about, "hero");
+  const portrait = { ...selectedPortrait, url: imageUrl(selectedPortrait.url) };
   const featuredUrl = featured?.images[0];
   const mediaId = featuredUrl?.startsWith("/api/media/") ? featuredUrl.split("/").pop() : undefined;
   const media = mediaId ? await prisma.mediaAsset.findUnique({ where: { id: mediaId }, select: { altText: true } }).catch(() => null) : null;

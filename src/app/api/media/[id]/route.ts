@@ -6,9 +6,9 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
     let referenced = await prisma.caseStudy.findFirst({ where: { isPublished: true, status: "PUBLISHED", images: { has: `/api/media/${id}` } }, select: { id: true } });
     if (!referenced) {
       const snapshot = await prisma.siteSetting.findUnique({ where: { key: "page.about.published" } });
-      const value = snapshot?.value as { content?: { imageUrl?: string }; unpublished?: boolean } | null;
-      if (value && !value.unpublished && value.content?.imageUrl === `/api/media/${id}`) referenced = { id: "about" };
-      if (!snapshot) referenced = await prisma.page.findFirst({ where: { slug: "about", isPublished: true, status: "PUBLISHED", content: { path: ["imageUrl"], equals: `/api/media/${id}` } }, select: { id: true } });
+      const value = snapshot?.value as { content?: { imageUrl?: string; aboutImageUrl?: string }; unpublished?: boolean } | null;
+      if (value && !value.unpublished && [value.content?.imageUrl, value.content?.aboutImageUrl].includes(`/api/media/${id}`)) referenced = { id: "about" };
+      if (!snapshot) referenced = await prisma.page.findFirst({ where: { slug: "about", isPublished: true, status: "PUBLISHED", OR: [{ content: { path: ["imageUrl"], equals: `/api/media/${id}` } }, { content: { path: ["aboutImageUrl"], equals: `/api/media/${id}` } }] }, select: { id: true } });
     }
     if (!referenced) return new Response(null, { status: 404 });
     const asset = await prisma.mediaAsset.findUnique({ where: { id } });

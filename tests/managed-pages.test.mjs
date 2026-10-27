@@ -73,7 +73,8 @@ test('About edits flow through save, publish, public rendering, and private draf
   const saved = await h.save('about', about, 0, { metaTitle: 'Published SEO title' });
   assert.equal((await h.reader.getManagedPage('about')).content.headline, defaults.about.headline);
   assert.equal((await h.actions.publishManagedPage('about', saved.revision)).success, true);
-  const page = load('src/app/about/page.tsx', { '@/lib/managed-pages': h.reader, '@/components/admin/PagePreviewBanner': () => null, 'next/image': () => null });
+  const portraits = load('src/lib/portraits.ts', { '@/data/page-defaults.json': defaults });
+  const page = load('src/app/about/page.tsx', { '@/lib/portraits': portraits, '@/lib/managed-pages': h.reader, '@/components/admin/PagePreviewBanner': () => null, 'next/image': () => null });
   const html = renderToStaticMarkup(await page.default());
   assert.ok(html.includes('PublishedAbout'));
   assert.ok(html.includes('Published biography from the editor.'));
@@ -171,16 +172,21 @@ test('draft preview endpoint checks roles and only redirects to known website pa
 
 test('About images are public only while referenced by the published About content', async () => {
   let imageUrl = '/api/media/profile';
+  let aboutImageUrl = '';
   const route = load('src/app/api/media/[id]/route.ts', {
     '@vercel/blob': { get: async () => ({ statusCode: 200, stream: new ReadableStream({ start(controller) { controller.enqueue(new Uint8Array([1, 2, 3])); controller.close(); } }) }) },
     '@/lib/prisma': { prisma: {
       caseStudy: { findFirst: async () => null },
-      siteSetting: { findUnique: async () => ({ value: { content: { imageUrl } } }) },
+      siteSetting: { findUnique: async () => ({ value: { content: { imageUrl, aboutImageUrl } } }) },
       mediaAsset: { findUnique: async () => ({ mimeType: 'image/png', storageKey: 'profile' }) },
     } },
   });
   const request = () => route.GET(new Request('https://test/api/media/profile'), { params: Promise.resolve({ id: 'profile' }) });
   assert.equal((await request()).status, 200);
   imageUrl = '/api/media/new-profile';
+  assert.equal((await request()).status, 404);
+  aboutImageUrl = '/api/media/profile';
+  assert.equal((await request()).status, 200);
+  aboutImageUrl = '';
   assert.equal((await request()).status, 404);
 });

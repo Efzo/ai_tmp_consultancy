@@ -18,7 +18,7 @@ export default function Hero({ content, portrait }: HeroProps) {
           <Link href={content.contactHref ?? "/contact"} className="btn-secondary">{content.contactCta ?? "Contact"}</Link>
         </div>
       </div>
-      {portrait && <figure className="hero-portrait mt-10 lg:mt-0"><Image src={portrait.url} alt={portrait.alt} width={440} height={550} unoptimized priority /><figcaption>Efosa Ojomo · Product strategy & software engineering</figcaption></figure>}
+      {portrait && <figure className="hero-portrait mt-10 lg:mt-0"><Image src={portrait.url} alt={portrait.alt} width={440} height={660} sizes="(max-width: 639px) calc(100vw - 48px), 352px" unoptimized={!portrait.url.startsWith("/photos/")} preload /><figcaption>Efosa Ojomo · Product strategy & software engineering</figcaption></figure>}
     </div>
   </section>;
 }
