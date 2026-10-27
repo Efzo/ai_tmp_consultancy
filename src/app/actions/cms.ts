@@ -1,8 +1,7 @@
 "use server";
 
 import { getServerSession } from "next-auth";
-import { createHash, randomBytes } from "node:crypto";
-import bcrypt from "bcryptjs";
+import { sendPasswordReset, applyPasswordReset } from "@/lib/password-reset";
 import { z } from "zod";
 import { Prisma } from "@prisma/client";
 import { authOptions } from "@/lib/auth";
@@ -441,7 +440,7 @@ export async function updateUserRole(userId: string, role: "OWNER" | "EDITOR" | 
   return { success: true, message: "Role updated." };
 }
 
-export async function requestPasswordReset(emailInput: string) {
+export async function requestPasswordReset(emailInput: string): Promise<{ success: boolean; message: string; resetUrl?: string }> {
   const email = emailInput.trim().toLowerCase();
   if (!z.string().email().safeParse(email).success) return { success: false, message: "Enter a valid email address." };
   const configuredEmail = process.env.ADMIN_EMAIL?.toLowerCase();
@@ -451,34 +450,21 @@ export async function requestPasswordReset(emailInput: string) {
     const token = createDemoResetToken();
     return { success: true, message: "Demo reset link created.", resetUrl: `${process.env.NEXTAUTH_URL ?? "http://localhost:3000"}/admin/reset-password?token=${token}` };
   }
-  if (!dbReady()) return { success: false, message: "If that account exists, a reset email will be sent." };
-  const user = await prisma.user.findUnique({ where: { email } });
-  if (!user) return { success: true, message: "If that account exists, a reset email will be sent." };
-  const rawToken = randomBytes(32).toString("hex");
-  const tokenHash = createHash("sha256").update(rawToken).digest("hex");
-  await prisma.passwordResetToken.create({ data: { tokenHash, userId: user.id, expiresAt: new Date(Date.now() + 30 * 60 * 1000) } });
-  const resetUrl = `${process.env.NEXTAUTH_URL ?? "http://localhost:3000"}/admin/reset-password?token=${rawToken}`;
-  if (process.env.RESEND_API_KEY && process.env.BUSINESS_EMAIL && process.env.RESEND_FROM_EMAIL) {
-    await fetch("https://api.resend.com/emails", { method: "POST", headers: { Authorization: `Bearer ${process.env.RESEND_API_KEY}`, "Content-Type": "application/json" }, body: JSON.stringify({ from: process.env.RESEND_FROM_EMAIL, to: [email], subject: "Reset your admin portal password", html: `<p>Reset your password within 30 minutes:</p><p><a href="${resetUrl}">Reset your password here</a></p>` }) }).catch(() => undefined);
-  }
-  return { success: true, message: "If that account exists, a reset email will be sent." };
+  if (!dbReady()) return { success: true, message: "If that account exists, a reset email will be sent. Check your inbox and spam folder." };
+  return sendPasswordReset(email);
 }
 
 export async function resetPassword(tokenInput: string, passwordInput: string) {
   const token = tokenInput.trim();
-  const password = passwordInput.trim();
-  if (password.length < 8) return { success: false, message: "Password must be at least 8 characters." };
+  const password = passwordInput;
+  if (password.trim().length < 8 || Buffer.byteLength(password, "utf8") > 72) return { success: false, message: "Use at least 8 non-padding characters and at most 72 UTF-8 bytes." };
   if (process.env.DEMO_MODE === "true") {
     if (!consumeDemoResetToken(token)) return { success: false, message: "This reset link is invalid or has already been used." };
     setDemoPassword(password);
     return { success: true, message: "Demo password updated for this running server." };
   }
   if (!dbReady()) return { success: false, message: "Password reset is not configured." };
-  const tokenHash = createHash("sha256").update(token).digest("hex");
-  const resetToken = await prisma.passwordResetToken.findUnique({ where: { tokenHash } });
-  if (!resetToken || resetToken.usedAt || resetToken.expiresAt < new Date()) return { success: false, message: "This reset link is invalid or expired." };
-  await prisma.$transaction([prisma.user.update({ where: { id: resetToken.userId }, data: { password: await bcrypt.hash(password, 12) } }), prisma.passwordResetToken.update({ where: { id: resetToken.id }, data: { usedAt: new Date() } })]);
-  return { success: true, message: "Password updated. You can now sign in." };
+  return applyPasswordReset(token, password);
 }
 
 export async function initializeConsultingContent() {

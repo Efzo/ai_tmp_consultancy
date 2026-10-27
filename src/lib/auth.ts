@@ -17,12 +17,13 @@ export const authOptions: NextAuthOptions = {
         if (!configuredEmail || !credentials?.email || !credentials.password) return null;
         const databaseUrl = process.env.DATABASE_URL;
         const databaseReady = process.env.DEMO_MODE !== "true" && Boolean(databaseUrl) && !databaseUrl?.includes("demo_");
-        const databaseUser = databaseReady ? await prisma.user.findUnique({ where: { email: credentials.email } }).catch(() => null) : null;
+        const submittedEmail = credentials.email.trim().toLowerCase();
+        const databaseUser = databaseReady ? await prisma.user.findFirst({ where: { email: { equals: submittedEmail, mode: "insensitive" } } }).catch(() => null) : null;
         if (!databaseUser && process.env.DEMO_MODE !== "true") return null;
         const email = databaseUser?.email ?? configuredEmail;
         const passwordHash = databaseUser?.password;
         const passwordMatches = databaseUser ? Boolean(passwordHash) && await bcrypt.compare(credentials.password, passwordHash as string) : credentials.password === getDemoPassword();
-        if (credentials.email !== email || !passwordMatches) return null;
+        if (submittedEmail !== email.trim().toLowerCase() || !passwordMatches) return null;
         return { id: databaseUser?.id ?? "owner", name: databaseUser?.name ?? "Efosa Ojomo", email, role: databaseUser?.role ?? "OWNER" };
       },
     }),

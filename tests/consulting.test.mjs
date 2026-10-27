@@ -64,7 +64,7 @@ test('valid contact persists normalized website, sends plain text, and suppresse
 test('database outage cannot authenticate using an environment password', async () => {
   const saved = { ...process.env };
   Object.assign(process.env, { DEMO_MODE: 'false', DATABASE_URL: 'postgresql://test', ADMIN_EMAIL: 'owner@example.com', ADMIN_PASSWORD: 'test-secret' });
-  const { authOptions } = load('src/lib/auth.ts', { 'next-auth/providers/credentials': (options) => options, '@/lib/demo-password': { getDemoPassword: () => 'test-secret' }, '@/lib/prisma': { prisma: { user: { findUnique: async () => { throw new Error('offline'); } } } } });
+  const { authOptions } = load('src/lib/auth.ts', { 'next-auth/providers/credentials': (options) => options, '@/lib/demo-password': { getDemoPassword: () => 'test-secret' }, '@/lib/prisma': { prisma: { user: { findFirst: async () => { throw new Error('offline'); } } } } });
   try { assert.equal(await authOptions.providers[0].authorize({ email: 'owner@example.com', password: 'test-secret' }), null); }
   finally { process.env = saved; }
 });
