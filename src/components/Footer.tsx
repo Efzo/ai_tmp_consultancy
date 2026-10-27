@@ -45,7 +45,7 @@ const Footer = ({ settings }: { settings?: FooterSettings }) => {
             <h4 className="font-bold text-white mb-6">Services</h4>
             <ul className="space-y-4 text-slate-muted text-sm">
               <li><Link href={footerSettings.allServicesUrl} className="hover:text-white transition-colors">All Services</Link></li>
-              <li><Link href={footerSettings.aiStrategyUrl} className="hover:text-white transition-colors">AI Product Strategy</Link></li>
+              <li><Link href={footerSettings.aiStrategyUrl} className="hover:text-white transition-colors">AI Solutions & Automation</Link></li>
               <li><Link href={footerSettings.fractionalTpmUrl} className="hover:text-white transition-colors">Technical Product Management</Link></li>
               <li><Link href={footerSettings.aiArchitectureUrl} className="hover:text-white transition-colors">Technology Advisory</Link></li>
             </ul>
@@ -57,6 +57,7 @@ const Footer = ({ settings }: { settings?: FooterSettings }) => {
               <li><Link href={footerSettings.aboutUrl} className="hover:text-white transition-colors">About</Link></li>
               <li><Link href={footerSettings.processUrl} className="hover:text-white transition-colors">How We Work</Link></li>
               <li><Link href={footerSettings.caseStudiesUrl} className="hover:text-white transition-colors">Case Studies</Link></li>
+              <li><Link href="/engagements" className="hover:text-white transition-colors">Engagements & Pricing</Link></li>
               <li><Link href={footerSettings.contactUrl} className="hover:text-white transition-colors">Contact</Link></li>
             </ul>
           </div>

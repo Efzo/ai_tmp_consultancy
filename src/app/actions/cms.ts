@@ -14,6 +14,7 @@ import { homeSchema } from "@/lib/home-content";
 import { caseDetailsSchema } from "@/lib/case-details";
 import { isManagedPageSlug } from "@/lib/page-content-schema";
 import consulting from "@/data/consulting.json";
+import { pricingPlansSchema, pricingCatalogKey } from "@/data/pricing";
 
 const pageSchema = z.object({
   id: z.string().optional(),
@@ -291,14 +292,18 @@ export async function updateNavigationItems(input: unknown) {
 
 export async function updatePricingPlans(input: unknown) {
   await requireRole(["OWNER", "EDITOR"]);
-  const parsed = z.array(z.object({ id: z.string().trim().min(1).max(80), name: z.string().trim().min(2).max(120), price: z.string().trim().max(80).default(""), showPrice: z.boolean().default(false), isPublished: z.boolean().default(true), addOns: z.array(z.string().trim().min(1).max(160)).max(20).default([]), description: z.string().trim().min(10).max(500), features: z.array(z.string().trim().min(1).max(160)).max(20), type: z.enum(["fixed", "milestone", "retainer"]), cta: z.string().trim().min(2).max(80) })).min(1).max(12).safeParse(input);
-  if (!parsed.success) return { success: false, message: "Each package needs a name, description, pricing model, CTA, and valid deliverables. Prices are optional." };
+  const parsed = pricingPlansSchema.safeParse(input);
+  if (!parsed.success) return { success: false, message: "Each offer needs a unique slug ID, name, description, model, CTA, and valid deliverables. Visible prices cannot be blank." };
   const value = parsed.data;
-  if (!dbReady()) setDemoSiteSetting("pricing.plans", JSON.stringify(value));
-  else await prisma.siteSetting.upsert({ where: { key: "pricing.plans" }, update: { value: value as Prisma.InputJsonValue }, create: { key: "pricing.plans", value: value as Prisma.InputJsonValue } });
-  await audit("pricing.updated", "pricing.plans");
+  if (!dbReady()) setDemoSiteSetting(pricingCatalogKey, JSON.stringify(value));
+  else await prisma.siteSetting.upsert({ where: { key: pricingCatalogKey }, update: { value: value as Prisma.InputJsonValue }, create: { key: pricingCatalogKey, value: value as Prisma.InputJsonValue } });
+  await audit("pricing.updated", pricingCatalogKey);
+  revalidatePath("/engagements");
+  revalidatePath("/");
   revalidatePath("/pricing");
-  return { success: true, message: "Consulting packages updated." };
+  revalidatePath("/contact");
+  revalidatePath("/admin/packages");
+  return { success: true, message: "Engagements & Pricing updated." };
 }
 
 export async function saveCaseStudy(input: unknown) {

@@ -15,7 +15,7 @@ export const pageSchemas = {
   book: z.object({ ...listing, bookingUrl: z.string().trim().url().startsWith("https://").or(z.literal("")), calendarText: short, unavailableTitle: short, unavailableDescription: text, fallbackText: short, fallbackUrl: pageLink, cards: z.array(card).max(12) }),
   contact: z.object({ ...listing, submitText: short, successTitle: short, returnText: short, returnUrl: pageLink, callTitle: short, callDescription: text, callText: short, callUrl: pageLink, note: text }),
   services: z.object({ ...listing, itemCta: short }),
-  engagements: z.object({ ...listing, emptyText: text, itemCta: short, itemUrl: pageLink, cta }),
+  engagements: z.object({ ...listing, emptyText: text, cta }),
   pricing: z.object({ ...listing, notice: text, featuresTitle: short, addOnsTitle: short, consultationText: short, consultationUrl: pageLink, cta }),
   "case-studies": z.object({ ...listing, itemCta: short, emptyText: text }),
   blog: z.object({ ...listing, eyebrow: short }),
@@ -30,7 +30,8 @@ export function getPageDefaults<K extends ManagedPageSlug>(slug: K): ManagedPage
 export function parsePageContent<K extends ManagedPageSlug>(slug: K, value: unknown) {
   // Older About records did not have editable section labels or image fields.
   const input = value && typeof value === "object" && !Array.isArray(value) ? { ...getPageDefaults(slug), ...value } : value;
+  if (slug === "engagements" && input && typeof input === "object" && "title" in input && input.title === "How to Engage") input.title = "Engagements & Pricing";
   return pageSchemas[slug].safeParse(input);
 }
-export const managedPageNames: Record<ManagedPageSlug, string> = { about: "About", process: "How I Work", book: "Booking Page", contact: "Contact Page", services: "Services Page Intro", engagements: "Engagements Page Intro", pricing: "Pricing Page Intro", "case-studies": "Case Studies Page Intro", blog: "Blog Page Intro", videos: "Videos Page Intro", privacy: "Privacy Policy", terms: "Terms of Service" };
+export const managedPageNames: Record<ManagedPageSlug, string> = { about: "About", process: "How I Work", book: "Booking Page", contact: "Contact Page", services: "Services Page Intro", engagements: "Engagements & Pricing Page Intro", pricing: "Pricing Page Intro", "case-studies": "Case Studies Page Intro", blog: "Blog Page Intro", videos: "Videos Page Intro", privacy: "Privacy Policy", terms: "Terms of Service" };
 export const pagePath = (slug: ManagedPageSlug) => `/${slug}`;

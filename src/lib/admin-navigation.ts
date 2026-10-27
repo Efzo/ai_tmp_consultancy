@@ -1,4 +1,4 @@
-import { BarChart3, BookOpen, BriefcaseBusiness, CalendarDays, FileText, FolderOpen, Home, Image, LayoutDashboard, ListTree, MessageSquare, Package, Search, Settings, ShieldCheck, SlidersHorizontal, Users, Video, Workflow } from "lucide-react";
+import { BarChart3, BookOpen, BriefcaseBusiness, CalendarDays, FileText, FolderOpen, Home, Image, LayoutDashboard, ListTree, MessageSquare, Package, Search, Settings, ShieldCheck, SlidersHorizontal, Users, Video } from "lucide-react";
 
 export const adminGroups = [
   { id: "overview", name: "Start Here", description: "Find your way around and see what needs attention.", items: [
@@ -17,8 +17,7 @@ export const adminGroups = [
   ] },
   { id: "offers", name: "Services & Pricing", description: "Describe how clients can hire you and what each offer includes.", items: [
     { name: "Service Pages", href: "/admin/services", icon: BriefcaseBusiness, description: "Explain your capabilities, intended clients, and service deliverables." },
-    { name: "Ways to Work Together", href: "/admin/engagements", icon: Workflow, description: "Edit discovery, engineering, and fractional leadership engagement models." },
-    { name: "Offers & Pricing", href: "/admin/packages", icon: Package, description: "Edit offer scope, add-ons, pricing models, and optional public prices." },
+    { name: "Engagements & Pricing", href: "/admin/packages", icon: Package, description: "Edit offer scope, add-ons, pricing models, and optional public prices." },
   ] },
   { id: "clients", name: "Client Inquiries", description: "Follow up with potential clients and review scheduling setup.", items: [
     { name: "Project Inquiries", href: "/admin/leads", icon: Users, description: "Read contact submissions, update lead status, and keep follow-up notes." },

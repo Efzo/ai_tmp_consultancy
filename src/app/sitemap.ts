@@ -10,7 +10,7 @@ export const dynamic = "force-dynamic";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [blogPosts, caseStudies, services] = await Promise.all([getPublicBlogPosts(), getCaseStudies(), getManagedServices()]);
-  const staticRoutes = ["", "/services", "/about", "/case-studies", "/process", "/pricing", "/engagements", "/book", "/contact", "/blog", "/privacy", "/terms"];
+  const staticRoutes = ["", "/services", "/about", "/case-studies", "/process", "/engagements", "/book", "/contact", "/blog", "/privacy", "/terms"];
   return [
     ...staticRoutes.map((route) => ({ url: `${baseUrl}${route}`, lastModified: new Date() })),
     ...services.map((service) => ({ url: `${baseUrl}/services/${service.slug}`, lastModified: new Date() })),

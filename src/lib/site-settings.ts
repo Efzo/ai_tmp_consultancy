@@ -1,14 +1,14 @@
 import { prisma } from "@/lib/prisma";
 
-import { pricingPlans as fallbackPricingPlans, type PricingPlan } from "@/data/pricing";
+import { pricingPlans as fallbackPricingPlans, pricingPlansSchema, pricingCatalogKey, type PricingPlan } from "@/data/pricing";
 
 export const footerSettingDefaults = {
   linkedinUrl: "https://linkedin.com/in/efosa-o-4882a015a/",
   articlesUrl: "/blog",
   allServicesUrl: "/services",
-  aiStrategyUrl: "/services/ai-strategy",
-  fractionalTpmUrl: "/services/fractional-tpm",
-  aiArchitectureUrl: "/services/solution-architecture",
+  aiStrategyUrl: "/services/ai-solutions",
+  fractionalTpmUrl: "/services/technical-product-management",
+  aiArchitectureUrl: "/services/software-architecture",
   aboutUrl: "/about",
   processUrl: "/process",
   caseStudiesUrl: "/case-studies",
@@ -39,7 +39,7 @@ export const navigationDefaults: NavigationItem[] = [
   { label: "Services", href: "/services" },
   { label: "Case Studies", href: "/case-studies" },
   { label: "About", href: "/about" },
-  { label: "Engagements", href: "/engagements" },
+  { label: "Engagements & Pricing", href: "/engagements" },
   { label: "Blog", href: "/blog" },
   { label: "Videos", href: "/videos" },
 ];
@@ -134,7 +134,10 @@ export async function getNavigationItems(): Promise<NavigationItem[]> {
   const value = await readJsonSetting<unknown>("navigation.items", navigationDefaults);
   if (!Array.isArray(value)) return navigationDefaults;
   const items = value.filter((item): item is NavigationItem => Boolean(item && typeof item === "object" && typeof (item as NavigationItem).label === "string" && typeof (item as NavigationItem).href === "string" && (item as NavigationItem).label.trim() && (item as NavigationItem).href.trim())).map((item) => ({ label: item.label.trim(), href: item.href.trim() }));
-  return items.length ? items : navigationDefaults;
+  const canonical = items.filter((item) => !["/pricing", "/engagements"].includes(item.href));
+  const pricingIndex = items.findIndex((item) => ["/pricing", "/engagements"].includes(item.href));
+  canonical.splice(pricingIndex < 0 ? Math.min(2, canonical.length) : pricingIndex, 0, { label: "Engagements & Pricing", href: "/engagements" });
+  return canonical;
 }
 
 export async function getSeoSettings(): Promise<SeoSettings> {
@@ -147,8 +150,9 @@ export async function getSeoSettings(): Promise<SeoSettings> {
 }
 
 export async function getPricingPlans(): Promise<PricingPlan[]> {
-  const value = await readJsonSetting<unknown>("pricing.plans", fallbackPricingPlans);
-  return Array.isArray(value) && value.length ? value as PricingPlan[] : fallbackPricingPlans;
+  const value = await readJsonSetting<unknown>(pricingCatalogKey, fallbackPricingPlans);
+  const parsed = pricingPlansSchema.safeParse(value);
+  return parsed.success ? parsed.data : fallbackPricingPlans;
 }
 
 export async function getTestimonials(): Promise<ManagedTestimonial[]> {

@@ -2,6 +2,7 @@ import { pageMetadata } from "@/lib/seo";
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { getManagedService, getManagedServices } from '@/lib/services';
+import { getPricingPlans } from '@/lib/site-settings';
 
 export const dynamic = 'force-dynamic';
 
@@ -20,6 +21,8 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
     notFound();
   }
 
+  const offers = (await getPricingPlans()).filter((offer) => offer.isPublished !== false && offer.serviceSlug === service.slug);
+
   return (
     <main className="min-h-screen bg-midnight text-platinum pt-36 pb-20 px-6">
       <div className="max-w-5xl mx-auto">
@@ -34,6 +37,12 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
             {service.shortDescription}
           </p>
         </div>
+
+        {!!offers.length && <section className="glass-panel p-6 mb-10" aria-labelledby="related-engagements">
+          <h2 id="related-engagements" className="text-xl font-semibold mb-4">Related engagements & pricing</h2>
+          <ul className="space-y-3">{offers.map((offer) => <li key={offer.id}><Link href={`/engagements#${offer.id}`} className="text-electric underline">{offer.name}</Link>{offer.showPrice === true && offer.price && <p className="mt-1 text-sm text-slate-muted">{offer.price}</p>}</li>)}</ul>
+          <p className="mt-4 text-xs text-slate-muted">Starting fees in USD. Final scope and fees are agreed in writing.</p>
+        </section>}
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
           <div className="lg:col-span-2 space-y-12">

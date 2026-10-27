@@ -1,4 +1,4 @@
-import { services as fallbackServices, type Service } from "@/data/services";
+import { services as fallbackServices, serviceAliases, type Service } from "@/data/services";
 import { prisma } from "@/lib/prisma";
 
 export type ManagedService = Service & {
@@ -18,14 +18,13 @@ export async function getManagedServices(): Promise<ManagedService[]> {
   try {
     const records = await prisma.service.findMany({ orderBy: { createdAt: "asc" } });
     if (!records.length && await prisma.siteSetting.findUnique({ where: { key: "consulting.initialized" } })) return [];
-    return records.length ? records.filter((service) => service.isPublished) : fallbackServices;
+    return records.length ? records.filter((service) => service.isPublished && !Object.hasOwn(serviceAliases, service.slug)) : fallbackServices;
   } catch {
     return fallbackServices;
   }
 }
 
 export async function getManagedService(slug: string): Promise<ManagedService | undefined> {
-  const aliases: Record<string, string> = { "product-management": "technical-product-management", "ai-strategy": "ai-solutions", "solution-architecture": "software-architecture", "fractional-tpm": "technical-product-management" };
   const services = await getManagedServices();
-  return services.find((service) => service.slug === slug) ?? (!services.some((service) => service.slug === slug) ? services.find((service) => service.slug === aliases[slug]) : undefined);
+  return services.find((service) => service.slug === (serviceAliases[slug] ?? slug));
 }

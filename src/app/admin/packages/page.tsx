@@ -6,5 +6,5 @@ export const dynamic = "force-dynamic";
 
 export default async function PackagesAdminPage() {
   const plans = await getPricingPlans();
-  return <AdminModule title="Offers & Pricing" description="Manage packaged offers, included work, optional add-ons, and whether prices are shown publicly." status={`${plans.length} offers`}><PricingEditor plans={plans} /></AdminModule>;
+  return <AdminModule title="Engagements & Pricing" description="Edit the offers on /engagements and the homepage: prices, audience, problems, deliverables, engagement terms, visibility, and booking or proposal buttons." status={`${plans.length} offers`}><PricingEditor plans={plans} /></AdminModule>;
 }

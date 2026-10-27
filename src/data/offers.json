@@ -1,78 +1,128 @@
 [
   {
-    "id": "product-discovery-roadmap",
-    "name": "Product Discovery and MVP Planning",
-    "description": "For founders and teams that need to validate requirements and decide what to build first.",
+    "id": "introductory-discovery-call",
+    "name": "Introductory Discovery Call",
+    "price": "Free · 20–30 minutes",
+    "description": "A short conversation to understand your goals, discuss fit, and identify a useful next step.",
+    "audience": "Founders and business leaders exploring a technology or product challenge.",
+    "problem": "You need to clarify where to start and which engagement fits.",
     "features": [
-      "Requirements discovery",
-      "PRD and prioritized MVP scope",
-      "Feasibility review and delivery roadmap"
-    ],
-    "addOns": [
-      "Clickable prototype",
-      "Additional stakeholder workshops"
+      "High-level discussion of goals and constraints",
+      "Initial fit assessment",
+      "Recommended next step"
     ],
     "type": "fixed",
-    "price": "",
-    "showPrice": false,
+    "engagementModel": "Introductory conversation, 20–30 minutes. Detailed analysis and implementation are scoped separately.",
+    "cta": "Book a Discovery Call",
+    "ctaDestination": "book",
+    "showPrice": true,
     "isPublished": true,
-    "cta": "Request a Quote"
+    "addOns": [],
+    "serviceSlug": ""
   },
   {
-    "id": "ai-strategy-automation",
-    "name": "AI Strategy and Automation",
-    "description": "For businesses evaluating an AI use case or implementing a defined workflow automation.",
+    "id": "product-discovery-roadmap",
+    "name": "Product Discovery Sprint",
+    "price": "Starting at $2,500 per engagement",
+    "description": "Clarify what to build before committing to implementation.",
+    "audience": "Founders and teams planning an MVP or resolving competing product priorities.",
+    "problem": "Unclear requirements and priorities make delivery difficult to scope.",
     "features": [
-      "Use-case and data assessment",
-      "Solution design and agreed implementation",
-      "Evaluation and handover"
+      "Discovery findings and product requirements",
+      "Prioritized MVP scope",
+      "Technical feasibility review and delivery roadmap"
     ],
-    "addOns": [
-      "Additional integrations",
-      "Ongoing evaluation and monitoring"
-    ],
-    "type": "milestone",
-    "price": "",
-    "showPrice": false,
+    "type": "fixed",
+    "engagementModel": "Fixed-scope assessment with agreed workshops, deliverables, and review points.",
+    "cta": "Discuss a Discovery Sprint",
+    "ctaDestination": "book",
+    "showPrice": true,
     "isPublished": true,
-    "cta": "Request a Quote"
+    "addOns": [],
+    "serviceSlug": "technical-product-management"
+  },
+  {
+    "id": "ai-readiness-assessment",
+    "name": "AI Readiness Assessment",
+    "price": "Starting at $3,500 per engagement",
+    "description": "Assess a defined business use case before investing in AI implementation.",
+    "audience": "Businesses exploring AI assistance or workflow automation.",
+    "problem": "The value, data readiness, and implementation risks of an AI use case are unclear.",
+    "features": [
+      "Use-case and data readiness assessment",
+      "Feasibility, privacy, and risk review",
+      "Prioritized recommendations and implementation options"
+    ],
+    "type": "fixed",
+    "engagementModel": "Fixed-scope assessment. Production implementation is quoted separately.",
+    "cta": "Discuss AI Readiness",
+    "ctaDestination": "book",
+    "showPrice": true,
+    "isPublished": true,
+    "addOns": [],
+    "serviceSlug": "ai-solutions"
+  },
+  {
+    "id": "architecture-technical-review",
+    "name": "Architecture & Technical Review",
+    "price": "Starting at $2,500 per engagement",
+    "description": "Review system design and technical trade-offs to support your next decision.",
+    "audience": "Founders, CTOs, and engineering teams reviewing an existing or proposed system.",
+    "problem": "Architecture uncertainty, integration complexity, or technical risk is blocking decisions.",
+    "features": [
+      "Architecture assessment and diagrams",
+      "Technical trade-offs and risk register",
+      "Prioritized recommendations and roadmap"
+    ],
+    "type": "fixed",
+    "engagementModel": "Fixed-scope advisory review. Remediation and implementation are separate scopes.",
+    "cta": "Discuss a Technical Review",
+    "ctaDestination": "book",
+    "showPrice": true,
+    "isPublished": true,
+    "addOns": [],
+    "serviceSlug": "software-architecture"
+  },
+  {
+    "id": "fractional-tpm-monthly",
+    "name": "Fractional Technical Product Management",
+    "price": "Starting at $3,000 per month",
+    "description": "Ongoing product direction, prioritization, and stakeholder coordination within an agreed monthly allocation.",
+    "audience": "Growing teams that need technical product leadership on a fractional basis.",
+    "problem": "Backlog uncertainty and product-engineering misalignment slow delivery decisions.",
+    "features": [
+      "Roadmap and backlog reviews",
+      "Engineering and stakeholder coordination",
+      "Delivery risk and product performance reviews"
+    ],
+    "type": "retainer",
+    "engagementModel": "Monthly advisory retainer. Capacity, responsibilities, meeting cadence, and response expectations are defined in writing.",
+    "cta": "Discuss Monthly Advisory",
+    "ctaDestination": "book",
+    "showPrice": true,
+    "isPublished": true,
+    "addOns": [],
+    "serviceSlug": "technical-product-management"
   },
   {
     "id": "custom-software-engineering",
     "name": "Custom Software Engineering",
-    "description": "For businesses building an MVP, custom web application, backend, or third-party integration.",
+    "price": "Custom proposal",
+    "description": "Build an agreed application, backend, or integration through reviewed delivery milestones.",
+    "audience": "Businesses with a defined software need and an owner for delivery decisions.",
+    "problem": "Manual workflows, disconnected systems, or an MVP require hands-on implementation.",
     "features": [
-      "Solution architecture",
-      "Application, API, and database implementation",
-      "Testing, deployment preparation, and documentation"
-    ],
-    "addOns": [
-      "Data migration",
-      "Post-launch maintenance"
+      "Agreed solution architecture and implementation",
+      "Testing and deployment preparation",
+      "Documentation and handover"
     ],
     "type": "milestone",
-    "price": "",
-    "showPrice": false,
+    "engagementModel": "Custom delivery project with agreed scope, milestones, acceptance criteria, and responsibilities. Ongoing support is scoped separately.",
+    "cta": "Request a Custom Proposal",
+    "ctaDestination": "contact",
+    "showPrice": true,
     "isPublished": true,
-    "cta": "Request a Quote"
-  },
-  {
-    "id": "fractional-tpm-monthly",
-    "name": "Fractional TPM and Technical Advisory",
-    "description": "For teams needing ongoing product leadership, architecture advice, and delivery coordination.",
-    "features": [
-      "Roadmap and backlog management",
-      "Engineering and stakeholder coordination",
-      "Architecture reviews and product performance reviews"
-    ],
-    "addOns": [
-      "Discovery workshops",
-      "Implementation support under a separate scope"
-    ],
-    "type": "retainer",
-    "price": "",
-    "showPrice": false,
-    "isPublished": true,
-    "cta": "Request a Quote"
+    "addOns": [],
+    "serviceSlug": "software-engineering"
   }
 ]

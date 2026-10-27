@@ -14,6 +14,7 @@ export default async function ServicesPage() {
         <section className="text-center mb-12 md:mb-16">
           <h1 className="text-4xl md:text-6xl font-semibold mb-6 tracking-tight">{content.title}</h1>
           <p className="section-intro mx-auto">{content.description}</p>
+          <p className="mt-5 text-sm text-slate-muted">Explore the capabilities below, then choose a scoped engagement on <Link href="/engagements" className="text-electric underline">Engagements & Pricing</Link>.</p>
         </section>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">

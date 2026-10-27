@@ -8,7 +8,7 @@ import ThemeToggle from "@/components/ThemeToggle";
 import type { NavigationItem } from "@/lib/site-settings";
 const defaultItems: NavigationItem[] = [
   { label: "Services", href: "/services" }, { label: "Portfolio", href: "/case-studies" },
-  { label: "Engagements", href: "/engagements" }, { label: "About", href: "/about" },
+  { label: "Engagements & Pricing", href: "/engagements" }, { label: "About", href: "/about" },
   { label: "Insights", href: "/blog" }, { label: "Videos", href: "/videos" }, { label: "Contact", href: "/contact" },
 ];
 export default function Navbar({ items = defaultItems }: { items?: NavigationItem[] }) {

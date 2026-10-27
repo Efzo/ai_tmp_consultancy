@@ -141,8 +141,8 @@
     "itemCta": "Explore Service"
   },
   "engagements": {
-    "title": "How to Engage",
-    "description": "Flexible engagement models designed to fit your organization's current stage, from rapid discovery to long-term technical leadership.",
+    "title": "Engagements & Pricing",
+    "description": "Explore fixed-scope assessments, custom software delivery, and monthly advisory engagements. Choose a starting point for your technology and product goals.",
     "emptyText": "No engagement models published yet.",
     "itemCta": "Book a Discovery Call",
     "itemUrl": "/book",

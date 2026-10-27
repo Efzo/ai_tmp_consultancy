@@ -28,7 +28,7 @@ const initialValues: FormValues = {
   email: "",
   company: "",
   website: "",
-  service: "fractional-tpm",
+  service: "",
   challenge: "",
   timeline: "immediate",
   budget: "undetermined",
@@ -41,7 +41,7 @@ const fieldLabels: Record<string, string> = {
   email: "Business email",
   company: "Company name",
   website: "Company website",
-  service: "Consulting service",
+  service: "Engagement of interest",
   challenge: "Business challenge",
   timeline: "Expected timeline",
   budget: "Estimated budget",
@@ -52,7 +52,7 @@ export default function ContactForm({ budgetOptions, services, initialService, o
   const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
   const [message, setMessage] = useState("");
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
-  const [values, setValues] = useState<FormValues>({ ...initialValues, service: initialService ?? services[0]?.slug ?? "", challenge: offer ? `I would like to discuss ${offer}. ` : "" });
+  const [values, setValues] = useState<FormValues>({ ...initialValues, service: initialService ?? "", challenge: offer ? `I would like to discuss ${offer}. ` : "" });
 
   function update<K extends keyof FormValues>(key: K, value: FormValues[K]) {
     setValues((current) => ({ ...current, [key]: value }));
@@ -141,10 +141,12 @@ export default function ContactForm({ budgetOptions, services, initialService, o
                 </label>
               </div>
 
-              <label className="block space-y-2 text-sm font-medium text-slate-muted">Consulting Service
+              <label className="block space-y-2 text-sm font-medium text-slate-muted">Engagement of Interest
                 <select name="service" required value={values.service} onChange={(event) => update("service", event.target.value)} className="mt-2 w-full appearance-none rounded-xl border border-glass bg-white/5 px-4 py-3 text-white outline-none transition-all focus:border-electric">
+                  <option value="" disabled className="bg-midnight">Select an engagement</option>
                   {services.map((service) => <option key={service.slug} value={service.slug} className="bg-midnight">{service.title}</option>)}
                 </select>
+                <span className="block text-xs font-normal">The same engagements listed on <Link href="/engagements" className="text-electric underline">Engagements & Pricing</Link>. Not sure which fits? Describe your challenge below.</span>
               </label>
 
               <label className="block space-y-2 text-sm font-medium text-slate-muted">Business Challenge
