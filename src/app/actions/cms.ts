@@ -141,6 +141,9 @@ const serviceCreateSchema = z.object({
   ctaText: z.string().trim().min(2).max(80),
   price: z.string().trim().max(80).nullable().optional(),
   isPublished: z.boolean().default(false),
+  problemsSolved: z.array(z.string().trim().min(1).max(300)).max(30).default([]),
+  deliverables: z.array(z.string().trim().min(1).max(300)).max(30).default([]),
+  engagementProcess: z.array(z.string().trim().min(1).max(300)).max(20).default([]),
 });
 
 export async function createService(input: unknown) {
@@ -150,7 +153,7 @@ export async function createService(input: unknown) {
   if (!parsed.success) return { success: false, message: "Service data is invalid." };
   if (Object.hasOwn(serviceAliases, parsed.data.slug)) return { success: false, message: "That slug is reserved for a historical service URL. Choose a different slug for your new service." };
   try {
-    const service = await prisma.service.create({ data: { ...parsed.data, price: parsed.data.price || null, problemsSolved: [], deliverables: [], engagementProcess: [] } });
+    const service = await prisma.service.create({ data: { ...parsed.data, price: parsed.data.price || null } });
     await audit("service.created", service.id);
     refreshServicePages(service.slug);
     return { success: true, id: service.id, service, message: service.isPublished ? "Service created and published. It is visible on /services." : "Service created as a draft. Publish it below when it is ready to appear on the public website." };

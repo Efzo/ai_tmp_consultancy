@@ -17,12 +17,15 @@ const offers = JSON.parse(readFileSync(new URL('../src/data/offers.json', import
 const defaults = JSON.parse(readFileSync(new URL('../src/data/page-defaults.json', import.meta.url)));
 const pricing = load('src/data/pricing.ts', { './offers.json': offers });
 
-test('six default offers validate with requested fees and conversion workflows', () => {
+test('business model offers include project delivery and monthly care without unvalidated paid fees', () => {
   assert.equal(pricing.pricingPlansSchema.safeParse(offers).success, true);
-  assert.deepEqual(offers.map((p) => p.price), ['Free · 20–30 minutes', 'Starting at $2,500 per engagement', 'Starting at $3,500 per engagement', 'Starting at $2,500 per engagement', 'Starting at $3,000 per month', 'Custom proposal']);
+  assert.equal(offers.length, 9);
+  assert.ok(offers.some((offer) => offer.id === 'website-care' && offer.type === 'retainer'));
+  assert.ok(offers.some((offer) => offer.id === 'support-systems-setup' && offer.serviceSlug === 'customer-support-systems'));
+  assert.ok(offers.slice(1).every((offer) => !offer.showPrice && !offer.price));
   for (const plan of offers) {
     assert.ok(plan.audience && plan.problem && plan.engagementModel && plan.features.length);
-    assert.equal(pricing.pricingCtaHref(plan), plan.id === 'custom-software-engineering' ? '/contact?offer=custom-software-engineering' : '/book');
+    assert.equal(pricing.pricingCtaHref(plan), plan.ctaDestination === 'book' ? '/book' : `/contact?offer=${plan.id}`);
   }
 });
 
@@ -38,7 +41,7 @@ test('pricing validation rejects duplicate anchors, unsafe IDs, missing visible 
 });
 
 test('public cards and structured data respect publication and price visibility', async () => {
-  const visible = { ...offers[1], showPrice: false, name: 'Public </script><script> marker' };
+  const visible = { ...offers[1], price: 'Starting at $2,500', showPrice: false, name: 'Public </script><script> marker' };
   const page = load('src/app/engagements/page.tsx', {
     'next/link': ({ href, children, ...props }) => createElement('a', { ...props, href }, children),
     '@/components/ManagedPageCTA': () => null,
@@ -49,8 +52,8 @@ test('public cards and structured data respect publication and price visibility'
   });
   const html = renderToStaticMarkup(await page.default());
   assert.ok(!html.includes('$2,500'));
-  assert.ok(!html.includes('AI Readiness Assessment'));
-  assert.ok(html.includes('href="/book"'));
+  assert.ok(!html.includes('Website Care &amp; Maintenance'));
+  assert.ok(html.includes('href="/contact?offer=business-website"'));
   assert.ok(html.includes('Statement of Work'));
   const json = html.match(/<script type="application\/ld\+json">(.*?)<\/script>/s)[1];
   assert.ok(!json.includes('</script>'));
@@ -106,7 +109,7 @@ test('saved CMS offers and navigation are read without replacing custom content'
   } finally { process.env = original; }
 });
 
-test('legacy saved pricing cannot hide the six new defaults', async () => {
+test('legacy pricing is retained and saved unified offers override the business model defaults', async () => {
   const original = { ...process.env };
   Object.assign(process.env, { DEMO_MODE: 'true', DATABASE_URL: '' });
   try {
@@ -114,7 +117,7 @@ test('legacy saved pricing cannot hide the six new defaults', async () => {
     settings.setDemoSiteSetting('pricing.plans', JSON.stringify([{ ...offers[1], name: 'Old assessment', price: '', showPrice: false }]));
     const current = await settings.getPricingPlans();
     assert.deepEqual(current.map((offer) => offer.name), offers.map((offer) => offer.name));
-    assert.ok(current.every((offer) => offer.showPrice && offer.price));
+    assert.ok(current.slice(1).every((offer) => !offer.showPrice));
     settings.setDemoSiteSetting(pricing.pricingCatalogKey, JSON.stringify([{ ...offers[1], name: 'My edited sprint', price: 'Starting at $4,000', isPublished: false }]));
     assert.equal((await settings.getPricingPlans())[0].name, 'My edited sprint');
     assert.equal((await settings.getPricingPlans())[0].isPublished, false);
@@ -132,11 +135,11 @@ test('legacy services are omitted from listings, while legacy links resolve to p
   ];
   const services = load('src/lib/services.ts', { '@/data/services': serviceData, '@/lib/prisma': { prisma: { service: { findMany: async () => rows } } } });
   try {
-    assert.equal((await services.getManagedServices()).length, 4);
+    assert.equal((await services.getManagedServices()).length, 5);
     for (const [legacy, current] of Object.entries(serviceData.serviceAliases)) assert.equal((await services.getManagedService(legacy)).slug, current);
     rows.find((row) => row.slug === 'technical-product-management').isPublished = false;
     assert.equal(await services.getManagedService('fractional-tpm'), undefined);
-    assert.equal((await services.getManagedServices()).length, 3);
+    assert.equal((await services.getManagedServices()).length, 4);
   } finally { process.env = original; }
 });
 
@@ -154,7 +157,7 @@ test('contact choices match published pricing offers, preselect requested offers
   assert.equal(props.initialService, 'custom-software-engineering');
   assert.equal(props.offer, 'Custom Software Engineering');
   renderToStaticMarkup(await contact.default({ searchParams: Promise.resolve({ service: 'ai-strategy' }) }));
-  assert.equal(props.initialService, 'ai-readiness-assessment');
+  assert.equal(props.initialService, 'business-automation');
   current = offers.map((offer) => ({ ...offer, isPublished: false }));
   renderToStaticMarkup(await contact.default({ searchParams: Promise.resolve({ offer: 'custom-software-engineering' }) }));
   assert.equal(props.initialService, undefined);
@@ -188,11 +191,14 @@ test('service creation explicitly publishes or saves a draft, and publication up
   const input = {
     slug: 'new-consulting-capability', title: 'New Consulting Capability', shortDescription: 'A new custom consulting capability.',
     fullDescription: 'Detailed description of a new consulting capability.', targetAudience: 'Business leaders', ctaText: 'Book a call', price: '',
+    problemsSolved: ['Inquiries are untracked'], deliverables: ['Support platform setup'], engagementProcess: ['Discover', 'Implement', 'Review'],
   };
   try {
     const draft = await cms.createService(input);
     assert.equal(draft.success, true);
     assert.equal(draft.service.isPublished, false);
+    assert.deepEqual(draft.service.deliverables, ['Support platform setup']);
+    assert.deepEqual(draft.service.engagementProcess, ['Discover', 'Implement', 'Review']);
     assert.match(draft.message, /draft/);
     assert.deepEqual(await services.getManagedServices(), []);
     assert.equal(await services.getManagedService(input.slug), undefined);

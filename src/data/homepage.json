@@ -1,29 +1,37 @@
 {
   "hero": {
-    "title": "From Product Strategy to Production-Ready Software",
-    "subheadline": "I help startups and businesses plan, build, and scale digital products\u2014from product discovery and custom software engineering to AI automation and cloud architecture.",
+    "title": "Busy running your business? Let us handle the technology.",
+    "subheadline": "We build and manage websites and software, guide product development, improve customer support systems, and automate repetitive work. Practical technology help, from your first idea to everyday operations.",
     "primaryCta": "Book a Discovery Call",
     "primaryHref": "/book",
     "secondaryCta": "Explore Services",
     "contactCta": "Contact",
-    "contactHref": "/contact"
+    "contactHref": "/contact",
+    "eyebrow": "Your remote technology partner",
+    "portraitCaption": "Efosa Ojomo · Your technology partner"
   },
   "pillars": {
-    "title": "Four Ways I Can Help",
-    "subheadline": "Define the product, build the software, and make informed technical decisions."
+    "title": "Build. Manage. Automate. Grow.",
+    "subheadline": "Four connected services to help you launch, keep things running, and improve how your business works.",
+    "serviceSlugs": [
+      "software-engineering",
+      "technical-product-management",
+      "customer-support-systems",
+      "ai-solutions"
+    ]
   },
   "problems": {
-    "title": "Problems I Solve",
+    "title": "What needs to work better?",
     "items": [
-      "You have a product idea but need clear requirements and an MVP scope.",
-      "Manual workflows and disconnected tools are slowing your business down.",
-      "Your team needs engineering capacity to build a custom application or integration.",
-      "You need product leadership or an architecture review before your next investment."
+      "Your website needs building, updating, or regular care.",
+      "Customer inquiries get lost across inboxes and disconnected tools.",
+      "Manual follow-ups, scheduling, and reports take too much of your time.",
+      "Your product idea needs a clear plan and someone to coordinate delivery."
     ]
   },
   "process": {
-    "title": "How I Work",
-    "subheadline": "Discover \u2192 Design \u2192 Build \u2192 Launch \u2192 Improve. Each engagement has an agreed scope, review points, and clear responsibilities."
+    "title": "From the first conversation to ongoing care",
+    "subheadline": "Understand the need → Agree the scope → Build or improve → Launch → Maintain and review. Start with a defined project, then choose ongoing support where it helps."
   },
   "featured": {
     "category": "Featured Work",
@@ -33,12 +41,12 @@
     "slug": "clinchdesk"
   },
   "engagements": {
-    "title": "Engagements & Pricing",
-    "subheadline": "Start with a discovery call, choose a fixed-scope assessment, or explore custom delivery and monthly advisory. Review starting prices and what each engagement includes."
+    "title": "Start with a project. Continue with a partner.",
+    "subheadline": "Choose a website or software build, a support-system setup, an automation project, or product leadership. Monthly care and management are available with an agreed scope."
   },
   "differentiator": {
-    "title": "Why Work With Me",
-    "text": "Product decisions and engineering decisions belong in the same conversation. My work connects requirements, architecture, and implementation. Explore ClinchDesk for an example of the product scope, and use a discovery call to assess the fit for your project."
+    "title": "One partner across the technology lifecycle",
+    "text": "Efosa Ojomo connects business needs, product planning, and hands-on delivery. We can help build the system, document how it works, and agree a practical plan for maintaining and improving it. Your proposal sets out the work, responsibilities, and service capacity."
   },
   "insights": {
     "title": "Product & Technology Insights"
@@ -47,31 +55,36 @@
     "title": "Common Questions",
     "items": [
       {
-        "q": "Can you help define an MVP?",
-        "a": "Yes. Discovery engagements clarify requirements, priorities, feasibility, and a delivery roadmap before a build is scoped."
+        "q": "Can you build and maintain my business website?",
+        "a": "Yes. Website delivery and ongoing care can be scoped together or separately. A care plan sets out the updates, monitoring, maintenance, and minor improvements included each month."
       },
       {
-        "q": "Do you build software as well as advise?",
-        "a": "Yes. Custom engineering includes hands-on implementation. Advisory provides recommendations and designs; the proposal makes the distinction explicit."
+        "q": "Do you work with both business owners and startup founders?",
+        "a": "Yes. Business owners can start with websites, support systems, and workflow automation. Founders and product teams can engage for discovery, custom software, and fractional product leadership."
       },
       {
-        "q": "Is AI required for every project?",
-        "a": "No. AI is one capability. The solution should fit the business problem, whether that needs custom software, integrations, automation, or product leadership."
+        "q": "Will you answer all of my customer support inquiries?",
+        "a": "The service focuses on support technology: ticketing, knowledge bases, chatbots, routing, and workflow management. Human support-agent staffing and round-the-clock coverage are not included."
       },
       {
-        "q": "Is ongoing maintenance included?",
-        "a": "Support, maintenance, and operational responsibilities are agreed separately or explicitly included in the proposal. A product advisory retainer does not imply on-call engineering support."
+        "q": "Does a monthly plan include unlimited changes?",
+        "a": "No. Each agreement defines covered work, capacity, service hours, response expectations, exclusions, and a process for additional requests. Larger features and new projects are quoted separately."
+      },
+      {
+        "q": "Does every automation need AI?",
+        "a": "No. We start with the task and choose suitable tools. Straightforward integrations and rules may be a better fit; AI is used where it serves the agreed need."
       }
     ]
   },
   "finalCta": {
-    "title": "Let\u2019s discuss what your business needs next.",
-    "text": "Bring your product idea, delivery challenge, or technology question. We will explore the scope and practical next steps.",
+    "title": "What could you take off your plate?",
+    "text": "Tell us what you need to build, manage, or simplify. We will work out a practical starting point and a clear scope.",
     "cta": "Book a Discovery Call",
     "href": "/book"
   },
   "sections": [
     "hero",
+    "audiences",
     "pillars",
     "problems",
     "process",
@@ -81,5 +94,23 @@
     "insights",
     "faq",
     "finalCta"
-  ]
+  ],
+  "audiences": {
+    "title": "Technology support for the way you work",
+    "subheadline": "Choose the path that fits your business today.",
+    "items": [
+      {
+        "title": "For business owners",
+        "description": "Get a professional website, keep it maintained, organize customer inquiries, and automate the routine work that takes time away from your business.",
+        "cta": "Explore business services",
+        "href": "/for-businesses"
+      },
+      {
+        "title": "For founders & product teams",
+        "description": "Turn an idea into a scoped product, build custom software, and bring clear direction to your roadmap and development team.",
+        "cta": "Explore product & engineering",
+        "href": "/for-founders"
+      }
+    ]
+  }
 }

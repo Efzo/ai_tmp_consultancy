@@ -6,8 +6,8 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import type { FooterSettings, NavigationItem } from "@/lib/site-settings";
 
-export default function PublicChrome({ children, footerSettings, navigationItems }: { children: ReactNode; footerSettings: FooterSettings; navigationItems: NavigationItem[] }) {
+export default function PublicChrome({ children, footerSettings, navigationItems, description }: { children: ReactNode; footerSettings: FooterSettings; navigationItems: NavigationItem[]; description: string }) {
   const pathname = usePathname();
   if (pathname.startsWith("/admin")) return <>{children}</>;
-  return <div className="public-site"><a href="#main-content" className="skip-link">Skip to content</a><Navbar items={navigationItems} /><div id="main-content" tabIndex={-1}>{children}</div><Footer settings={footerSettings} /></div>;
+  return <div className="public-site"><a href="#main-content" className="skip-link">Skip to content</a><Navbar items={navigationItems} /><div id="main-content" tabIndex={-1}>{children}</div><Footer settings={footerSettings} description={description} /></div>;
 }

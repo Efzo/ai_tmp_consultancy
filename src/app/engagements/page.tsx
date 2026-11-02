@@ -28,10 +28,10 @@ export default async function EngagementsPage() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData).replace(/</g, "\\u003c") }} />
       <div className="max-w-6xl mx-auto">
         <section className="text-center mb-12 md:mb-16">
-          <p className="section-eyebrow mb-4">Technology & Product Consulting</p>
+          <p className="section-eyebrow mb-4">{content.eyebrow}</p>
           <h1 className="text-4xl md:text-6xl font-semibold mb-6 tracking-tight">{content.title}</h1>
           <p className="section-intro mx-auto">{content.description}</p>
-          <p className="mt-5 text-sm text-slate-muted">Prices shown in USD. Starting fees are indicative; your written proposal confirms the final fee.</p>
+          <p className="mt-5 text-sm text-slate-muted">{content.priceNotice}</p>
         </section>
         {published.length === 0 ? <div className="text-center py-20 glass-card"><p className="text-slate-muted text-lg">{content.emptyText}</p></div> : (
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
@@ -54,13 +54,9 @@ export default async function EngagementsPage() {
           </div>
         )}
         <section aria-labelledby="pricing-boundaries" className="glass-panel mt-12 p-6 sm:p-8">
-          <h2 id="pricing-boundaries" className="text-2xl font-semibold mb-4">How pricing and scope work</h2>
+          <h2 id="pricing-boundaries" className="text-2xl font-semibold mb-4">{content.scopeTitle}</h2>
           <ul className="space-y-3 text-slate-muted leading-relaxed list-disc pl-5">
-            <li>Starting prices are not final project quotations. Fees depend on scope, complexity, requirements, and engagement duration.</li>
-            <li>All paid engagements require an approved written agreement or Statement of Work before work begins.</li>
-            <li>Monthly retainers include only the agreed service capacity and responsibilities, with defined meetings and response expectations.</li>
-            <li>Deliverables, review rounds, acceptance criteria, and support are agreed in writing. Revisions and support are limited to that scope; additional work requires a separate agreement.</li>
-            <li>Recommendations and delivery work support your business decisions. Specific commercial or technical outcomes are not guaranteed.</li>
+            {content.scopeItems.map((item, index) => <li key={index}>{item}</li>)}
           </ul>
         </section>
         <ManagedPageCTA content={content.cta} />

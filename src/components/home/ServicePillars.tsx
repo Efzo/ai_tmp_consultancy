@@ -1,12 +1,12 @@
 import Link from "next/link";
-import { Target, Code2, Bot, Layout } from "lucide-react";
+import { Target, Code2, Bot, Headphones } from "lucide-react";
 import { getManagedServices } from "@/lib/services";
-export default async function ServicePillars({ content }: { content: { title: string; subheadline: string } }) {
+export default async function ServicePillars({ content }: { content: { title: string; subheadline: string; serviceSlugs?: string[] } }) {
   const published = await getManagedServices();
-  const currentSlugs = ["technical-product-management", "software-engineering", "ai-solutions", "software-architecture"];
+  const currentSlugs = content.serviceSlugs ?? ["technical-product-management", "software-engineering", "ai-solutions", "software-architecture"];
   const current = currentSlugs.flatMap((slug) => published.filter((service) => service.slug === slug));
-  const services = current.length ? current : published.slice(0, 4);
-  const icons = [Target, Code2, Bot, Layout];
+  const services = content.serviceSlugs ? current : current.length ? current : published.slice(0, 4);
+  const icons = [Code2, Target, Headphones, Bot];
   return <section className="section-shell"><div className="section-inner">
     <div className="section-heading"><h2 className="section-title">{content.title}</h2><p className="section-intro">{content.subheadline}</p></div>
     <div className="grid gap-x-10 gap-y-3 md:grid-cols-2">{services.map((service, index) => {

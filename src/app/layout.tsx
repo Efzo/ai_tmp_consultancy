@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
+import { getManagedServices } from "@/lib/services";
 import PublicChrome from "@/components/PublicChrome";
 import { getFooterSettings, getNavigationItems, getSeoSettings } from "@/lib/site-settings";
 
@@ -37,7 +38,7 @@ export async function generateMetadata(): Promise<Metadata> {
     title: seo.title,
     description: seo.description,
     url: "https://ojomoefosa.com",
-    siteName: "Efosa Ojomo Technology & Product Consulting",
+    siteName: "Efosa Ojomo Managed Technology & Business Solutions",
     images: [{ url: seo.ogImage }],
   },
 };
@@ -48,22 +49,21 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const footerSettings = await getFooterSettings();
-  const navigationItems = await getNavigationItems();
+  const [footerSettings, navigationItems, seo, services] = await Promise.all([getFooterSettings(), getNavigationItems(), getSeoSettings(), getManagedServices()]);
   return (
     <html lang="en" className={inter.variable} suppressHydrationWarning>
       <body className="antialiased bg-midnight text-platinum">
         <script dangerouslySetInnerHTML={{ __html: `(function(){try{var t=localStorage.getItem('site-theme');if(t==='light'||t==='dark'){document.documentElement.dataset.theme=t;}else if(window.matchMedia('(prefers-color-scheme: light)').matches){document.documentElement.dataset.theme='light';}}catch(e){}})();` }} />
         <GoogleAnalytics />
-        <PublicChrome footerSettings={footerSettings} navigationItems={navigationItems}>{children}</PublicChrome>
+        <PublicChrome footerSettings={footerSettings} navigationItems={navigationItems} description={seo.description}>{children}</PublicChrome>
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
           "@context": "https://schema.org",
           "@type": "ProfessionalService",
-          name: "Efosa Ojomo Technology & Product Consulting",
+          name: "Efosa Ojomo Managed Technology & Business Solutions",
           url: "https://ojomoefosa.com",
           areaServed: "Worldwide",
-          serviceType: ["Technical Product Management", "Custom Software Engineering", "AI Solutions and Automation", "Software Architecture and Technical Advisory"],
-        }) }} />
+          serviceType: services.map((service) => service.title),
+        }).replace(/</g, "\\u003c") }} />
       </body>
     </html>
   );

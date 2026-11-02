@@ -1,10 +1,37 @@
 {
   "services": [
     {
+      "slug": "software-engineering",
+      "title": "Websites & Custom Software",
+      "shortDescription": "Build your business website, online store, customer portal, or custom application, with an agreed plan for ongoing care.",
+      "fullDescription": "We build professional websites, online stores, customer portals, and custom software around your business needs. Work includes the agreed design, implementation, testing, launch preparation, and handover. Ongoing care can cover maintenance, content updates, monitoring, and minor improvements within a defined monthly allocation.",
+      "targetAudience": "Small business owners needing a dependable digital presence, and founders building a custom software product.",
+      "problemsSolved": [
+        "An outdated or missing business website",
+        "A product idea that needs implementation",
+        "Disconnected customer and business workflows",
+        "No clear owner for ongoing website maintenance"
+      ],
+      "deliverables": [
+        "Agreed website or application design and implementation",
+        "Content management, forms, and integrations as scoped",
+        "Testing, launch preparation, and handover documentation",
+        "Optional website care with covered tasks and capacity defined"
+      ],
+      "engagementProcess": [
+        "Understand your business and users",
+        "Agree pages, functionality, responsibilities, and milestones",
+        "Build and review",
+        "Test and prepare launch",
+        "Hand over or begin an agreed care plan"
+      ],
+      "ctaText": "Book a Discovery Call"
+    },
+    {
       "slug": "technical-product-management",
-      "title": "Technical Product Management",
-      "shortDescription": "Turn a product idea or stalled roadmap into clear requirements, priorities, and a delivery plan.",
-      "fullDescription": "Turn a product idea or stalled roadmap into clear requirements, priorities, and a delivery plan. I work with your stakeholders and engineers to connect business decisions to buildable software.",
+      "title": "Product & Technology Management",
+      "shortDescription": "Turn your idea into a practical roadmap, coordinate development, and keep improving your product after launch.",
+      "fullDescription": "We help define requirements, prioritize work, coordinate engineering, and manage product delivery. Start with discovery and a roadmap, or engage ongoing fractional technical product management. Monthly agreements define the allocation, meeting cadence, decision responsibilities, and review process.",
       "targetAudience": "Founders, startups, and teams that need product direction or fractional technical product leadership.",
       "problemsSolved": [
         "Unclear MVP scope",
@@ -13,10 +40,10 @@
         "Product and engineering misalignment"
       ],
       "deliverables": [
-        "Discovery findings and product requirements document",
-        "Prioritized MVP scope and roadmap",
+        "Product discovery, requirements, and prioritized roadmap",
         "Backlog and acceptance criteria",
-        "Stakeholder updates and product review framework"
+        "Engineering coordination and stakeholder updates",
+        "Product reviews within an agreed monthly allocation"
       ],
       "engagementProcess": [
         "Discover goals and constraints",
@@ -28,49 +55,49 @@
       "ctaText": "Book a Discovery Call"
     },
     {
-      "slug": "software-engineering",
-      "title": "Custom Software Engineering",
-      "shortDescription": "Build a custom web application, backend, or integration around your business workflows.",
-      "fullDescription": "Build a custom web application, backend, or integration around your business workflows. This is hands-on implementation, with architecture, testing, deployment preparation, documentation, and handover included in the agreed scope.",
-      "targetAudience": "Founders and businesses needing a new application, an MVP, or improvements to existing software.",
+      "slug": "customer-support-systems",
+      "title": "Customer Support Systems",
+      "shortDescription": "Set up ticketing, knowledge bases, chatbots, and customer communication workflows so inquiries are easier to manage.",
+      "fullDescription": "We set up and improve the technology behind customer support: shared inquiries, ticketing, knowledge bases, chatbots, routing, and reporting. Ongoing support-system management can cover configuration, workflow monitoring, and optimization. The service does not include human support-agent staffing, answering every customer conversation, or 24-hour coverage.",
+      "targetAudience": "Businesses organizing customer inquiries or improving an existing support platform.",
       "problemsSolved": [
-        "Manual workflows",
-        "Disconnected systems",
-        "An MVP that needs implementation",
-        "Software that is difficult to maintain"
+        "Inquiries scattered across inboxes",
+        "Unclear ticket ownership and escalation",
+        "Repeated questions without reusable answers",
+        "Limited visibility into support workflows"
       ],
       "deliverables": [
-        "Solution design and working application code",
-        "APIs, integrations, and database implementation",
-        "Tests and deployment configuration",
-        "Documentation and handover"
+        "Support platform and routing configuration",
+        "Knowledge-base setup and agreed chatbot workflows",
+        "Escalation rules, reporting, and team handover",
+        "Optional ongoing platform management with agreed service hours"
       ],
       "engagementProcess": [
-        "Discover requirements",
-        "Agree architecture and milestones",
-        "Build and review increments",
-        "Test and prepare deployment",
-        "Handover and agree support"
+        "Review channels and support needs",
+        "Agree tools, responsibilities, and escalation rules",
+        "Configure and test workflows",
+        "Document and hand over to your team",
+        "Review and improve within the agreed scope"
       ],
-      "ctaText": "Book a Discovery Call"
+      "ctaText": "Discuss Your Support Systems"
     },
     {
       "slug": "ai-solutions",
-      "title": "AI Solutions & Automation",
-      "shortDescription": "Assess where AI or workflow automation can help, then design and implement the agreed solution.",
-      "fullDescription": "Assess where AI or workflow automation can help, then design and implement the agreed solution. Work can include support assistance, knowledge retrieval, and system integrations, with evaluation and human review appropriate to the use case.",
-      "targetAudience": "Businesses with repetitive workflows or a defined AI use case and access to suitable data.",
+      "title": "Business Automation",
+      "shortDescription": "Simplify follow-ups, appointment reminders, data entry, document processing, and reporting with connected workflows.",
+      "fullDescription": "We review repetitive business tasks and implement suitable automations and integrations. Work can include customer follow-ups, reminders, document processing, reporting, and appropriate AI assistance. Ongoing management can cover monitoring, troubleshooting, and optimization of the agreed workflows; software subscriptions and new workflows are scoped separately.",
+      "targetAudience": "Business owners and teams spending too much time on repetitive administrative or operational tasks.",
       "problemsSolved": [
-        "Repetitive manual work",
-        "Information spread across systems",
-        "Unvalidated AI opportunities",
-        "Unreliable AI outputs"
+        "Repetitive data entry",
+        "Missed customer follow-ups",
+        "Manual appointment reminders and reports",
+        "Disconnected tools and inconsistent handoffs"
       ],
       "deliverables": [
-        "Use-case and data feasibility assessment",
-        "Automation design or implementation as agreed",
-        "Integration and evaluation plan",
-        "Guardrails, operating documentation, and handover"
+        "Workflow review and prioritized automation scope",
+        "Agreed workflow implementation and integrations",
+        "Testing, exception handling, and operating documentation",
+        "Optional monitoring and maintenance with defined usage limits"
       ],
       "engagementProcess": [
         "Identify a business problem",

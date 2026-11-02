@@ -26,7 +26,7 @@ export const pricingPlanSchema = z.object({
   type: z.enum(["fixed", "milestone", "retainer"]),
   cta: z.string().trim().min(2).max(80),
   ctaDestination: z.enum(["book", "contact"]).default("contact"),
-  serviceSlug: z.enum(["", "technical-product-management", "software-engineering", "ai-solutions", "software-architecture"]).default(""),
+  serviceSlug: z.string().trim().regex(/^$|^[a-z0-9]+(?:-[a-z0-9]+)*$/).max(120).default(""),
 });
 export const pricingPlansSchema = z.array(pricingPlanSchema).min(1).max(12)
   .refine((plans) => new Set(plans.map((plan) => plan.id)).size === plans.length, "Offer IDs must be unique.")
@@ -36,5 +36,5 @@ export function pricingCtaHref(plan: PricingPlan) {
   return plan.ctaDestination === "book" ? "/book" : `/contact?offer=${encodeURIComponent(plan.id)}`;
 }
 export function pricingModelLabel(plan: PricingPlan) {
-  return plan.type === "retainer" ? "Monthly advisory" : plan.type === "milestone" ? "Custom delivery project" : "Fixed-scope engagement";
+  return plan.type === "retainer" ? "Monthly care & management" : plan.type === "milestone" ? "Custom delivery project" : "Fixed-scope engagement";
 }

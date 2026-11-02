@@ -6,6 +6,7 @@ import { pageMetadata } from "@/lib/seo";
 import { prisma } from "@/lib/prisma";
 import { isSiteSettingsDatabaseReady } from "@/lib/site-settings";
 import Hero from '@/components/home/Hero';
+import AudiencePaths from '@/components/home/AudiencePaths';
 import ServicePillars from '@/components/home/ServicePillars';
 import Process from '@/components/home/Process';
 import FeaturedProject from '@/components/home/FeaturedProject';
@@ -33,6 +34,7 @@ export default async function HomePage() {
   const projectImage = featuredUrl ? { url: imageUrl(featuredUrl), alt: media?.altText || `${featured?.title} project screenshot` } : undefined;
   const sections = {
     hero: <Hero content={content.hero} portrait={portrait} />,
+    audiences: <AudiencePaths content={content.audiences} />,
     pillars: <ServicePillars content={content.pillars} />,
     problems: <section className="section-shell"><div className="section-inner grid gap-8 lg:grid-cols-[.7fr_1fr]"><h2 className="section-title">{content.problems.title}</h2><ol className="problem-list">{content.problems.items.map((item) => <li className="problem-item" key={item}><p className="text-slate-muted">{item}</p></li>)}</ol></div></section>,
     process: <Process content={content.process} />,
@@ -51,5 +53,5 @@ export async function generateMetadata() {
   const record = isSiteSettingsDatabaseReady() ? await prisma.siteSetting.findUnique({ where: { key: "homepage.seo" } }).catch(() => null) : null;
   const draft = isSiteSettingsDatabaseReady() && await canPreviewPages() ? await prisma.page.findUnique({ where: { slug: "home" } }).catch(() => null) : null;
   const seo = draft ? { title: draft.metaTitle ?? undefined, description: draft.metaDescription ?? undefined } : record?.value as { title?: string; description?: string } | undefined;
-  return pageMetadata(seo?.title || "Technology & Product Consulting", seo?.description || content.hero.subheadline, "/");
+  return pageMetadata(seo?.title || "Your Technology Partner", seo?.description || content.hero.subheadline, "/");
 }

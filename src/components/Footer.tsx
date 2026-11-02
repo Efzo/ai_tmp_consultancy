@@ -3,7 +3,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import type { FooterSettings } from '@/lib/site-settings';
 
-const Footer = ({ settings }: { settings?: FooterSettings }) => {
+const Footer = ({ settings, description }: { settings?: FooterSettings; description?: string }) => {
   const footerSettings = settings ?? {
     linkedinUrl: 'https://linkedin.com/in/efosa-o-4882a015a/',
     articlesUrl: '/blog',
@@ -28,8 +28,7 @@ const Footer = ({ settings }: { settings?: FooterSettings }) => {
               <span>Efosa <span className="text-electric">Ojomo</span></span>
             </Link>
             <p className="text-slate-muted text-sm mb-6">
-              Technology & Product Consulting. Technical Leadership. Measurable Outcomes.
-              Helping organizations turn business challenges into products and technology solutions.
+              {description ?? "Your technology partner, from idea to everyday operations."}
             </p>
             <div className="flex gap-4 text-slate-muted">
               <a href={footerSettings.linkedinUrl} target="_blank" rel="noopener noreferrer" className="hover:text-electric transition-colors">
@@ -44,9 +43,11 @@ const Footer = ({ settings }: { settings?: FooterSettings }) => {
           <div>
             <h4 className="font-bold text-white mb-6">Services</h4>
             <ul className="space-y-4 text-slate-muted text-sm">
+              <li><Link href="/services/software-engineering" className="hover:text-white transition-colors">Websites & Custom Software</Link></li>
+              <li><Link href="/services/customer-support-systems" className="hover:text-white transition-colors">Customer Support Systems</Link></li>
               <li><Link href={footerSettings.allServicesUrl} className="hover:text-white transition-colors">All Services</Link></li>
-              <li><Link href={footerSettings.aiStrategyUrl} className="hover:text-white transition-colors">AI Solutions & Automation</Link></li>
-              <li><Link href={footerSettings.fractionalTpmUrl} className="hover:text-white transition-colors">Technical Product Management</Link></li>
+              <li><Link href={footerSettings.aiStrategyUrl} className="hover:text-white transition-colors">Business Automation</Link></li>
+              <li><Link href={footerSettings.fractionalTpmUrl} className="hover:text-white transition-colors">Product & Technology Management</Link></li>
               <li><Link href={footerSettings.aiArchitectureUrl} className="hover:text-white transition-colors">Technology Advisory</Link></li>
             </ul>
           </div>

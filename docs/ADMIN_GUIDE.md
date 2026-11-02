@@ -1,5 +1,7 @@
 # Website Manager: where to find everything
 
+For the managed technology positioning, begin at **Business Model & Positioning** (`/admin/business-model`). It connects the four primary services, business-owner/founder paths, project offers, and monthly plans. See [Business model setup](BUSINESS_MODEL.md) for adopting the templates without automatically replacing saved content.
+
 Open `/admin` and sign in. Start with **What would you like to do?**, or choose **Where to Edit** for a searchable guide and a page-by-page list of available controls.
 
 | Menu group | Destinations | Use it for |

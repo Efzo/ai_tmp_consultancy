@@ -45,8 +45,8 @@ export const navigationDefaults: NavigationItem[] = [
 ];
 
 export const seoDefaults: SeoSettings = {
-  title: "Efosa Ojomo | Technology & Product Consulting",
-  description: "Technical product management, custom software engineering, AI automation, and software architecture consulting for startups and businesses.",
+  title: "Efosa Ojomo | Your Technology Partner",
+  description: "Websites, custom software, product management, customer support systems, and business automation. Project delivery and ongoing technology care for businesses and founders.",
   ogImage: "/logo_pack/logo.png",
 };
 

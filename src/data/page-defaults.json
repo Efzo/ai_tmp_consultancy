@@ -1,18 +1,17 @@
 {
   "about": {
-    "headline": "Bridging Engineering, Product & Business",
+    "headline": "Your technology partner, from idea to everyday operations",
     "bio": [
-      "I am a Technical Product Manager and technology product leader with over 10 years of experience building at the intersection of product strategy, cloud architecture, enterprise software, and AI systems.",
-      "Throughout my career—spanning leadership roles at Amazon, Microsoft, and Vertex—I have specialized in one specific challenge: reducing the distance between a high-level business vision and a production-ready technical implementation.",
-      "My approach starts with the business and customer problem—not a particular technology. I combine technical fluency in cloud platforms, enterprise software, and AI systems with a product-first mindset focused on measurable business outcomes.",
-      "Strongest where technical depth meets product judgment: clarifying ambiguous customer problems, defining rigorous PRDs, prioritizing high-impact trade-offs, and aligning cross-functional teams to deliver on a roadmap."
+      "I help business owners and founders build, manage, and improve the technology behind their work. That can mean a professional website, a custom software product, an organized support system, or an automation that removes repetitive tasks.",
+      "My approach connects product planning with hands-on delivery. We start with your business needs, agree what should change, and define the work and responsibilities before implementation.",
+      "You can engage for a specific project or agree ongoing care and product oversight. Every monthly agreement sets out covered work, capacity, and expectations so you know what support is included."
     ],
     "expertise": [
-      "Technical Product Management & Roadmapping",
-      "Enterprise SaaS Architecture",
-      "Fractional TPM Leadership",
-      "Cloud Platform Modernization",
-      "AI Product Strategy & Evaluation"
+      "Websites & Custom Software",
+      "Product & Technology Management",
+      "Customer Support Systems",
+      "Business Automation",
+      "Software Architecture & Technical Advisory"
     ],
     "pedigree": [
       {
@@ -56,42 +55,37 @@
   },
   "process": {
     "title": "How We Work",
-    "description": "A structured, outcome-driven engagement lifecycle designed to move you from uncertainty to a clearly scoped product or technology solution.",
+    "description": "Start with a clear need and an agreed scope. Build or improve the system, then choose a practical plan for handover or ongoing care.",
     "steps": [
       {
         "step": "01",
-        "title": "Discovery",
-        "description": "We start with an intensive discovery phase to understand your current state, existing data silos, and the underlying business objectives. This involves stakeholder interviews and technical audits of your current stack."
+        "title": "Understand the need",
+        "description": "Review your goals, current tools, customers, and the work that is taking too much time."
       },
       {
         "step": "02",
-        "title": "Business Problem Assessment",
-        "description": "We strip away the AI hype to identify the actual problem. We define the 'Job to be Done' and determine if AI is the most effective tool for the solution, or if a simpler architectural change is required."
+        "title": "Agree the scope",
+        "description": "Set out deliverables, responsibilities, review points, schedule, fees, and any third-party costs in a written proposal."
       },
       {
         "step": "03",
-        "title": "Scope & Proposal",
-        "description": "I provide a detailed project proposal including a defined scope, target outcomes, timeline, and resource requirements. This ensures total alignment on expectations before any engineering begins."
+        "title": "Build or improve",
+        "description": "Implement the agreed website, software, support system, or automation with regular reviews."
       },
       {
         "step": "04",
-        "title": "Product Strategy & Technical Planning",
-        "description": "The core design phase. We create the product roadmap, define the architecture and integration approach, and write the high-fidelity PRDs that engineering teams can execute against."
+        "title": "Launch and hand over",
+        "description": "Test the agreed scope, prepare launch, document the system, and explain how your team will use it."
       },
       {
         "step": "05",
-        "title": "Execution & Implementation Oversight",
-        "description": "Whether building software, acting as a fractional TPM, or providing advice, I work to keep delivery aligned with the agreed scope. I manage the backlog, resolve technical trade-offs, and conduct rigorous quality evaluations."
-      },
-      {
-        "step": "06",
-        "title": "Evaluation & Handover",
-        "description": "We measure the results against the initial KPIs. I provide the final documentation, operational guidelines, and a handover plan to ensure your internal team can maintain and scale the system."
+        "title": "Maintain and review",
+        "description": "Choose optional ongoing care or product management with defined capacity, service hours, response expectations, and review points."
       }
     ],
     "cta": {
-      "title": "Ready to start your transformation?",
-      "description": "Whether you need a one-time strategy roadmap or ongoing fractional leadership, let's determine the best way to work together.",
+      "title": "What would you like to build or simplify?",
+      "description": "Start with a conversation about your business and the work you need help with.",
       "primaryText": "Book a Discovery Call",
       "primaryUrl": "/book",
       "secondaryText": "Request a Proposal",
@@ -100,7 +94,7 @@
   },
   "book": {
     "title": "Book a Discovery Call",
-    "description": "Book a discovery consultation to discuss your business challenges, product requirements, technology needs, or potential software and AI solutions.",
+    "description": "Discuss your website, product idea, customer support systems, or business workflows. We will identify a useful starting point and whether project delivery or ongoing management fits.",
     "bookingUrl": "",
     "calendarText": "Open Booking Calendar",
     "unavailableTitle": "Scheduling is being connected.",
@@ -124,8 +118,8 @@
   },
   "contact": {
     "title": "Start a Conversation",
-    "description": "Have a product, technology, or transformation challenge? Share the context and I'll prepare a tailored perspective for our first call.",
-    "submitText": "Request Consulting Proposal",
+    "description": "Tell us about the website, product, support system, or repetitive task you need help with. We will discuss a practical starting point and the support you need after launch.",
+    "submitText": "Send Your Inquiry",
     "successTitle": "Inquiry Received",
     "returnText": "Return Home",
     "returnUrl": "/",
@@ -133,16 +127,16 @@
     "callDescription": "If you'd prefer to skip the form and speak directly, you can book a slot in my calendar.",
     "callText": "Book a Discovery Call",
     "callUrl": "/book",
-    "note": "I prioritize inquiries with detailed business challenges to ensure we maximize our time together."
+    "note": "Share what you want to build or improve, what you use today, and whether you need a project or ongoing support."
   },
   "services": {
-    "title": "Expert Consulting for Technology-Driven Organizations",
-    "description": "We provide the product strategy, technical leadership, and delivery guidance necessary to turn complex business challenges into valuable digital products.",
+    "title": "Technology help, from launch to everyday operations",
+    "description": "Build your digital presence, manage your product, improve customer support systems, and automate repetitive work. Start with a defined project and add ongoing care where you need it.",
     "itemCta": "Explore Service"
   },
   "engagements": {
     "title": "Engagements & Pricing",
-    "description": "Explore fixed-scope assessments, custom software delivery, and monthly advisory engagements. Choose a starting point for your technology and product goals.",
+    "description": "Project delivery and ongoing monthly care for business owners, founders, and product teams. Choose a starting point, then agree the scope, capacity, and fees together.",
     "emptyText": "No engagement models published yet.",
     "itemCta": "Book a Discovery Call",
     "itemUrl": "/book",
@@ -153,7 +147,17 @@
       "primaryUrl": "/contact",
       "secondaryText": "",
       "secondaryUrl": ""
-    }
+    },
+    "eyebrow": "Your technology partner",
+    "priceNotice": "Paid services are scoped and quoted after discovery. Any published starting fees are in USD; the written proposal confirms the final fee.",
+    "scopeTitle": "How project delivery and ongoing care work",
+    "scopeItems": [
+      "Project fees depend on the agreed scope, complexity, responsibilities, and review points. Third-party subscriptions and usage costs are identified separately.",
+      "All paid engagements require an approved written agreement or Statement of Work before work begins.",
+      "Monthly plans cover named systems and agreed tasks, capacity, service hours, response expectations, exclusions, and usage limits. Maintenance does not include unlimited development.",
+      "New features, additional workflows, emergency work, and support outside the agreement are separately scoped.",
+      "Customer support services cover support technology and workflows. Human support-agent staffing and round-the-clock customer-service coverage are excluded."
+    ]
   },
   "pricing": {
     "title": "Investment Options",
@@ -234,5 +238,87 @@
         "body": "Update this section with the approved business contact address and governing-law language before publishing."
       }
     ]
+  },
+  "for-businesses": {
+    "title": "More time for your business. Better systems behind it.",
+    "description": "Websites, maintenance, customer support systems, and workflow automation for business owners who need practical technology help.",
+    "servicesHeading": "How we can help",
+    "items": [
+      {
+        "title": "Build your digital presence",
+        "description": "Launch a business website, online store, or client portal that fits the way you work.",
+        "cta": "Explore this service",
+        "href": "/services/software-engineering"
+      },
+      {
+        "title": "Keep your website maintained",
+        "description": "Agree a website care plan for maintenance, updates, monitoring, and minor improvements.",
+        "cta": "Explore this service",
+        "href": "/engagements"
+      },
+      {
+        "title": "Organize customer support",
+        "description": "Set up ticketing, reusable answers, and inquiry routing so your team can manage conversations.",
+        "cta": "Explore this service",
+        "href": "/services/customer-support-systems"
+      },
+      {
+        "title": "Simplify repetitive work",
+        "description": "Connect your tools and automate reminders, follow-ups, data entry, and reports.",
+        "cta": "Explore this service",
+        "href": "/services/ai-solutions"
+      }
+    ],
+    "ongoingTitle": "A project to get started. Ongoing support when you need it.",
+    "ongoingDescription": "Project delivery and monthly care are scoped separately. Your agreement defines the work, capacity, service hours, response expectations, exclusions, and third-party costs. Maintenance does not include unlimited development; support-system management does not include human support-agent staffing.",
+    "cta": {
+      "title": "Let us work out your next step",
+      "description": "Tell us where you are today and what you need to build, manage, or simplify.",
+      "primaryText": "Book a Discovery Call",
+      "primaryUrl": "/book",
+      "secondaryText": "Send an Inquiry",
+      "secondaryUrl": "/contact"
+    }
+  },
+  "for-founders": {
+    "title": "From product idea to launch and ongoing improvement.",
+    "description": "Product discovery, custom software, and fractional technical product management for founders and product teams.",
+    "servicesHeading": "How we can help",
+    "items": [
+      {
+        "title": "Define what to build",
+        "description": "Clarify users, requirements, MVP scope, feasibility, and the roadmap before committing to a build.",
+        "cta": "Explore this service",
+        "href": "/services/technical-product-management"
+      },
+      {
+        "title": "Build your software",
+        "description": "Deliver an agreed application, backend, or integration through reviewed milestones.",
+        "cta": "Explore this service",
+        "href": "/services/software-engineering"
+      },
+      {
+        "title": "Coordinate delivery",
+        "description": "Bring product direction, backlog prioritization, and engineering coordination into an agreed monthly allocation.",
+        "cta": "Explore this service",
+        "href": "/services/technical-product-management"
+      },
+      {
+        "title": "Make technical decisions",
+        "description": "Review architecture, APIs, data, and infrastructure trade-offs with specialist advisory.",
+        "cta": "Explore this service",
+        "href": "/services/software-architecture"
+      }
+    ],
+    "ongoingTitle": "A project to get started. Ongoing support when you need it.",
+    "ongoingDescription": "Project delivery and monthly care are scoped separately. Your agreement defines the work, capacity, service hours, response expectations, exclusions, and third-party costs. Maintenance does not include unlimited development; support-system management does not include human support-agent staffing.",
+    "cta": {
+      "title": "Let us work out your next step",
+      "description": "Tell us where you are today and what you need to build, manage, or simplify.",
+      "primaryText": "Book a Discovery Call",
+      "primaryUrl": "/book",
+      "secondaryText": "Send an Inquiry",
+      "secondaryUrl": "/contact"
+    }
   }
 }

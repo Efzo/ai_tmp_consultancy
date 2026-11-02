@@ -16,26 +16,29 @@ Each offer has an editable name, unique slug ID, public price label, description
 
 Prices are USD labels. Include “Starting at” and the period for indicative fees; do not present a starting fee as a final quotation. Keep capacity and responsibilities explicit for monthly advisory.
 
-## Six offers appear automatically
+## Business model offer templates
 
-The unified catalog uses the versioned `pricing.engagements.v1` setting. Until that setting is saved, all six recommended offers and their prices appear automatically. The older `pricing.plans` record stays untouched for reference but no longer controls public pricing or contact options. This prevents the older hidden-price catalog from masking the new list. There is no database migration or prerequisite admin import.
+The unified catalog uses the `pricing.engagements.v1` setting. Existing saved offers and publication choices are preserved. If no unified catalog has been saved, the nine managed technology offers below are used as defaults. The older `pricing.plans` record stays untouched and does not control public pricing.
 
-After editing, **Save offers** persists the unified catalog. Future edits, publication choices, and hidden prices in that setting are respected. **Review recommended offers** reloads the defaults into the editor for review; nothing changes publicly until Save.
+Choose **Review business model offers** to load the new list into the editor. Nothing changes publicly until **Save offers**. This replaces the complete reviewed list; keep any custom offers you want before saving. Paid prices are blank and hidden by default because the PDF's sample prices have not been validated.
 
-The recommended list includes:
-
-| Offer | Public price |
+| Offer | Default pricing visibility |
 | --- | --- |
 | Introductory Discovery Call | Free · 20–30 minutes |
-| Product Discovery Sprint | Starting at $2,500 per engagement |
-| AI Readiness Assessment | Starting at $3,500 per engagement |
-| Architecture & Technical Review | Starting at $2,500 per engagement |
-| Fractional Technical Product Management | Starting at $3,000 per month |
-| Custom Software Engineering | Custom proposal |
+| Business Website Build | Tailored quote |
+| Website Care & Maintenance | Monthly plan, tailored quote |
+| Customer Support System Setup | Tailored quote |
+| Business Workflow Automation | Tailored quote |
+| Support & Automation Management | Monthly plan, tailored quote |
+| Product Discovery Sprint | Tailored quote |
+| Fractional Technical Product Management | Monthly plan, tailored quote |
+| Custom Software Engineering | Tailored quote |
+
+See [Business model setup](BUSINESS_MODEL.md) for the full CMS rollout and the two customer paths.
 
 Existing legacy engagement-model and service database records remain intact. The contact dropdown uses the published unified offers rather than all service database records, so changing an offer name or publication state also changes the contact choices. A requested `?offer=` is selected automatically; older `?service=` links map to a related published offer. If all offers are unpublished, the contact form retains a general-inquiry option.
 
-Seven historical service slugs (`ai-strategy`, `fractional-tpm`, `solution-architecture`, `enterprise-search`, `ai-audit`, `product-management`, and `product-delivery`) are omitted from public service listings and the sitemap. Their routes resolve to the published current capability. Service Pages in admin labels them as historical aliases. Core service records and other intentionally created services remain editable. The four current capabilities cover technical product management, custom software engineering, AI solutions/automation, and software architecture/advisory; the six offers describe how clients buy those capabilities.
+Seven historical service slugs (`ai-strategy`, `fractional-tpm`, `solution-architecture`, `enterprise-search`, `ai-audit`, `product-management`, and `product-delivery`) are omitted from public service listings and the sitemap. Their routes resolve to the published current capability. Service Pages in admin labels them as historical aliases. Core service records and other intentionally created services remain editable. The four primary pillars cover websites/software, product management, support systems, and business automation. Architecture/advisory remains a specialist service. The offers describe how clients buy project delivery and ongoing care.
 
 ## Publish a new service capability
 
@@ -55,5 +58,5 @@ The public page explains written agreements, indicative fees, scope-dependent qu
 
 - Lint and production build pass.
 - Unit tests cover requested defaults, safe unique IDs, visible-price validation, legacy content, CMS persistence, role restrictions, cache refreshes, saved navigation normalization, publication/price visibility, and escaped structured data.
-- `node scripts/smoke-consulting.mjs` against a local production server in `DEMO_MODE=true` checks 16 public routes, all six offer destinations, the `/pricing` redirect, protected admin routes, sitemap, and media authorization.
+- `node scripts/smoke-consulting.mjs` against a local production server in `DEMO_MODE=true` checks 19 public routes, all nine offer destinations, the `/pricing` redirect, protected admin routes, sitemap, and media authorization.
 - No live payment, scheduling submission, email, production database write, migration, push, or deployment is part of this change. Desktop/mobile browser interaction and real authenticated CMS/database saves should be checked in staging before release; native browser interaction could not complete because the browser was being used concurrently.

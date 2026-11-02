@@ -1,12 +1,15 @@
-import { BarChart3, BookOpen, BriefcaseBusiness, CalendarDays, FileText, FolderOpen, Home, Image, LayoutDashboard, ListTree, MessageSquare, Package, Search, Settings, ShieldCheck, SlidersHorizontal, Users, Video } from "lucide-react";
+import { BarChart3, BookOpen, BriefcaseBusiness, CalendarDays, FileText, FolderOpen, Home, Image, LayoutDashboard, ListTree, MessageSquare, Package, Search, Settings, ShieldCheck, SlidersHorizontal, Target, Users, Video } from "lucide-react";
 
 export const adminGroups = [
   { id: "overview", name: "Start Here", description: "Find your way around and see what needs attention.", items: [
     { name: "Overview", href: "/admin", icon: LayoutDashboard, description: "See new inquiries, content totals, and shortcuts to common tasks." },
+    { name: "Business Model & Positioning", href: "/admin/business-model", icon: BriefcaseBusiness, description: "Set up your four service pillars, two customer paths, project offers, and monthly care plans." },
     { name: "Where to Edit", href: "/admin/content", icon: ListTree, description: "Find the right editor for each website page and see what can be changed." },
   ] },
   { id: "content", name: "Website Content", description: "Change what visitors read and see on your website.", items: [
     { name: "Edit Homepage", href: "/admin/page-builder", icon: Home, description: "Edit homepage text, sections, FAQs, buttons, and homepage SEO." },
+    { name: "Business Owner Path", href: "/admin/pages/for-businesses", icon: BriefcaseBusiness, description: "Edit the service journey for business owners: websites, care, customer support systems, and automation." },
+    { name: "Founder Path", href: "/admin/pages/for-founders", icon: Target, description: "Edit the service journey for founders and product teams: discovery, engineering, and ongoing product management." },
     { name: "Edit About", href: "/admin/pages/about", icon: FileText, description: "Edit your biography, experience, certifications, profile image, and About page SEO." },
     { name: "Website Pages", href: "/admin/pages", icon: ListTree, description: "Edit About, How I Work, Contact, Booking, legal pages, and page introductions." },
     { name: "Project Case Studies", href: "/admin/case-studies", icon: FolderOpen, description: "Edit project stories, technical details, outcomes, and screenshots." },

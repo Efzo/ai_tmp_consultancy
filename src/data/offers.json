@@ -21,9 +21,121 @@
     "serviceSlug": ""
   },
   {
+    "id": "business-website",
+    "name": "Business Website Build",
+    "price": "",
+    "description": "A professional website or online store tailored to your business, with a clear launch and handover plan.",
+    "audience": "Business owners establishing or improving their digital presence.",
+    "problem": "Your website is missing, outdated, or difficult to manage.",
+    "features": [
+      "Agreed pages, design, and CMS setup",
+      "Forms and integrations within scope",
+      "Testing, launch preparation, and handover"
+    ],
+    "type": "fixed",
+    "engagementModel": "Project fee based on agreed pages, functionality, content responsibilities, and review rounds. Hosting and third-party subscriptions are identified separately.",
+    "cta": "Discuss This Service",
+    "ctaDestination": "contact",
+    "showPrice": false,
+    "isPublished": true,
+    "addOns": [
+      "Ongoing website care",
+      "Additional integrations"
+    ],
+    "serviceSlug": "software-engineering"
+  },
+  {
+    "id": "website-care",
+    "name": "Website Care & Maintenance",
+    "price": "",
+    "description": "Keep your website maintained with a defined monthly allocation for updates, monitoring, and minor improvements.",
+    "audience": "Businesses with an existing website or a newly launched site.",
+    "problem": "Routine website maintenance and updates have no clear owner.",
+    "features": [
+      "Agreed maintenance and content updates",
+      "Monitoring and issue triage within defined service hours",
+      "Monthly review of completed work and priorities"
+    ],
+    "type": "retainer",
+    "engagementModel": "Monthly care plan with covered tasks, capacity, response expectations, and exclusions agreed in writing. New features, redesigns, emergency cover, and third-party fees are scoped separately.",
+    "cta": "Discuss This Service",
+    "ctaDestination": "contact",
+    "showPrice": false,
+    "isPublished": true,
+    "addOns": [],
+    "serviceSlug": "software-engineering"
+  },
+  {
+    "id": "support-systems-setup",
+    "name": "Customer Support System Setup",
+    "price": "",
+    "description": "Organize customer inquiries with ticketing, a knowledge base, and clearly defined support workflows.",
+    "audience": "Businesses moving beyond scattered inboxes and manual inquiry routing.",
+    "problem": "Inquiries are difficult to track, route, and resolve consistently.",
+    "features": [
+      "Support platform and ticket routing setup",
+      "Knowledge-base and agreed chatbot configuration",
+      "Escalation rules, testing, and team handover"
+    ],
+    "type": "fixed",
+    "engagementModel": "Setup project. Software subscriptions are separate. Human support-agent staffing and round-the-clock coverage are excluded.",
+    "cta": "Discuss This Service",
+    "ctaDestination": "contact",
+    "showPrice": false,
+    "isPublished": true,
+    "addOns": [
+      "Monthly support-system management"
+    ],
+    "serviceSlug": "customer-support-systems"
+  },
+  {
+    "id": "business-automation",
+    "name": "Business Workflow Automation",
+    "price": "",
+    "description": "Connect tools and automate an agreed set of repetitive business tasks.",
+    "audience": "Business owners and teams handling recurring administrative work.",
+    "problem": "Manual follow-ups, data entry, reminders, and reports consume time.",
+    "features": [
+      "Workflow mapping and agreed automation design",
+      "Implementation, integrations, and testing",
+      "Exception handling and operating documentation"
+    ],
+    "type": "fixed",
+    "engagementModel": "Setup project priced by workflow complexity and usage. Third-party subscriptions, usage fees, and additional workflows are agreed separately.",
+    "cta": "Discuss This Service",
+    "ctaDestination": "contact",
+    "showPrice": false,
+    "isPublished": true,
+    "addOns": [
+      "Monthly automation monitoring and maintenance"
+    ],
+    "serviceSlug": "ai-solutions"
+  },
+  {
+    "id": "systems-management",
+    "name": "Support & Automation Management",
+    "price": "",
+    "description": "Maintain and improve the support systems and automations already in place.",
+    "audience": "Businesses needing an ongoing owner for configured support technology or workflows.",
+    "problem": "Automations and support tools need monitoring, troubleshooting, and configuration updates.",
+    "features": [
+      "Monitoring of the agreed systems and workflows",
+      "Troubleshooting and configuration within monthly capacity",
+      "Periodic service review and improvement priorities"
+    ],
+    "type": "retainer",
+    "engagementModel": "Monthly agreement for named systems, usage limits, service hours, response expectations, and exclusions. Human support staffing, new workflow builds, and 24-hour coverage are excluded.",
+    "cta": "Discuss This Service",
+    "ctaDestination": "contact",
+    "showPrice": false,
+    "isPublished": true,
+    "addOns": [],
+    "serviceSlug": "ai-solutions"
+  },
+  {
     "id": "product-discovery-roadmap",
     "name": "Product Discovery Sprint",
-    "price": "Starting at $2,500 per engagement",
+    "price": "",
     "description": "Clarify what to build before committing to implementation.",
     "audience": "Founders and teams planning an MVP or resolving competing product priorities.",
     "problem": "Unclear requirements and priorities make delivery difficult to scope.",
@@ -36,57 +148,15 @@
     "engagementModel": "Fixed-scope assessment with agreed workshops, deliverables, and review points.",
     "cta": "Discuss a Discovery Sprint",
     "ctaDestination": "book",
-    "showPrice": true,
+    "showPrice": false,
     "isPublished": true,
     "addOns": [],
     "serviceSlug": "technical-product-management"
   },
   {
-    "id": "ai-readiness-assessment",
-    "name": "AI Readiness Assessment",
-    "price": "Starting at $3,500 per engagement",
-    "description": "Assess a defined business use case before investing in AI implementation.",
-    "audience": "Businesses exploring AI assistance or workflow automation.",
-    "problem": "The value, data readiness, and implementation risks of an AI use case are unclear.",
-    "features": [
-      "Use-case and data readiness assessment",
-      "Feasibility, privacy, and risk review",
-      "Prioritized recommendations and implementation options"
-    ],
-    "type": "fixed",
-    "engagementModel": "Fixed-scope assessment. Production implementation is quoted separately.",
-    "cta": "Discuss AI Readiness",
-    "ctaDestination": "book",
-    "showPrice": true,
-    "isPublished": true,
-    "addOns": [],
-    "serviceSlug": "ai-solutions"
-  },
-  {
-    "id": "architecture-technical-review",
-    "name": "Architecture & Technical Review",
-    "price": "Starting at $2,500 per engagement",
-    "description": "Review system design and technical trade-offs to support your next decision.",
-    "audience": "Founders, CTOs, and engineering teams reviewing an existing or proposed system.",
-    "problem": "Architecture uncertainty, integration complexity, or technical risk is blocking decisions.",
-    "features": [
-      "Architecture assessment and diagrams",
-      "Technical trade-offs and risk register",
-      "Prioritized recommendations and roadmap"
-    ],
-    "type": "fixed",
-    "engagementModel": "Fixed-scope advisory review. Remediation and implementation are separate scopes.",
-    "cta": "Discuss a Technical Review",
-    "ctaDestination": "book",
-    "showPrice": true,
-    "isPublished": true,
-    "addOns": [],
-    "serviceSlug": "software-architecture"
-  },
-  {
     "id": "fractional-tpm-monthly",
     "name": "Fractional Technical Product Management",
-    "price": "Starting at $3,000 per month",
+    "price": "",
     "description": "Ongoing product direction, prioritization, and stakeholder coordination within an agreed monthly allocation.",
     "audience": "Growing teams that need technical product leadership on a fractional basis.",
     "problem": "Backlog uncertainty and product-engineering misalignment slow delivery decisions.",
@@ -99,7 +169,7 @@
     "engagementModel": "Monthly advisory retainer. Capacity, responsibilities, meeting cadence, and response expectations are defined in writing.",
     "cta": "Discuss Monthly Advisory",
     "ctaDestination": "book",
-    "showPrice": true,
+    "showPrice": false,
     "isPublished": true,
     "addOns": [],
     "serviceSlug": "technical-product-management"
@@ -107,7 +177,7 @@
   {
     "id": "custom-software-engineering",
     "name": "Custom Software Engineering",
-    "price": "Custom proposal",
+    "price": "",
     "description": "Build an agreed application, backend, or integration through reviewed delivery milestones.",
     "audience": "Businesses with a defined software need and an owner for delivery decisions.",
     "problem": "Manual workflows, disconnected systems, or an MVP require hands-on implementation.",
@@ -120,7 +190,7 @@
     "engagementModel": "Custom delivery project with agreed scope, milestones, acceptance criteria, and responsibilities. Ongoing support is scoped separately.",
     "cta": "Request a Custom Proposal",
     "ctaDestination": "contact",
-    "showPrice": true,
+    "showPrice": false,
     "isPublished": true,
     "addOns": [],
     "serviceSlug": "software-engineering"
