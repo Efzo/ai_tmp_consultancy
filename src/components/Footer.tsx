@@ -23,9 +23,9 @@ const Footer = ({ settings, description }: { settings?: FooterSettings; descript
       <div className="max-w-7xl mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-10 mb-12">
           <div className="col-span-1 md:col-span-2">
-            <Link href="/" aria-label="Efosa Ojomo home" className="mb-6 flex items-center gap-3 text-2xl font-semibold tracking-tight">
+            <Link href="/" aria-label="Efosa Ojomo Technology Services home" className="mb-6 flex items-center gap-3 text-2xl font-semibold tracking-tight">
               <Image src="/logo_pack/logo.png" alt="Efosa Ojomo logo" width={44} height={44} className="h-11 w-11 rounded-xl object-cover" />
-              <span>Efosa <span className="text-electric">Ojomo</span></span>
+              <span className="flex flex-col gap-1.5"><span className="leading-none">Efosa <span className="text-electric">Ojomo</span></span><span className="text-xs font-medium leading-none tracking-[0.08em] text-slate-muted">Technology Services</span></span>
             </Link>
             <p className="text-slate-muted text-sm mb-6">
               {description ?? "Your technology partner, from idea to everyday operations."}
