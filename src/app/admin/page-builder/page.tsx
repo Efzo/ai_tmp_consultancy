@@ -13,6 +13,6 @@ export default async function PageBuilderPage({ searchParams }: { searchParams: 
   const { slug = "home" } = await searchParams;
   if (isManagedPageSlug(slug)) redirect(`/admin/pages/${slug}`);
   const page = await getPage(slug);
-  if (slug === "home") return <HomeEditor page={page ? { id: page.id, content: page.content, metaTitle: page.metaTitle, metaDescription: page.metaDescription } : undefined} versions={page?.versions.map(({ id, version }) => ({ id, version })) ?? []} />;
+  if (slug === "home") return <HomeEditor page={page ? { id: page.id, content: page.content, metaTitle: page.metaTitle, metaDescription: page.metaDescription } : undefined} versions={page?.versions.map(({ id, version, createdAt }) => ({ id, version, createdAt: createdAt.toISOString() })) ?? []} />;
   return <PageBuilder initialPage={page ? { id: page.id, slug: page.slug, title: page.title, content: page.content, metaTitle: page.metaTitle, metaDescription: page.metaDescription } : undefined} initialVersions={page?.versions.map((version) => ({ id: version.id, version: version.version, title: version.title, createdAt: version.createdAt.toISOString() }))} />;
 }

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { ChevronDown, History } from "lucide-react";
 import { homeDefaults, homeSchema, type HomeContent } from "@/lib/home-content";
 import { savePageDraft, publishPage, restorePageVersion } from "@/app/actions/cms";
 
@@ -10,7 +11,7 @@ const inputClass = "block w-full mt-2 p-3 rounded bg-midnight border border-glas
 
 export default function HomeEditor({ page, versions }: {
   page?: { id: string; content: unknown; metaTitle: string | null; metaDescription: string | null };
-  versions: { id: string; version: number }[];
+  versions: { id: string; version: number; createdAt: string }[];
 }) {
   const parsed = homeSchema.safeParse(page?.content);
   const [content, setContent] = useState(parsed.success ? parsed.data : homeDefaults);
@@ -87,13 +88,28 @@ export default function HomeEditor({ page, versions }: {
     </section>
     <p role="status">{message}</p>
     <div className="flex gap-4"><button disabled={busy} onClick={() => save(false)} className="btn-secondary">Save draft</button><button disabled={busy} onClick={() => save(false, true)} className="btn-secondary">Save & Preview</button><button disabled={busy} onClick={() => save(true)} className="btn-primary">Save and publish</button></div>
-    <h2 className="text-xl font-bold">Revision history</h2>
-    {versions.map((version) => <button key={version.id} className="btn-secondary mr-3" disabled={busy || !id} onClick={async () => {
-      if (!id) return;
-      setBusy(true);
-      try { const result = await restorePageVersion(id, version.id); setMessage(result.message); if (result.success) window.location.reload(); }
-      catch { setMessage("The version could not be restored."); }
-      finally { setBusy(false); }
-    }}>Restore v{version.version} as draft</button>)}
+    <details className="group glass-panel overflow-hidden">
+      <summary className="flex cursor-pointer list-none flex-wrap items-center gap-3 p-5 sm:p-6 [&::-webkit-details-marker]:hidden">
+        <History aria-hidden="true" className="h-5 w-5 shrink-0 text-electric" />
+        <h2 className="flex-1 text-lg font-semibold">Revision history</h2>
+        <span className="rounded-full border border-glass px-2.5 py-1 text-xs text-slate-muted">{versions.length} recent</span>
+        <ChevronDown aria-hidden="true" className="h-4 w-4 text-slate-muted transition-transform group-open:rotate-180" />
+      </summary>
+      <div className="border-t border-glass">
+        <p className="px-5 py-4 text-sm text-slate-muted sm:px-6">Showing up to 10 recent revisions. Restoring replaces your editor content with a saved revision as a new draft. Publish it when ready to update the website.</p>
+        {versions.length ? <div role="region" aria-label="Recent homepage revisions" tabIndex={0} className="max-h-80 overflow-y-auto overscroll-contain px-5 pb-2 sm:px-6">
+          <ul className="divide-y divide-glass">{versions.map((version, index) => <li key={version.id} className="flex flex-wrap items-center justify-between gap-3 py-4">
+            <div><p className="text-sm font-medium">Version {version.version}{index === 0 && <span className="ml-2 text-xs font-normal text-electric">Latest saved</span>}</p><time dateTime={version.createdAt} className="mt-1 block text-xs text-slate-muted">{new Date(version.createdAt).toLocaleString("en-US", { timeZone: "UTC", month: "short", day: "numeric", year: "numeric", hour: "numeric", minute: "2-digit" })} UTC</time></div>
+            <button type="button" className="btn-secondary text-sm" disabled={busy || !id} aria-label={`Restore version ${version.version} as a draft`} onClick={async () => {
+              if (!id || !confirm(`Restore version ${version.version} as a new draft? This replaces any unsaved edits. Your published homepage stays unchanged until you publish.`)) return;
+              setBusy(true);
+              try { const result = await restorePageVersion(id, version.id); setMessage(result.message); if (result.success) window.location.reload(); }
+              catch { setMessage("The version could not be restored."); }
+              finally { setBusy(false); }
+            }}>Restore as draft</button>
+          </li>)}</ul>
+        </div> : <p className="px-5 pb-5 text-sm text-slate-muted sm:px-6">Revisions will appear after you save your first draft.</p>}
+      </div>
+    </details>
   </div>;
 }
