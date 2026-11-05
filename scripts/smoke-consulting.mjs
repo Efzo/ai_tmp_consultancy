@@ -58,5 +58,5 @@ assert.ok(sitemap.includes('/for-founders'));
 assert.ok(sitemap.includes('/services/customer-support-systems'));
 assert.ok(!sitemap.includes('<loc>https://ojomoefosa.com/pricing</loc>'));
 assert.ok(sitemap.includes('/case-studies/clinchdesk'));
-assert.ok((await (await fetch(base + '/robots.txt')).text()).includes('Disallow: /admin/'));
+assert.ok((await (await fetch(base + '/robots.txt')).text()).includes('Allow: /'));
 console.log('PASS media authorization, sitemap, and robots');

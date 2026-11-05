@@ -29,7 +29,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
   title: seo.title,
   description: seo.description,
-  metadataBase: new URL("https://ojomoefosa.com"),
+  metadataBase: new URL("https://www.ojomoefosa.com"),
 
   icons: metadataIcons,
   manifest: "/manifest.webmanifest",
@@ -37,7 +37,7 @@ export async function generateMetadata(): Promise<Metadata> {
     type: "website",
     title: seo.title,
     description: seo.description,
-    url: "https://ojomoefosa.com",
+    url: "https://www.ojomoefosa.com",
     siteName: "Efosa Ojomo Managed Technology & Business Solutions",
     images: [{ url: seo.ogImage }],
   },
@@ -60,7 +60,7 @@ export default async function RootLayout({
           "@context": "https://schema.org",
           "@type": "ProfessionalService",
           name: "Efosa Ojomo Managed Technology & Business Solutions",
-          url: "https://ojomoefosa.com",
+          url: "https://www.ojomoefosa.com",
           areaServed: "Worldwide",
           serviceType: services.map((service) => service.title),
         }).replace(/</g, "\\u003c") }} />

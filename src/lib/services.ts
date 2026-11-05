@@ -2,6 +2,7 @@ import { services as fallbackServices, serviceAliases, type Service } from "@/da
 import { prisma } from "@/lib/prisma";
 
 export type ManagedService = Service & {
+  updatedAt?: Date;
   id?: string;
   metaTitle?: string | null;
   metaDescription?: string | null;

@@ -14,6 +14,10 @@ node_modules/
 .DS_Store
 *.log
 
+# Retired personal CVs must not be included in website deployments.
+/legacy/cv/
+/public/cv/
+
 # Prisma local artifacts
 prisma/dev.db
 prisma/dev.db-journal

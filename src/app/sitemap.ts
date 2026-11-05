@@ -1,21 +1,26 @@
 import type { MetadataRoute } from "next";
-import { landingPages } from "@/data/landing-pages";
 import { getPublicBlogPosts } from "@/lib/content";
 import { getCaseStudies } from "@/lib/case-studies";
 import { getManagedServices } from "@/lib/services";
 
-const baseUrl = "https://ojomoefosa.com";
+const baseUrl = "https://www.ojomoefosa.com";
+
+function entry(path: string, modified?: Date | string): MetadataRoute.Sitemap[number] {
+  const date = modified ? new Date(modified) : undefined;
+  // Omit unknown timestamps, including the epoch used by fallback case studies.
+  return { url: `${baseUrl}${path}`, ...(date && Number.isFinite(date.getTime()) && date.getTime() > 0 ? { lastModified: date } : {}) };
+}
 
 export const dynamic = "force-dynamic";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [blogPosts, caseStudies, services] = await Promise.all([getPublicBlogPosts(), getCaseStudies(), getManagedServices()]);
-  const staticRoutes = ["", "/for-businesses", "/for-founders", "/services", "/about", "/case-studies", "/process", "/engagements", "/book", "/contact", "/blog", "/privacy", "/terms"];
-  return [
-    ...staticRoutes.map((route) => ({ url: `${baseUrl}${route}`, lastModified: new Date() })),
-    ...services.map((service) => ({ url: `${baseUrl}/services/${service.slug}`, lastModified: new Date() })),
-    ...caseStudies.map((study) => ({ url: `${baseUrl}/case-studies/${study.slug}`, lastModified: new Date() })),
-    ...blogPosts.map((post) => ({ url: `${baseUrl}/blog/${post.slug}`, lastModified: new Date(post.publishedAt) })),
-    ...Object.keys(landingPages).map((slug) => ({ url: `${baseUrl}/consulting/${slug}`, lastModified: new Date() })),
+  const staticRoutes = ["", "/for-businesses", "/for-founders", "/services", "/about", "/case-studies", "/process", "/engagements", "/book", "/contact", "/blog", "/videos", "/privacy", "/terms"];
+  const entries = [
+    ...staticRoutes.map((route) => entry(route)),
+    ...services.map((service) => entry(`/services/${service.slug}`, service.updatedAt)),
+    ...caseStudies.map((study) => entry(`/case-studies/${study.slug}`, study.updatedAt)),
+    ...blogPosts.map((post) => entry(`/blog/${post.slug}`, post.updatedAt ?? post.publishedAt)),
   ];
+  return [...new Map(entries.map((item) => [item.url, item])).values()];
 }

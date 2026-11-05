@@ -2,7 +2,9 @@ import type { MetadataRoute } from "next";
 
 export default function robots(): MetadataRoute.Robots {
   return {
-    rules: [{ userAgent: "*", allow: "/", disallow: "/admin/" }],
-    sitemap: "https://ojomoefosa.com/sitemap.xml",
+    // Crawlers must be able to see noindex headers and retired-document 410s.
+    // Authentication, rather than robots.txt, protects private information.
+    rules: [{ userAgent: "*", allow: "/" }],
+    sitemap: "https://www.ojomoefosa.com/sitemap.xml",
   };
 }

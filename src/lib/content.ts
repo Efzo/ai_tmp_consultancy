@@ -8,7 +8,7 @@ export async function getPublicBlogPosts(): Promise<BlogPost[]> {
   try {
     const posts = await prisma.blogPost.findMany({ where: { status: "PUBLISHED" }, orderBy: { publishedAt: "desc" } });
 
-    return posts.map((post) => ({ slug: post.slug, title: post.title, excerpt: post.excerpt, category: post.category, tags: [], content: post.content, publishedAt: (post.publishedAt ?? post.createdAt).toISOString().slice(0, 10), readTime: `${Math.max(1, Math.ceil(post.content.split(/\s+/).length / 200))} min read` }));
+    return posts.map((post) => ({ slug: post.slug, title: post.title, excerpt: post.excerpt, category: post.category, tags: [], content: post.content, publishedAt: (post.publishedAt ?? post.createdAt).toISOString().slice(0, 10), updatedAt: post.updatedAt.toISOString(), readTime: `${Math.max(1, Math.ceil(post.content.split(/\s+/).length / 200))} min read` }));
   } catch {
     return fallbackPosts;
   }

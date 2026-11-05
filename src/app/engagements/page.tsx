@@ -17,8 +17,8 @@ export default async function EngagementsPage() {
       "@type": "ListItem", position: index + 1,
       item: {
         "@type": "Service", name: plan.name, description: plan.description,
-        url: `https://ojomoefosa.com/engagements#${plan.id}`,
-        provider: { "@type": "ProfessionalService", name: "Efosa Ojomo", url: "https://ojomoefosa.com" },
+        url: `https://www.ojomoefosa.com/engagements#${plan.id}`,
+        provider: { "@type": "ProfessionalService", name: "Efosa Ojomo", url: "https://www.ojomoefosa.com" },
       },
     })),
   };
