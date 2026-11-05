@@ -4,6 +4,7 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
   const { id } = await params;
   try {
     let referenced = await prisma.caseStudy.findFirst({ where: { isPublished: true, status: "PUBLISHED", images: { has: `/api/media/${id}` } }, select: { id: true } });
+    if (!referenced) referenced = await prisma.blogPost.findFirst({ where: { status: "PUBLISHED", OR: [{ featuredImage: `/api/media/${id}` }, { content: { contains: `<img src="/api/media/${id}"` } }] }, select: { id: true } });
     if (!referenced) {
       const snapshot = await prisma.siteSetting.findUnique({ where: { key: "page.about.published" } });
       const value = snapshot?.value as { content?: { imageUrl?: string; aboutImageUrl?: string }; unpublished?: boolean } | null;
@@ -15,6 +16,6 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
     if (!asset || !["image/png", "image/jpeg", "image/webp", "image/avif", "image/gif"].includes(asset.mimeType)) return new Response(null, { status: 404 });
     const result = await get(asset.storageKey, { access: "private" });
     if (!result || result.statusCode !== 200 || !result.stream) return new Response(null, { status: 404 });
-    return new Response(result.stream, { headers: { "Content-Type": asset.mimeType, "Cache-Control": "no-store", "X-Content-Type-Options": "nosniff", "Content-Security-Policy": "default-src 'none'; sandbox" } });
+    return new Response(result.stream, { headers: { "Content-Type": asset.mimeType, "X-Robots-Tag": "index, follow, max-image-preview:large", "Cache-Control": "no-store", "X-Content-Type-Options": "nosniff", "Content-Security-Policy": "default-src 'none'; sandbox" } });
   } catch { return new Response(null, { status: 503 }); }
 }

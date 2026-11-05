@@ -10,7 +10,7 @@ export const adminGroups = [
     { name: "Edit Homepage", href: "/admin/page-builder", icon: Home, description: "Edit homepage text, sections, FAQs, buttons, and homepage SEO." },
     { name: "Business Owner Path", href: "/admin/pages/for-businesses", icon: BriefcaseBusiness, description: "Edit the service journey for business owners: websites, care, customer support systems, and automation." },
     { name: "Founder Path", href: "/admin/pages/for-founders", icon: Target, description: "Edit the service journey for founders and product teams: discovery, engineering, and ongoing product management." },
-    { name: "Edit About", href: "/admin/pages/about", icon: FileText, description: "Edit your biography, experience, certifications, profile image, and About page SEO." },
+    { name: "Edit About", href: "/admin/pages/about", icon: FileText, description: "Edit your biography, experience, education, certifications, profile image, and About page SEO." },
     { name: "Website Pages", href: "/admin/pages", icon: ListTree, description: "Edit About, How I Work, Contact, Booking, legal pages, and page introductions." },
     { name: "Project Case Studies", href: "/admin/case-studies", icon: FolderOpen, description: "Edit project stories, technical details, outcomes, and screenshots." },
     { name: "Blog Articles", href: "/admin/blog", icon: BookOpen, description: "Write articles, choose categories, and publish or archive posts." },

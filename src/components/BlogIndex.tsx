@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import type { BlogPost } from "@/data/blog";
@@ -47,7 +48,7 @@ export default function BlogIndex({ posts }: { posts: BlogPost[] }) {
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {filteredPosts.map((post) => (
             <article key={post.slug} className="glass-card flex h-full flex-col p-7">
-              <div className="mb-5 flex items-center justify-between gap-3 text-xs uppercase tracking-widest">
+              {post.featuredImage && <Image src={post.featuredImage} alt={post.options?.images.find((image) => image.url === post.featuredImage)?.alt || post.title} width={600} height={400} unoptimized className="mb-5 aspect-video w-full rounded-lg object-cover" />}<div className="mb-5 flex items-center justify-between gap-3 text-xs uppercase tracking-widest">
                 <span className="text-electric">{post.category}</span>
                 <span className="text-slate-muted">{post.readTime}</span>
               </div>

@@ -1,4 +1,6 @@
 export interface BlogPost {
+  featuredImage?: string | null;
+  options?: import("@/lib/blog-options").BlogOptions;
   slug: string;
   title: string;
   excerpt: string;

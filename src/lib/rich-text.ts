@@ -1,4 +1,4 @@
-const allowedTags = new Set(["a", "b", "blockquote", "br", "div", "em", "font", "h2", "h3", "h4", "i", "li", "ol", "p", "span", "strong", "u", "ul"]);
+const allowedTags = new Set(["a", "b", "blockquote", "br", "div", "em", "font", "figure", "figcaption", "img", "h2", "h3", "h4", "i", "li", "ol", "p", "span", "strong", "u", "ul"]);
 const allowedFonts = new Set(["Arial", "Georgia", "Helvetica", "Times New Roman", "Courier New", "Verdana"]);
 
 function escapeAttribute(value: string) {
@@ -24,8 +24,17 @@ export function sanitizeRichText(input: string) {
   return withoutDangerousBlocks.replace(/<\s*(\/?)\s*([a-z0-9]+)([^>]*)>/gi, (match, closing: string, rawTag: string, rawAttributes: string) => {
     const tag = rawTag.toLowerCase();
     if (!allowedTags.has(tag)) return "";
+    if (closing && (tag === "img" || tag === "br")) return "";
     if (closing) return tag === "font" ? "</span>" : `</${tag}>`;
     if (tag === "br") return "<br />";
+    if (tag === "img") {
+      const src = rawAttributes.match(/(?:^|\s)src\s*=\s*["']([^"']+)["']/i)?.[1] ?? "";
+      const alt = rawAttributes.match(/(?:^|\s)alt\s*=\s*["']([^"']*)["']/i)?.[1] ?? "";
+      if (!/^\/api\/media\/[a-z0-9-]+$/.test(src)) return "";
+      // Decode only the entities emitted by escapeAttribute to keep repeated saves stable.
+      const decodedAlt = alt.replace(/&quot;/g, '"').replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&");
+      return `<img src="${src}" alt="${escapeAttribute(decodedAlt)}" loading="lazy" />`;
+    }
 
     if (tag === "a") {
       const href = rawAttributes.match(/href\s*=\s*["']([^"']+)["']/i)?.[1] ?? "";

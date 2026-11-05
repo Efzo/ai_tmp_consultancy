@@ -69,7 +69,7 @@ for (const slug of Object.keys(defaults)) {
 
 test('About edits flow through save, publish, public rendering, and private draft preview', async () => {
   const h = harness();
-  const about = { ...schemas.getPageDefaults('about'), headline: 'PublishedAbout', bio: ['Published biography from the editor.'] };
+  const about = { ...schemas.getPageDefaults('about'), headline: 'PublishedAbout', bio: ['Published biography from the editor.'], education: [{ qualification: 'Test qualification', institution: 'Test institution', period: '2020–2022', details: 'A fixture education entry.' }] };
   const saved = await h.save('about', about, 0, { metaTitle: 'Published SEO title' });
   assert.equal((await h.reader.getManagedPage('about')).content.headline, defaults.about.headline);
   assert.equal((await h.actions.publishManagedPage('about', saved.revision)).success, true);
@@ -78,9 +78,13 @@ test('About edits flow through save, publish, public rendering, and private draf
   const html = renderToStaticMarkup(await page.default());
   assert.ok(html.includes('PublishedAbout'));
   assert.ok(html.includes('Published biography from the editor.'));
-  const draft = await h.save('about', { ...about, headline: 'PrivateDraft', bio: ['Private draft biography.'] }, 1, { metaTitle: 'Private SEO' });
+  assert.ok(html.includes('Test qualification'));
+  assert.ok(html.includes('Test institution'));
+  assert.ok(html.includes('2020–2022'));
+  const draft = await h.save('about', { ...about, headline: 'PrivateDraft', bio: ['Private draft biography.'], education: [] }, 1, { metaTitle: 'Private SEO' });
   assert.equal(draft.success, true);
   assert.equal((await h.reader.getManagedPage('about')).content.headline, 'PublishedAbout');
+  assert.equal((await h.reader.getManagedPage('about')).content.education[0].institution, 'Test institution');
   assert.equal((await h.reader.managedPageMetadata('about')).title, 'Published SEO title');
   h.setPreview(true);
   assert.equal((await h.reader.getManagedPage('about')).content.headline, 'PrivateDraft');
@@ -176,7 +180,7 @@ test('About images are public only while referenced by the published About conte
   const route = load('src/app/api/media/[id]/route.ts', {
     '@vercel/blob': { get: async () => ({ statusCode: 200, stream: new ReadableStream({ start(controller) { controller.enqueue(new Uint8Array([1, 2, 3])); controller.close(); } }) }) },
     '@/lib/prisma': { prisma: {
-      caseStudy: { findFirst: async () => null },
+      caseStudy: { findFirst: async () => null }, blogPost: { findFirst: async () => null },
       siteSetting: { findUnique: async () => ({ value: { content: { imageUrl, aboutImageUrl } } }) },
       mediaAsset: { findUnique: async () => ({ mimeType: 'image/png', storageKey: 'profile' }) },
     } },
@@ -189,4 +193,19 @@ test('About images are public only while referenced by the published About conte
   assert.equal((await request()).status, 200);
   aboutImageUrl = '';
   assert.equal((await request()).status, 404);
+});
+
+
+test('About education is optional for legacy content and empty sections stay hidden', async () => {
+  const legacy = structuredClone(defaults.about); delete legacy.education; delete legacy.educationHeading;
+  const parsed = schemas.parsePageContent('about', legacy);
+  assert.equal(parsed.success, true);
+  assert.deepEqual(parsed.data.education, []);
+  assert.equal(parsed.data.educationHeading, 'Education');
+  assert.equal(schemas.parsePageContent('about', { ...legacy, education: [{ qualification: '', institution: '', period: '', details: '' }] }).success, false);
+  const h = harness();
+  const portraits = load('src/lib/portraits.ts', { '@/data/page-defaults.json': defaults });
+  const page = load('src/app/about/page.tsx', { '@/lib/portraits': portraits, '@/lib/managed-pages': h.reader, '@/components/admin/PagePreviewBanner': () => null, 'next/image': () => null });
+  const html = renderToStaticMarkup(await page.default());
+  assert.ok(!html.includes('id="education-heading"'));
 });

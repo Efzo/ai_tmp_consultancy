@@ -10,8 +10,9 @@ import { consumeDemoResetToken, createDemoResetToken, setDemoPassword } from "@/
 import { footerSettingDefaults, setDemoSiteSetting } from "@/lib/site-settings";
 import { sanitizeRichText } from "@/lib/rich-text";
 import { revalidatePath } from "next/cache";
+import { blogOptionsSchema, blogOptionsKey, blogImageUrlSchema } from "@/lib/blog-options";
 import { homeSchema } from "@/lib/home-content";
-import { caseDetailsSchema } from "@/lib/case-details";
+import { caseDetailsSchema, screenshotUrlSchema } from "@/lib/case-details";
 import { isManagedPageSlug } from "@/lib/page-content-schema";
 import consulting from "@/data/consulting.json";
 import { serviceAliases } from "@/data/services";
@@ -25,7 +26,7 @@ const pageSchema = z.object({
   metaDescription: z.string().trim().max(320).optional(),
   content: z.union([homeSchema, z.array(z.object({ id: z.string(), type: z.enum(["hero", "rich-text", "services", "cta"]), title: z.string(), visible: z.boolean() }))]),
 });
-const blogSchema = z.object({ id: z.string().optional(), slug: z.string().trim().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/), title: z.string().trim().min(2).max(180), excerpt: z.string().trim().min(10).max(500), content: z.string().trim().min(20).max(50000), category: z.string().trim().min(2).max(80) });
+const blogSchema = z.object({ id: z.string().optional(), slug: z.string().trim().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/), title: z.string().trim().min(2).max(180), excerpt: z.string().trim().min(10).max(500), content: z.string().trim().min(20).max(50000), category: z.string().trim().min(2).max(80), featuredImage: blogImageUrlSchema.or(z.literal("")).optional(), options: blogOptionsSchema.optional() });
 
 async function requireRole(roles: Array<"OWNER" | "EDITOR" | "VIEWER"> = ["OWNER", "EDITOR"]) {
   const session = await getServerSession(authOptions);
@@ -179,33 +180,45 @@ export async function saveBlogPostDraft(input: unknown) {
   await requireRole();
   if (!dbReady()) return { success: false, message: "Connect PostgreSQL before saving articles." };
   const parsed = blogSchema.safeParse(input);
-  if (!parsed.success) return { success: false, message: "Article data is invalid." };
-  const data = parsed.data;
-  const content = sanitizeRichText(data.content);
+  if (!parsed.success) return { success: false, message: `Check article fields: ${parsed.error.issues.slice(0, 3).map((issue) => `${issue.path.join(".")}: ${issue.message}`).join("; ")}` };
+  const { id, options, featuredImage, ...fields } = parsed.data;
+  const content = sanitizeRichText(fields.content);
   if (content.replace(/<[^>]*>/g, "").trim().length < 20) return { success: false, message: "Article content must contain at least 20 readable characters." };
+  if (featuredImage && options && !options.images.some((image) => image.url === featuredImage)) return { success: false, message: "Choose the cover from this article's uploaded images." };
   try {
-    if (!data.id) {
-      const post = await prisma.blogPost.create({ data: { slug: data.slug, title: data.title, excerpt: data.excerpt, content, category: data.category, status: "DRAFT", versions: { create: { version: 1, title: data.title, excerpt: data.excerpt, content, category: data.category } } } });
-      await audit("blog.created", post.id);
-      return { success: true, id: post.id, message: "Article draft created." };
-    }
-    const post = await prisma.blogPost.findUnique({ where: { id: data.id }, include: { versions: { orderBy: { version: "desc" }, take: 1 } } });
-    if (!post) return { success: false, message: "Article not found." };
-    const version = (post.versions[0]?.version ?? 0) + 1;
-    await prisma.$transaction([prisma.blogPost.update({ where: { id: data.id }, data: { slug: data.slug, title: data.title, excerpt: data.excerpt, content, category: data.category, status: "DRAFT" } }), prisma.blogPostVersion.create({ data: { blogPostId: data.id, version, title: data.title, excerpt: data.excerpt, content, category: data.category } })]);
-    await audit("blog.draft_saved", data.id, { version });
-    return { success: true, id: data.id, message: "Article draft saved." };
-  } catch { return { success: false, message: "The article draft could not be saved." }; }
+    const post = await prisma.$transaction(async (tx) => {
+      const previous = id ? await tx.blogPost.findUnique({ where: { id }, include: { versions: { orderBy: { version: "desc" }, take: 1 } } }) : null;
+      if (id && !previous) throw new Error("Article not found");
+      const version = (previous?.versions[0]?.version ?? 0) + 1;
+      const data = { ...fields, content, status: "DRAFT" as const, ...(featuredImage !== undefined ? { featuredImage: featuredImage || null } : {}) };
+      const versionData = { version, title: fields.title, excerpt: fields.excerpt, content, category: fields.category };
+      const saved = id
+        ? await tx.blogPost.update({ where: { id }, data: { ...data, versions: { create: versionData } } })
+        : await tx.blogPost.create({ data: { ...data, versions: { create: versionData } } });
+      if (options) await tx.siteSetting.upsert({ where: { key: blogOptionsKey(saved.id) }, create: { key: blogOptionsKey(saved.id), value: options }, update: { value: options } });
+      return { ...saved, oldSlug: previous?.slug };
+    });
+    await audit(id ? "blog.draft_saved" : "blog.created", post.id);
+    revalidatePath("/", "layout");
+    revalidatePath("/sitemap.xml");
+    if (post.oldSlug && post.oldSlug !== post.slug) revalidatePath(`/blog/${post.oldSlug}`);
+    return { success: true, id: post.id, message: "Article draft saved privately, including images and search settings. Use Save & publish to make it public." };
+  } catch { return { success: false, message: "The article draft could not be saved. Check that the slug is unique." }; }
 }
 
 export async function publishBlogPost(postId: string) {
   await requireRole(["OWNER", "EDITOR"]);
   if (!dbReady()) return { success: false, message: "Connect PostgreSQL before publishing articles." };
-  const post = await prisma.blogPost.update({ where: { id: postId }, data: { status: "PUBLISHED", publishedAt: new Date() } });
-  await audit("blog.published", postId);
-  revalidatePath("/blog");
-  revalidatePath(`/blog/${post.slug}`);
-  return { success: true, message: "Article published." };
+  try {
+    const previous = await prisma.blogPost.findUnique({ where: { id: postId } });
+    if (!previous) return { success: false, message: "Article not found." };
+    const post = await prisma.blogPost.update({ where: { id: postId }, data: { status: "PUBLISHED", publishedAt: previous.publishedAt ?? new Date() } });
+    await audit("blog.published", postId);
+    revalidatePath("/", "layout");
+    revalidatePath(`/blog/${post.slug}`);
+    revalidatePath("/sitemap.xml");
+    return { success: true, message: "Article published with its images and search settings." };
+  } catch { return { success: false, message: "The article could not be published. Your saved draft is retained." }; }
 }
 
 export async function updateSiteSetting(key: string, value: unknown) {
@@ -334,30 +347,31 @@ export async function saveCaseStudy(input: unknown) {
     implementation: z.string().trim().min(10).max(5000),
     challenges: z.string().trim().min(10).max(3000),
     outcomes: z.string().trim().min(10).max(2000),
-    images: z.array(z.string().trim().refine((url) => /^\/api\/media\/[a-z0-9-]+$/.test(url) || /^https:\/\//.test(url), "Use an HTTPS image URL or a managed image.")).max(20),
+    images: z.array(screenshotUrlSchema).max(20).refine((images) => new Set(images).size === images.length, "Do not repeat screenshot URLs."),
     relatedServices: z.array(z.string().trim()).max(10),
     isPublished: z.boolean(),
     status: z.enum(["DRAFT", "IN_REVIEW", "SCHEDULED", "PUBLISHED", "ARCHIVED"]),
   }).safeParse(input);
 
-  if (!parsed.success) return { success: false, message: "Case study data is invalid. Please check all required fields." };
+  if (!parsed.success) return { success: false, message: `Check the case study fields: ${parsed.error.issues.slice(0, 3).map((issue) => `${issue.path.join(".") || "details"}: ${issue.message}`).join("; ")}` };
 
-  const { details, ...fields } = parsed.data;
-  const data = { ...fields, title: parsed.data.title.replace(/clincddesk/ig, "ClinchDesk"), isPublished: parsed.data.isPublished && parsed.data.status === "PUBLISHED" };
-  revalidatePath("/", "layout");
+  const { details, id, ...fields } = parsed.data;
+  const data = { ...fields, title: fields.title.replace(/clincddesk/ig, "ClinchDesk"), isPublished: fields.isPublished && fields.status === "PUBLISHED" };
   try {
-    if (!data.id) {
-      const study = await prisma.caseStudy.create({ data });
-      if (details) await prisma.siteSetting.upsert({ where: { key: `caseStudy.${study.id}.details` }, create: { key: `caseStudy.${study.id}.details`, value: details }, update: { value: details } });
-      await audit("case_study.created", study.id);
-      return { success: true, id: study.id, message: "Case study created." };
-    }
-    const study = await prisma.caseStudy.update({ where: { id: data.id }, data });
-    if (details) await prisma.siteSetting.upsert({ where: { key: `caseStudy.${study.id}.details` }, create: { key: `caseStudy.${study.id}.details`, value: details }, update: { value: details } });
-    await audit("case_study.updated", data.id);
-    return { success: true, id: study.id, message: "Case study updated." };
+    const study = await prisma.$transaction(async (tx) => {
+      const saved = id ? await tx.caseStudy.update({ where: { id }, data }) : await tx.caseStudy.create({ data });
+      if (details) {
+        // Save media settings with the case study so partial updates cannot be published.
+        const value = { ...details, screenshots: details.screenshots.filter((item) => data.images.includes(item.url)) };
+        await tx.siteSetting.upsert({ where: { key: `caseStudy.${saved.id}.details` }, create: { key: `caseStudy.${saved.id}.details`, value }, update: { value } });
+      }
+      return saved;
+    });
+    await audit(id ? "case_study.updated" : "case_study.created", study.id);
+    revalidatePath("/", "layout");
+    return { success: true, id: study.id, message: study.isPublished ? "Case study saved and published, including screenshots and product links." : "Case study saved privately. Select Published and the Published status to show it on the website." };
   } catch {
-    return { success: false, message: "Could not save case study. Ensure the slug is unique." };
+    return { success: false, message: "Could not save case study. Check that the slug is unique and the media settings are valid." };
   }
 }
 
@@ -509,6 +523,7 @@ export async function archiveBlogPost(id: string) {
   if (!dbReady()) return { success: false, message: "Connect PostgreSQL before archiving articles." };
   await prisma.blogPost.update({ where: { id }, data: { status: "ARCHIVED" } });
   await audit("blog.archived", id);
+  revalidatePath("/sitemap.xml");
   revalidatePath("/", "layout");
   return { success: true, message: "Article unpublished and archived." };
 }
@@ -517,6 +532,7 @@ export async function deleteBlogPost(id: string) {
   if (!dbReady()) return { success: false, message: "Connect PostgreSQL before deleting articles." };
   await prisma.blogPost.delete({ where: { id } });
   await audit("blog.deleted", id);
+  revalidatePath("/sitemap.xml");
   revalidatePath("/", "layout");
   return { success: true, message: "Article deleted." };
 }

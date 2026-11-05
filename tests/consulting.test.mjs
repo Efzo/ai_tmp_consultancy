@@ -79,7 +79,7 @@ test('homepage validation requires unique sections and safe internal CTA paths',
 
 test('public media checks publication and refuses unreferenced private assets', async () => {
   let storageRead = false;
-  const route = load('src/app/api/media/[id]/route.ts', { '@vercel/blob': { get: async () => { storageRead = true; } }, '@/lib/prisma': { prisma: { caseStudy: { findFirst: async () => null }, siteSetting: { findUnique: async () => null }, page: { findFirst: async () => null } } } });
+  const route = load('src/app/api/media/[id]/route.ts', { '@vercel/blob': { get: async () => { storageRead = true; } }, '@/lib/prisma': { prisma: { caseStudy: { findFirst: async () => null }, blogPost: { findFirst: async () => null }, siteSetting: { findUnique: async () => null }, page: { findFirst: async () => null } } } });
   const response = await route.GET(new Request('https://test/api/media/private'), { params: Promise.resolve({ id: 'private' }) });
   assert.equal(response.status, 404);
   assert.equal(storageRead, false);

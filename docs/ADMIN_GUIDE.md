@@ -46,3 +46,9 @@ Existing admin URLs, authentication, database records, publication workflows, an
 ## Validation
 
 Lint, TypeScript, the production build, and the automated suite are checked for the page connections. Integration tests exercise the actual save, publish, preview-read, metadata, revision-restore, and public About renderer with isolated in-memory persistence. They cover all 12 new page schemas, legacy content preservation, stale-edit conflicts, permissions, and transaction rollback. Existing inquiry/authentication/media tests remain in place. Local HTTP checks use an isolated demo session and do not write production data. Browser visual testing and real external-provider delivery require a connected browser and configured services.
+
+### About education and portrait uploads
+
+In **Edit About**, use **Education** to add, reorder, or remove qualifications. Enter the qualification and institution; dates/status and additional details are optional. The public education section appears only when it has entries. Existing About content gets an empty education list, without adding unverified credentials. Reviewing the business model template preserves education alongside experience and certifications.
+
+For either portrait, click **Choose image**, check the image description, and click **Upload image**. The file picker is available before entering a description; uploading requires a meaningful description. Supported formats are PNG, JPEG, WebP, AVIF, and GIF, up to 10 MB. Errors from storage or the database appear below the control. After upload, use **Save & Preview** or **Save & Publish**. Saving is disabled while an upload is in progress. Draft-only images remain private until referenced by a published page.

@@ -62,6 +62,15 @@ export default async function AboutPage() {
             </div>
           </div>
         </section>
+        {content.education.length > 0 && <section className="glass-card p-8" aria-labelledby="education-heading">
+          <h2 id="education-heading" className="mb-6 text-2xl font-bold text-cyan-ai">{content.educationHeading}</h2>
+          <div className="grid gap-6 md:grid-cols-2">{content.education.map((item, index) => <div key={index} className="border-l-2 border-electric pl-4">
+            <h3 className="font-bold text-white">{item.qualification}</h3>
+            <p className="mt-1 text-slate-muted">{item.institution}</p>
+            {item.period && <p className="mt-2 text-sm text-slate-muted">{item.period}</p>}
+            {item.details && <p className="mt-3 whitespace-pre-line text-sm leading-relaxed text-slate-muted">{item.details}</p>}
+          </div>)}</div>
+        </section>}
       </div>
     </main>
   );

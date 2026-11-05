@@ -77,7 +77,7 @@ test('CMS changes persist all fields, refresh public consumers, and enforce role
     '@/lib/password-reset': {}, '@/lib/auth': {}, '@/lib/prisma': { prisma }, '@/lib/demo-password': {},
     '@/lib/site-settings': { setDemoSiteSetting: (key, value) => { stored = { key, value: JSON.parse(value) }; } },
     '@/lib/rich-text': {}, 'next/cache': { revalidatePath: (path) => revalidated.push(path) },
-    '@/lib/home-content': { homeSchema: require('zod').z.object({}) }, '@/lib/case-details': {},
+    '@/lib/home-content': { homeSchema: require('zod').z.object({}) }, '@/lib/blog-options': load('src/lib/blog-options.ts'), '@/lib/case-details': {},
     '@/lib/page-content-schema': {}, '@/data/consulting.json': {}, '@/data/services': serviceData, '@/data/pricing': pricing,
   });
   try {
@@ -184,7 +184,7 @@ test('service creation explicitly publishes or saves a draft, and publication up
     'next-auth': { getServerSession: async () => ({ user: { email: 'owner@example.com', role } }) },
     '@/lib/password-reset': {}, '@/lib/auth': {}, '@/lib/prisma': { prisma }, '@/lib/demo-password': {},
     '@/lib/site-settings': {}, '@/lib/rich-text': {}, 'next/cache': { revalidatePath: (path) => refreshed.push(path) },
-    '@/lib/home-content': { homeSchema: require('zod').z.object({}) }, '@/lib/case-details': {},
+    '@/lib/home-content': { homeSchema: require('zod').z.object({}) }, '@/lib/blog-options': load('src/lib/blog-options.ts'), '@/lib/case-details': {},
     '@/lib/page-content-schema': {}, '@/data/consulting.json': consulting, '@/data/services': serviceData, '@/data/pricing': pricing,
   });
   const services = load('src/lib/services.ts', { '@/data/services': serviceData, '@/lib/prisma': { prisma } });

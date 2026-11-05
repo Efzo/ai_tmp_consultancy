@@ -1,6 +1,6 @@
 "use client";
 
-import CaseImageUpload from "./CaseImageUpload";
+import CaseStudyMediaEditor from "./CaseStudyMediaEditor";
 import { useState } from "react";
 import { saveCaseStudy, deleteCaseStudy } from "@/app/actions/cms";
 import type { CaseStudy } from "@/types";
@@ -53,13 +53,12 @@ export default function CaseStudyEditor({ studies }: { studies: CaseStudy[] }) {
 
   const save = async (index: number) => {
     setSaving(true);
-    const study = rows[index];
-    const result = await saveCaseStudy(study);
-    setMessage(result.message);
-    if (result.success && result.id) {
-      update(index, "id", result.id);
-    }
-    setSaving(false);
+    try {
+      const result = await saveCaseStudy(rows[index]);
+      setMessage(result.message);
+      if (result.success && result.id) update(index, "id", result.id);
+    } catch { setMessage("The case study could not be saved. Your edits are still here; please try again."); }
+    finally { setSaving(false); }
   };
 
   return (
@@ -124,11 +123,10 @@ export default function CaseStudyEditor({ studies }: { studies: CaseStudy[] }) {
             </label>
           </div>
 
-          <label className="block text-sm">Screenshot URLs, one per line<textarea rows={3} className="block w-full mt-2 p-3 bg-midnight border border-glass rounded" value={(study.images ?? []).join("\n")} onChange={(e) => update(index, "images", e.target.value.split("\n").filter(Boolean))} /></label>
+          <CaseStudyMediaEditor images={study.images ?? []} details={{ ...emptyCaseDetails, ...study.details }} disabled={saving} onChange={(images, details) => setRows((current) => current.map((row, rowIndex) => rowIndex === index ? { ...row, images, details } : row))} />
           <label className="block text-sm">Technical trade-offs<textarea className="block w-full mt-2 p-3 bg-midnight border border-glass rounded" value={study.details?.tradeoffs ?? ""} onChange={(e) => update(index, "details", { ...emptyCaseDetails, ...study.details, tradeoffs: e.target.value })} /></label>
           <label className="block text-sm">Product features, one per line<textarea className="block w-full mt-2 p-3 bg-midnight border border-glass rounded" value={(study.details?.features ?? []).join("\n")} onChange={(e) => update(index, "details", { ...emptyCaseDetails, ...study.details, features: e.target.value.split("\n").filter(Boolean) })} /></label>
           <label className="block text-sm">Lessons learned<textarea className="block w-full mt-2 p-3 bg-midnight border border-glass rounded" value={study.details?.lessons ?? ""} onChange={(e) => update(index, "details", { ...emptyCaseDetails, ...study.details, lessons: e.target.value })} /></label>
-          <CaseImageUpload onUpload={(url) => update(index, "images", [...(study.images ?? []), url])} />
           <div className="flex items-center justify-between gap-4 border-t border-glass pt-4">
             <div className="flex items-center gap-4">
               <label className="flex items-center gap-2 text-sm text-slate-muted cursor-pointer">
@@ -153,7 +151,7 @@ export default function CaseStudyEditor({ studies }: { studies: CaseStudy[] }) {
       ))}
 
       <div className="flex items-center justify-between gap-4 mt-8">
-        <p className="text-sm text-cyan-ai">{message}</p>
+        <p role="status" aria-live="polite" className="text-sm text-cyan-ai">{message}</p>
       </div>
     </div>
   );

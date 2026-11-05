@@ -1,5 +1,5 @@
 import { pageMetadata } from "@/lib/seo";
-import Image from "next/image";
+import CaseStudyShowcase from "@/components/CaseStudyShowcase";
 import { prisma } from "@/lib/prisma";
 import React from 'react';
 import { getCaseStudy } from '@/lib/case-studies';
@@ -94,7 +94,7 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ slug
           </aside>
         </div>
 
-        <section className="mt-16"><h2 className="text-2xl font-bold mb-6">Project Images</h2>{study.images.length ? <div className="grid gap-6">{study.images.map((url, index) => <Image key={url} src={url} alt={assets.find((asset) => `/api/media/${asset.id}` === url)?.altText || `${study.title} project screenshot ${index + 1}`} width={1200} height={800} unoptimized className="w-full h-auto rounded-2xl border border-glass" />)}</div> : <p className="glass-card p-6 text-slate-muted">Screenshots are not available. The written overview describes the documented project scope.</p>}</section>
+        <CaseStudyShowcase title={study.title} images={study.images} details={study.details} assets={assets} />
         <section className="mt-20 pt-10 border-t border-electric/20 text-center">
           <h3 className="text-2xl font-bold mb-6">Discuss a related project</h3>
           <Link href="/contact" className="btn-primary inline-block">
