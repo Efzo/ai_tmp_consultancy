@@ -51,8 +51,15 @@ export async function sendPasswordReset(email: string, setup = false) {
       await prisma.passwordResetToken.deleteMany({ where: { id: record.id } });
       console.error("[password-reset] Email provider did not accept the reset email.");
     }
-  } catch {
-    console.error("[password-reset] Request could not be completed.");
+  } catch (error) {
+    // Log only a Prisma code/class, never the message, token, URL, or account.
+    const failure = error as { code?: unknown; errorCode?: unknown; name?: unknown } | null;
+    const code = failure?.code ?? failure?.errorCode;
+    const safeCode = typeof code === "string" && /^P\d{4}$/.test(code) ? code : "unknown";
+    const safeName = typeof failure?.name === "string" && /^PrismaClient[A-Za-z]+Error$/.test(failure.name) ? failure.name : "unknown";
+    const message = error instanceof Error ? error.message : "";
+    const safeReason = /query engine|engine.*(?:not found|could not|unable)/i.test(message) ? "engine_unavailable" : /can't reach database|connection refused|timed out/i.test(message) ? "database_unreachable" : /authentication failed/i.test(message) ? "database_auth_failed" : /environment variable not found/i.test(message) ? "environment_missing" : /invalid.*(?:url|connection)|must start with.*postgres/i.test(message) ? "invalid_database_url" : "unclassified";
+    console.error("[password-reset] Request could not be completed.", safeCode, safeName, safeReason);
   }
   // Same response for missing accounts, delivery failures and success.
   return responseMessage;

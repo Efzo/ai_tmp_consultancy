@@ -155,3 +155,7 @@ Source changes included in this release:
 Validation: all 77 tests, lint, production build, production-mode route/authentication/media/sitemap smoke checks, and whitespace checks passed. Deployment and final production checks are separate from local validation.
 
 Remaining factual work: the owner confirmed the business operates in the United States. The specific state, actual privacy practices, policy terms, and ClinchDesk source evidence were not provided. Privacy/Terms completion and detailed project claims remain open; the approved About page, education, and saved certifications were preserved.
+
+### Post-deployment incident
+
+Release `e11b7da0` reached production: the new install manifest and 308 booking redirect were verified. Subsequent requests returned fallback service/blog/case-study content rather than the saved CMS records. Vercel runtime logs also reported database/password-verification failures and failed password-reset operations. Demo mode was confirmed false in Vercel. This is an unresolved production database/runtime issue, not evidence that the CMS edits were lost or that email delivery itself failed. Safe Prisma error-code/class diagnostics were added to identify the failure without logging messages, credentials, tokens, or connection strings. Completion requires a working production database connection and a fresh check of saved public content and admin access.

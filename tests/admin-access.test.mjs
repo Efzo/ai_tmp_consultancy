@@ -186,3 +186,23 @@ test('reset requires an unexpired unused token, claims once, and invalidates oth
   assert.equal((await applyPasswordReset('a'.repeat(64), ' padded-password ')).success, false);
   assert.equal(writes, 1);
 });
+
+test('database failures log safe diagnostic codes without credentials or error messages', async () => {
+  const saved = { ...process.env }, originalError = console.error;
+  Object.assign(process.env, { ...env, RESEND_API_KEY: 'test', RESEND_FROM_EMAIL: 'admin@example.com', NEXTAUTH_URL: 'https://example.com' });
+  const logs = [];
+  console.error = (...args) => logs.push(args.join(' '));
+  const failure = Object.assign(new Error("Can't reach database server postgresql://user:private-password@private-host/db"), { name: 'PrismaClientInitializationError', errorCode: 'P1001' });
+  const prisma = { user: { findFirst: async () => { throw failure; } } };
+  try {
+    const auth = load('src/lib/auth.ts', { 'next-auth/providers/credentials': (options) => options, '@/lib/demo-password': {}, '@/lib/prisma': { prisma } });
+    assert.equal(await auth.authOptions.providers[0].authorize({ email: 'owner@example.com', password: 'private-input' }), null);
+    const recovery = load('src/lib/password-reset.ts', { '@/lib/prisma': { prisma } });
+    assert.equal((await recovery.sendPasswordReset('owner@example.com')).success, true);
+    assert.equal(logs.length, 2);
+    for (const line of logs) {
+      assert.match(line, /P1001 PrismaClientInitializationError database_unreachable/);
+      assert.doesNotMatch(line, /private-password|private-input|private-host|owner@example|postgresql/);
+    }
+  } finally { process.env = saved; console.error = originalError; }
+});
