@@ -20,7 +20,14 @@ export async function getManagedServices(): Promise<ManagedService[]> {
     const records = await prisma.service.findMany({ orderBy: { createdAt: "asc" } });
     if (!records.length && await prisma.siteSetting.findUnique({ where: { key: "consulting.initialized" } })) return [];
     return records.length ? records.filter((service) => service.isPublished && service.slug !== "introductory-discovery-call" && !Object.hasOwn(serviceAliases, service.slug)) : fallbackServices;
-  } catch {
+  } catch (error) {
+    const failure = error as { code?: unknown; errorCode?: unknown; name?: unknown; message?: unknown } | null;
+    const code = failure?.code ?? failure?.errorCode;
+    const safeCode = typeof code === "string" && /^P\d{4}$/.test(code) ? code : "unknown";
+    const safeName = typeof failure?.name === "string" && /^PrismaClient[A-Za-z]+Error$/.test(failure.name) ? failure.name : "unknown";
+    const message = typeof failure?.message === "string" ? failure.message : "";
+    const signals = ["engine", "binary", "openssl", "tls", "certificate", "ssl", "timeout", "connection", "authentication", "protocol", "url", "cache", "cached", "generation", "generated", "postinstall", "permission", "hostname", "refused", "closed", "datasource", "database", "schema", "server", "files"].filter((word) => new RegExp(`\\b${word}\\b`, "i").test(message));
+    console.error("[services] database_read_failed", safeCode, safeName, signals.join(",") || "no_message_signals");
     return fallbackServices;
   }
 }

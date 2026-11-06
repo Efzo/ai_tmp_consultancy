@@ -192,7 +192,7 @@ test('database failures log safe diagnostic codes without credentials or error m
   Object.assign(process.env, { ...env, RESEND_API_KEY: 'test', RESEND_FROM_EMAIL: 'admin@example.com', NEXTAUTH_URL: 'https://example.com' });
   const logs = [];
   console.error = (...args) => logs.push(args.join(' '));
-  const failure = Object.assign(new Error("Can't reach database server postgresql://user:private-password@private-host/db"), { name: 'PrismaClientInitializationError', errorCode: 'P1001' });
+  const failure = { message: "Can't reach database server postgresql://user:private-password@private-host/db", name: 'PrismaClientInitializationError', errorCode: 'P1001' };
   const prisma = { user: { findFirst: async () => { throw failure; } } };
   try {
     const auth = load('src/lib/auth.ts', { 'next-auth/providers/credentials': (options) => options, '@/lib/demo-password': {}, '@/lib/prisma': { prisma } });
