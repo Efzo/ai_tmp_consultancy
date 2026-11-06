@@ -19,7 +19,7 @@ export async function getManagedServices(): Promise<ManagedService[]> {
   try {
     const records = await prisma.service.findMany({ orderBy: { createdAt: "asc" } });
     if (!records.length && await prisma.siteSetting.findUnique({ where: { key: "consulting.initialized" } })) return [];
-    return records.length ? records.filter((service) => service.isPublished && !Object.hasOwn(serviceAliases, service.slug)) : fallbackServices;
+    return records.length ? records.filter((service) => service.isPublished && service.slug !== "introductory-discovery-call" && !Object.hasOwn(serviceAliases, service.slug)) : fallbackServices;
   } catch {
     return fallbackServices;
   }

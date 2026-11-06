@@ -38,7 +38,7 @@ export async function generateMetadata(): Promise<Metadata> {
     title: seo.title,
     description: seo.description,
     url: "https://www.ojomoefosa.com",
-    siteName: "Efosa Ojomo Managed Technology & Business Solutions",
+    siteName: "Efosa Ojomo Technology Services",
     images: [{ url: seo.ogImage }],
   },
 };
@@ -59,7 +59,7 @@ export default async function RootLayout({
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
           "@context": "https://schema.org",
           "@type": "ProfessionalService",
-          name: "Efosa Ojomo Managed Technology & Business Solutions",
+          name: "Efosa Ojomo Technology Services",
           url: "https://www.ojomoefosa.com",
           areaServed: "Worldwide",
           serviceType: services.map((service) => service.title),

@@ -44,6 +44,7 @@ const nextConfig: NextConfig = {
   },
   async redirects() {
     return [
+      { source: "/services/introductory-discovery-call", destination: "/book", permanent: true },
       ...Object.entries(serviceAliases).map(([slug, current]) => ({ source: `/services/${slug}`, destination: `/services/${current}`, permanent: true })),
       ...Object.entries(landingPages).map(([slug, page]) => ({ source: `/consulting/${slug}`, destination: `/services/${serviceAliases[page.service] ?? page.service}`, permanent: true })),
       { source: "/index.html", destination: "/", permanent: true },

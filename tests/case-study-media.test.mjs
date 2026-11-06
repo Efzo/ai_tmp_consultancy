@@ -101,3 +101,21 @@ test('case media saves atomically, respects publication, and reaches the public 
     assert.equal(transactions, beforeInvalid);
   } finally { process.env = savedEnv; }
 });
+
+test('case studies hide missing narrative sections without inventing project evidence', async () => {
+  let study = { ...catalog.caseStudy, summary: 'Verified project summary.', role: '', requirements: '', architecture: '', businessProblem: '', implementation: '', challenges: '', outcomes: '', stack: [], images: [] };
+  const page = load('src/app/case-studies/[slug]/page.tsx', {
+    '@/lib/seo': {}, '@/components/CaseStudyShowcase': () => null,
+    '@/lib/prisma': { prisma: {} }, '@/lib/case-studies': { getCaseStudy: async () => study },
+    'next/navigation': { notFound: () => { throw new Error('not found'); } },
+    'next/link': ({ href, children, ...props }) => React.createElement('a', { ...props, href }, children),
+  });
+  const render = async () => renderToStaticMarkup(await page.default({ params: Promise.resolve({ slug: study.slug }) }));
+  const minimal = await render();
+  assert.match(minimal, /Project Overview/);
+  for (const heading of ['Product Objectives', 'My Role and Responsibilities', 'Technical Architecture', 'Business Problem', 'Implementation Approach', 'Technical Trade-offs', 'Challenges and Solutions', 'Outcomes and Lessons Learned', 'Project Details', 'Technology Stack']) assert.ok(!minimal.includes(heading), heading);
+  assert.doesNotMatch(minimal, /pending verification/);
+  study = { ...study, role: 'Engineering', details: { tradeoffs: 'Verified design decision.', features: ['Verified feature'], lessons: 'Documented lesson.' } };
+  const populated = await render();
+  for (const value of ['My Role and Responsibilities', 'Engineering', 'Technical Trade-offs', 'Verified design decision.', 'Product Features', 'Verified feature', 'Documented lesson.']) assert.ok(populated.includes(value), value);
+});

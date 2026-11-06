@@ -130,6 +130,7 @@ test('legacy services are omitted from listings, while legacy links resolve to p
   const original = { ...process.env };
   Object.assign(process.env, { DEMO_MODE: 'false', DATABASE_URL: 'postgresql://test' });
   const rows = [
+    { slug: "introductory-discovery-call", title: "Discovery call", isPublished: true },
     ...serviceData.services.map((service) => ({ ...service, isPublished: true })),
     ...Object.keys(serviceData.serviceAliases).map((slug) => ({ slug, title: 'Legacy duplicate', isPublished: true })),
   ];

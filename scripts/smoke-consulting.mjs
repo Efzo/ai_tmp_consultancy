@@ -1,10 +1,11 @@
 import assert from 'node:assert/strict';
 const base = process.env.AUDIT_BASE_URL || 'http://127.0.0.1:3100';
-const routes = ['/', '/for-businesses', '/for-founders', '/services', '/services/customer-support-systems', '/services/software-engineering', '/services/technical-product-management', '/services/ai-solutions', '/services/software-architecture', '/engagements', '/case-studies', '/case-studies/clinchdesk', '/blog', '/contact', '/book', '/pricing', '/about', '/process', '/videos'];
+const routes = ['/', '/for-businesses', '/for-founders', '/services', '/services/customer-support-systems', '/services/software-engineering', '/services/technical-product-management', '/services/ai-solutions', '/services/software-architecture', '/engagements', '/case-studies', '/case-studies/clinchdesk', '/blog', '/contact', '/book', '/pricing', '/services/introductory-discovery-call', '/about', '/process', '/videos'];
 for (const path of routes) {
   const response = await fetch(base + path);
   const html = await response.text();
   assert.equal(response.status, 200, path);
+  if (path === '/services/introductory-discovery-call') assert.equal(new URL(response.url).pathname, '/book');
   if (path === '/pricing') assert.equal(new URL(response.url).pathname, '/engagements');
   assert.match(html, /<h1\b/, `${path}: semantic heading`);
   assert.match(html, /rel="canonical"/, `${path}: canonical`);
@@ -36,7 +37,7 @@ for (const path of routes) {
     for (const legacy of ['ai-strategy', 'fractional-tpm', 'solution-architecture', 'enterprise-search', 'ai-audit', 'product-management', 'product-delivery']) assert.ok(!dropdown.includes(`value="${legacy}"`), `legacy dropdown value: ${legacy}`);
   }
   if (path === '/case-studies/clinchdesk') {
-    for (const section of ['Project Overview', 'Business Problem', 'Product Objectives', 'My Role and Responsibilities', 'Technical Architecture', 'Implementation Approach', 'Technical Trade-offs', 'Challenges and Solutions', 'Product Features', 'Outcomes and Lessons Learned']) assert.ok(html.includes(section), section);
+    for (const section of ['Project Overview', 'Business Problem', 'Product Objectives', 'My Role and Responsibilities', 'Technical Architecture', 'Implementation Approach', 'Challenges and Solutions', 'Outcomes and Lessons Learned']) assert.ok(html.includes(section), section);
     assert.ok(!html.includes('Project Mockup / Screenshot'));
   }
   console.log(`PASS ${path}`);

@@ -1,6 +1,7 @@
 import { getManagedPageContent, managedPageMetadata } from "@/lib/managed-pages";
 import PagePreviewBanner from "@/components/admin/PagePreviewBanner";
 import React from 'react';
+import Link from 'next/link';
 import VideoInsights from '@/components/home/VideoInsights';
 import { getVideoInsights } from '@/app/actions/videos';
 
@@ -17,6 +18,7 @@ export default async function VideosPage() {
         <div>
           <h1 className="text-4xl font-bold mb-4">{content.emptyTitle}</h1>
           <p className="text-slate-muted">{content.emptyText}</p>
+          <div className="mt-6 flex flex-wrap justify-center gap-4"><Link href="/services" className="btn-secondary">Explore Services</Link><Link href="/book" className="btn-primary">Book a Discovery Call</Link></div>
         </div>
       </main>
     );

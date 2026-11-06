@@ -19,6 +19,14 @@ export default function BlogIndex({ posts }: { posts: BlogPost[] }) {
     });
   }, [category, posts, query]);
 
+  if (!posts.length) return (
+    <div className="glass-panel p-10 text-center">
+      <h2 className="mb-4 text-2xl font-semibold">Practical technology insights are on the way.</h2>
+      <p className="mx-auto max-w-2xl text-slate-muted">Explore our services and case studies, or discuss how technology could support your business.</p>
+      <div className="mt-6 flex flex-wrap justify-center gap-4"><Link href="/services" className="btn-secondary">Explore Services</Link><Link href="/book" className="btn-primary">Book a Discovery Call</Link></div>
+    </div>
+  );
+
   return (
     <>
       <div className="mb-10 grid gap-4 md:grid-cols-[1fr_auto]">

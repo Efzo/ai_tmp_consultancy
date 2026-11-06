@@ -45,8 +45,8 @@ export const navigationDefaults: NavigationItem[] = [
 ];
 
 export const seoDefaults: SeoSettings = {
-  title: "Efosa Ojomo | Your Technology Partner",
-  description: "Websites, custom software, product management, customer support systems, and business automation. Project delivery and ongoing technology care for businesses and founders.",
+  title: "Efosa Ojomo Technology Services | Your Technology Partner",
+  description: "Websites, custom software, customer support systems, automation, and product leadership. Project delivery and ongoing care for businesses and founders.",
   ogImage: "/logo_pack/logo.png",
 };
 
