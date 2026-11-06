@@ -49,6 +49,14 @@ Lint, TypeScript, the production build, and the automated suite are checked for 
 
 ### About education and portrait uploads
 
-In **Edit About**, use **Education** to add, reorder, or remove qualifications. Enter the qualification and institution; dates/status and additional details are optional. The public education section appears only when it has entries. Existing About content gets an empty education list, without adding unverified credentials. Reviewing the business model template preserves education alongside experience and certifications.
+In **Edit About**, use **Education** to add, reorder, or remove qualifications. Enter the qualification and institution; dates/status and additional details are optional. The public education section appears only when it has entries. The business template includes the three education entries supplied by Efosa. Saved education entries take precedence, and an intentionally empty list keeps the public education section hidden. Reviewing the business model template preserves education alongside experience and certifications.
 
 For either portrait, click **Choose image**, check the image description, and click **Upload image**. The file picker is available before entering a description; uploading requires a meaningful description. Supported formats are PNG, JPEG, WebP, AVIF, and GIF, up to 10 MB. Errors from storage or the database appear below the control. After upload, use **Save & Preview** or **Save & Publish**. Saving is disabled while an upload is in progress. Draft-only images remain private until referenced by a published page.
+
+### Business-focused About page
+
+The About template follows the supplied “About Efosa Ojomo Technology Services” copy. It introduces the business first, followed by the founder, customer audiences, services, reasons to work together, delivery approach, engineering/product background, credentials, and a closing discovery-call section.
+
+After deploying this editor update, use **Edit About → Review business model copy** to load the supplied text into an existing About record. This replaces the editable narrative for review and preserves existing education, certifications, and portrait fields. Review the draft, then use **Save & Preview** or **Save & Publish**. Deploying the code does not overwrite the saved headline, founder biography, or experience highlights with the template automatically.
+
+All sections are editable. Audience and service cards, approach steps, education entries, and credentials support adding, removing, and reordering. Clearing an optional section's items hides that section publicly. Keep ongoing support scoped to agreed engagements; the supplied text does not promise unlimited support or guaranteed business outcomes.

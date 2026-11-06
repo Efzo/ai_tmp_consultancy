@@ -14,6 +14,7 @@ function load(file, mocks = {}) {
 }
 const defaults = JSON.parse(readFileSync(new URL('../src/data/page-defaults.json', import.meta.url)));
 const schemas = load('src/lib/page-content-schema.ts', { '@/data/page-defaults.json': defaults });
+const ManagedPageCTA = load("src/components/ManagedPageCTA.tsx", { "next/link": ({ children, ...props }) => require("react").createElement("a", props, children) }).default;
 function harness() {
   let state = { pages: [], versions: [], settings: new Map(), audit: [] };
   let user = { id: 'owner', role: 'OWNER' };
@@ -74,13 +75,16 @@ test('About edits flow through save, publish, public rendering, and private draf
   assert.equal((await h.reader.getManagedPage('about')).content.headline, defaults.about.headline);
   assert.equal((await h.actions.publishManagedPage('about', saved.revision)).success, true);
   const portraits = load('src/lib/portraits.ts', { '@/data/page-defaults.json': defaults });
-  const page = load('src/app/about/page.tsx', { '@/lib/portraits': portraits, '@/lib/managed-pages': h.reader, '@/components/admin/PagePreviewBanner': () => null, 'next/image': () => null });
+  const page = load('src/app/about/page.tsx', { '@/lib/portraits': portraits, '@/lib/managed-pages': h.reader, '@/components/admin/PagePreviewBanner': () => null, '@/components/ManagedPageCTA': ManagedPageCTA, 'next/image': () => null });
   const html = renderToStaticMarkup(await page.default());
   assert.ok(html.includes('PublishedAbout'));
   assert.ok(html.includes('Published biography from the editor.'));
   assert.ok(html.includes('Test qualification'));
   assert.ok(html.includes('Test institution'));
   assert.ok(html.includes('2020–2022'));
+  assert.ok(html.includes('<ol'));
+  assert.ok(html.includes('Book a Discovery Call'));
+  assert.ok(html.includes('href="/book"'));
   const draft = await h.save('about', { ...about, headline: 'PrivateDraft', bio: ['Private draft biography.'], education: [] }, 1, { metaTitle: 'Private SEO' });
   assert.equal(draft.success, true);
   assert.equal((await h.reader.getManagedPage('about')).content.headline, 'PublishedAbout');
@@ -197,15 +201,48 @@ test('About images are public only while referenced by the published About conte
 
 
 test('About education is optional for legacy content and empty sections stay hidden', async () => {
-  const legacy = structuredClone(defaults.about); delete legacy.education; delete legacy.educationHeading;
+  const legacy = structuredClone(defaults.about); delete legacy.education; delete legacy.educationHeading; delete legacy.cta;
   const parsed = schemas.parsePageContent('about', legacy);
   assert.equal(parsed.success, true);
-  assert.deepEqual(parsed.data.education, []);
+  assert.deepEqual(parsed.data.education, defaults.about.education);
   assert.equal(parsed.data.educationHeading, 'Education');
+  assert.equal(parsed.data.cta.primaryUrl, '/book');
+  assert.equal(schemas.parsePageContent('about', { ...legacy, cta: { ...defaults.about.cta, primaryUrl: 'javascript:alert(1)' } }).success, false);
   assert.equal(schemas.parsePageContent('about', { ...legacy, education: [{ qualification: '', institution: '', period: '', details: '' }] }).success, false);
   const h = harness();
+  const saved = await h.save('about', { ...schemas.getPageDefaults('about'), education: [] });
+  assert.equal((await h.actions.publishManagedPage('about', saved.revision)).success, true);
   const portraits = load('src/lib/portraits.ts', { '@/data/page-defaults.json': defaults });
-  const page = load('src/app/about/page.tsx', { '@/lib/portraits': portraits, '@/lib/managed-pages': h.reader, '@/components/admin/PagePreviewBanner': () => null, 'next/image': () => null });
+  const page = load('src/app/about/page.tsx', { '@/lib/portraits': portraits, '@/lib/managed-pages': h.reader, '@/components/admin/PagePreviewBanner': () => null, '@/components/ManagedPageCTA': ManagedPageCTA, 'next/image': () => null });
   const html = renderToStaticMarkup(await page.default());
   assert.ok(!html.includes('id="education-heading"'));
+});
+
+
+test('business About sections save and publish together, with the company before the founder', async () => {
+  const h = harness();
+  const content = schemas.getPageDefaults('about');
+  content.audiences.cards[0].body = ['A tailored business audience message.'];
+  content.capabilities.cards[0].description = 'A custom website service description from the CMS.';
+  const saved = await h.save('about', content);
+  assert.equal(saved.success, true);
+  assert.equal((await h.actions.publishManagedPage('about', saved.revision)).success, true);
+  const portraits = load('src/lib/portraits.ts', { '@/data/page-defaults.json': defaults });
+  const page = load('src/app/about/page.tsx', { '@/lib/portraits': portraits, '@/lib/managed-pages': h.reader, '@/components/admin/PagePreviewBanner': () => null, '@/components/ManagedPageCTA': ManagedPageCTA, 'next/image': () => null });
+  const html = renderToStaticMarkup(await page.default());
+  for (const text of ['About Efosa Ojomo Technology Services', 'Your Vision. Our Expertise.', 'Meet the Founder', 'Who We Help', 'What We Do', 'Why Work With Us?', 'Our Approach', 'Eastern Illinois University, USA', 'Gdańsk University of Technology, Poland', 'Ambrose Alli University, Nigeria', 'A tailored business audience message.', 'A custom website service description from the CMS.']) assert.ok(html.includes(text), text);
+  assert.ok(html.indexOf('id="about-heading"') < html.indexOf('id="founder-heading"'));
+  assert.ok(html.indexOf('id="founder-heading"') < html.indexOf('id="audiences-heading"'));
+  assert.ok(html.includes('href="/book"'));
+  assert.ok(html.includes('href="/services"'));
+  const next = structuredClone(content);
+  next.capabilities.cards = [];
+  next.audiences.cards = [];
+  const draft = await h.save('about', next, saved.revision);
+  assert.equal(draft.success, true);
+  assert.ok((await h.reader.getManagedPageContent('about')).audiences.cards.length > 0);
+  h.setPreview(true);
+  const preview = renderToStaticMarkup(await page.default());
+  assert.ok(!preview.includes('id="audiences-heading"'));
+  assert.ok(!preview.includes('id="capabilities-heading"'));
 });

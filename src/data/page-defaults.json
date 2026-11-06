@@ -1,37 +1,44 @@
 {
   "about": {
-    "headline": "Your technology partner, from idea to everyday operations",
+    "headline": "About Efosa Ojomo Technology Services",
     "bio": [
-      "I help business owners and founders build, manage, and improve the technology behind their work. That can mean a professional website, a custom software product, an organized support system, or an automation that removes repetitive tasks.",
-      "My approach connects product planning with hands-on delivery. We start with your business needs, agree what should change, and define the work and responsibilities before implementation.",
-      "You can engage for a specific project or agree ongoing care and product oversight. Every monthly agreement sets out covered work, capacity, and expectations so you know what support is included."
+      "I'm Efosa Ojomo, a technology professional, software engineer, and technical product leader with experience across enterprise software, cloud platforms, product development, and AI-driven solutions.",
+      "Throughout my career, I've worked across complex technology environments, including Microsoft-related enterprise platforms, helping bridge the gap between business objectives, customer needs, and technical execution.",
+      "My background spans software architecture, enterprise SaaS, cloud technologies, AI integration, systems engineering, and technical product management.",
+      "I founded Efosa Ojomo Technology Services to bring practical technology expertise and structured product delivery to businesses that need reliable solutions without the complexity of managing large technical teams.",
+      "Whether you're a small-business owner who needs a professional digital presence, a founder bringing a new product to market, or an established organization improving its technology operations, my goal is the same: understand your business, identify what matters, and deliver solutions that create lasting value.",
+      "I believe the best technology partnerships are built on clarity, accountability, honest advice, and measurable outcomes."
     ],
     "expertise": [
       "Websites & Custom Software",
-      "Product & Technology Management",
       "Customer Support Systems",
-      "Business Automation",
+      "Business Automation & AI",
+      "Technical Product Management",
       "Software Architecture & Technical Advisory"
     ],
     "pedigree": [
       {
-        "title": "Enterprise Leadership",
-        "desc": "Proven track record at global technology leaders (Amazon, Microsoft, Vertex) delivering scalable cloud and platform products."
+        "title": "We Start With Your Problem, Not a Technology Pitch.",
+        "desc": "Before recommending any solution, we take time to understand what you're trying to accomplish. Sometimes that means building something new. Other times, it means improving what you already have."
       },
       {
-        "title": "AI Innovation",
-        "desc": "Deep experience in LLM integration, RAG systems, and Agentic AI strategy for modern SaaS platforms."
+        "title": "Technical Expertise Meets Business Understanding.",
+        "desc": "We combine engineering knowledge with product and business thinking. Our recommendations consider usability, costs, implementation effort, security, and long-term value."
       },
       {
-        "title": "Product Rigor",
-        "desc": "Expertise in PRDs, backlog ownership, and OKR-driven delivery for complex enterprise environments."
+        "title": "Solutions Built Around Your Needs.",
+        "desc": "Your business is unique. We don't believe every problem requires expensive software, complex architecture, or the latest AI tool. We recommend solutions that fit your goals and resources."
+      },
+      {
+        "title": "Clear Communication. No Unnecessary Complexity.",
+        "desc": "You deserve to understand what you're paying for, what's being built, when to expect delivery, and how success will be evaluated."
+      },
+      {
+        "title": "A Partner Beyond the Launch.",
+        "desc": "Technology doesn't stop evolving after deployment. Where ongoing services are needed, we can help maintain, improve, and adapt your solutions as your business grows."
       }
     ],
     "certs": [
-      {
-        "name": "AWS Solutions Architect Associate",
-        "status": "Certified"
-      },
       {
         "name": "Professional Scrum Master (PSM I)",
         "status": "Certified"
@@ -39,21 +46,152 @@
       {
         "name": "Professional Scrum Product Owner (PSPO I)",
         "status": "Certified"
-      },
-      {
-        "name": "Azure App Service Development",
-        "status": "Certified"
       }
     ],
     "expertiseHeading": "Core Expertise",
-    "pedigreeHeading": "Professional Pedigree",
+    "pedigreeHeading": "Why Work With Us?",
     "certsHeading": "Certifications",
     "educationHeading": "Education",
-    "education": [],
+    "education": [
+      {
+        "qualification": "Master of Science (M.S.) in Computer Technology",
+        "institution": "Eastern Illinois University, USA",
+        "period": "August 2023 – December 2024",
+        "details": "Applied computing, software engineering, enterprise systems, and technology architecture."
+      },
+      {
+        "qualification": "Master of Science (M.Sc.) in Computer Electronics Systems Engineering",
+        "institution": "Gdańsk University of Technology, Poland",
+        "period": "October 2020 – July 2022",
+        "details": "Computer electronics, embedded systems, computer architecture, and hardware–software integration."
+      },
+      {
+        "qualification": "Bachelor of Engineering (B.Eng.) in Electrical/Electronics Engineering",
+        "institution": "Ambrose Alli University, Nigeria",
+        "period": "November 2012 – November 2017",
+        "details": "Electrical and electronic systems, engineering design, and technical problem-solving."
+      }
+    ],
     "imageUrl": "/photos/Efosa.jpg",
     "imageAlt": "Efosa Ojomo smiling in a navy suit with his hands clasped",
     "aboutImageUrl": "/photos/IMG_1180.jpg",
-    "aboutImageAlt": "Full-length portrait of Efosa Ojomo in a navy suit"
+    "aboutImageAlt": "Full-length portrait of Efosa Ojomo in a navy suit",
+    "cta": {
+      "title": "Let's Build Something That Works for Your Business.",
+      "description": "You don't have to figure out every technical detail on your own.\n\nWhether you're launching a business, improving operations, exploring AI, building custom software, or bringing a digital product to life, we're here to help you make informed decisions and move from ideas to execution.\n\nYou bring the vision and business knowledge. We bring the technical expertise, structured approach, and commitment to delivering practical solutions.\n\nLet's discuss what you're trying to achieve.",
+      "primaryText": "Book a Discovery Call",
+      "primaryUrl": "/book",
+      "secondaryText": "Explore Our Services",
+      "secondaryUrl": "/services"
+    },
+    "tagline": "Your Vision. Our Expertise. Technology That Works for You.",
+    "introductionHeading": "We Help Businesses Turn Challenges Into Opportunities.",
+    "introduction": [
+      "Every business has an idea worth exploring, a process worth improving, or a problem technology could solve.",
+      "But turning those opportunities into results isn't always easy. You may need a professional website, software tailored to your operations, a way to automate repetitive tasks, or experienced technical leadership to bring a product idea to life.",
+      "That's where we come in.",
+      "At Efosa Ojomo Technology Services, we help small businesses, startups, and growing organizations plan, build, improve, and manage technology that makes their work easier and their businesses stronger.",
+      "From your first idea to implementation and ongoing support, we bring together software engineering, product management, AI solutions, and technology advisory to help you move forward with confidence."
+    ],
+    "promise": "You focus on running your business. We help make your technology work for it.",
+    "founderHeading": "Meet the Founder",
+    "founderName": "Efosa Ojomo",
+    "founderRole": "Technology & Product Consultant | Software Engineering | AI Solutions | Technical Product Leadership",
+    "founderPrinciple": "Technology should solve real problems, not create more of them.",
+    "audiences": {
+      "heading": "Who We Help",
+      "cards": [
+        {
+          "title": "Small Businesses — Run Smarter. Grow Stronger.",
+          "body": [
+            "You shouldn't need an entire IT department to benefit from modern technology.",
+            "We help small businesses establish their online presence, improve customer experiences, automate time-consuming tasks, and implement software that supports everyday operations.",
+            "Whether you need your first website, an improved booking process, customer support tools, or help managing existing technology, we provide practical solutions designed around your needs and budget."
+          ]
+        },
+        {
+          "title": "Startups & Entrepreneurs — From Idea to Execution.",
+          "body": [
+            "Have an idea but need help turning it into a real product?",
+            "We work with founders to clarify their vision, validate requirements, define a product roadmap, build minimum viable products (MVPs), and guide development from concept through launch.",
+            "Our approach combines product thinking with engineering execution so you can prioritize the right features, reduce unnecessary development costs, and build with a clear purpose."
+          ]
+        },
+        {
+          "title": "Growing Companies & Enterprises — Expertise When You Need It.",
+          "body": [
+            "As businesses grow, their technology needs become more complex.",
+            "We provide software architecture, technical product management, AI integration, systems modernization, and strategic technology advisory to help organizations improve delivery, streamline operations, and scale their systems.",
+            "Whether you need project-based expertise or ongoing technical leadership, we help bridge the gap between strategy and execution."
+          ]
+        }
+      ]
+    },
+    "capabilities": {
+      "heading": "What We Do",
+      "cards": [
+        {
+          "title": "Websites & Custom Software",
+          "description": "Build professional websites, business applications, and software solutions tailored to how your organization operates."
+        },
+        {
+          "title": "Business Automation & AI Solutions",
+          "description": "Reduce repetitive manual work, improve workflows, and explore responsible ways to integrate AI into business operations."
+        },
+        {
+          "title": "Customer Support Systems",
+          "description": "Implement and improve customer service workflows, support platforms, ticketing systems, and knowledge management solutions."
+        },
+        {
+          "title": "Product & Technology Management",
+          "description": "Turn business ideas into clear requirements, actionable roadmaps, coordinated development efforts, and measurable product outcomes."
+        },
+        {
+          "title": "Technology Architecture & Advisory",
+          "description": "Make informed technology decisions, evaluate existing systems, plan improvements, and design solutions for long-term maintainability."
+        },
+        {
+          "title": "Ongoing Technology Support",
+          "description": "Keep your websites, applications, and digital operations maintained, improved, and aligned with your changing business needs through agreed support engagements."
+        }
+      ]
+    },
+    "approach": {
+      "heading": "Our Approach",
+      "tagline": "Discover. Plan. Build. Improve.",
+      "steps": [
+        {
+          "step": "01",
+          "title": "Understand",
+          "description": "We start by listening. We learn about your business, the challenges you face, and what a successful outcome looks like."
+        },
+        {
+          "step": "02",
+          "title": "Recommend",
+          "description": "We evaluate the available options and propose a practical solution with a defined scope, expected deliverables, timeline, and budget."
+        },
+        {
+          "step": "03",
+          "title": "Deliver",
+          "description": "We translate the agreed plan into action, keeping communication transparent and decisions aligned with your goals."
+        },
+        {
+          "step": "04",
+          "title": "Support & Improve",
+          "description": "After delivery, we help you evaluate results and identify improvements. Ongoing support and maintenance can be arranged based on your needs."
+        }
+      ]
+    },
+    "foundation": {
+      "heading": "Built on Engineering Knowledge. Guided by Product Thinking.",
+      "paragraphs": [
+        "Our founder's background brings together formal engineering education and practical enterprise technology experience.",
+        "With advanced education in Computer Technology and Computer Electronics Systems Engineering, alongside a foundation in Electrical/Electronics Engineering, Efosa combines systems-level technical understanding with modern software and product development practices.",
+        "Professional credentials include Professional Scrum Master (PSM I) and Professional Scrum Product Owner (PSPO I), reflecting a structured approach to agile delivery, product ownership, and continuous improvement.",
+        "This combination of technical and product expertise informs how we approach every engagement: understand the problem, evaluate the trade-offs, build responsibly, and focus on outcomes."
+      ]
+    },
+    "signature": "Efosa Ojomo Technology Services — Practical Technology. Real Business Value."
   },
   "process": {
     "title": "How We Work",
