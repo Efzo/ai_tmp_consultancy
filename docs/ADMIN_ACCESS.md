@@ -192,3 +192,24 @@ Automated checks use isolated database/email mocks and do not write production
 accounts or send real email. Complete a real recovery test after configuring and
 deploying the app; local validation cannot confirm your production credentials or
 Resend delivery.
+
+## Automatic inactivity logout
+
+The default is one hour without user activity. Under **Security Settings →
+Automatic logout**, the owner can select 15 or 30 minutes, 1 or 2 hours, longer
+presets, or a custom duration from 5 minutes to 24 hours. Save the setting, then
+sign out and sign in again to use it. Existing sessions keep the duration they
+received at sign-in, so shortening the default does not abruptly interrupt an
+administrator's current work.
+
+The admin portal signs out when that session's configured idle period expires. Typing, clicking,
+scrolling, and touch/pointer activity reset the idle timer. Activity is shared
+across admin tabs. Session polling and merely focusing a tab do not extend it;
+waking a sleeping computer checks the elapsed wall-clock time before accepting
+new activity. The login screen explains when inactivity caused the logout.
+
+The server independently rejects sessions after the idle deadline, including
+requests to protected pages, CMS actions, and media endpoints. Only a valid,
+CSRF-protected activity update can extend the deadline, using server time rather
+than a timestamp supplied by the browser. Existing sessions created before this
+policy require a fresh sign-in after deployment.

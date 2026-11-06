@@ -34,7 +34,7 @@ export const adminGroups = [
   ] },
   { id: "access", name: "Access & Activity", description: "Manage administrator access and review recorded changes.", items: [
     { name: "Admin Users & Roles", href: "/admin/users", icon: Users, description: "Review administrator accounts and manage owner, editor, and viewer roles." },
-    { name: "Security Settings", href: "/admin/security", icon: ShieldCheck, description: "Review login protection and security configuration status." },
+    { name: "Security Settings", href: "/admin/security", icon: ShieldCheck, description: "Set the admin inactivity timeout and review login protection." },
     { name: "Change History", href: "/admin/audit-logs", icon: SlidersHorizontal, description: "See recorded content changes, lead activity, and administrator actions." },
   ] },
 ];

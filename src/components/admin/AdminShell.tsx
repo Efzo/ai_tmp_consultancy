@@ -4,6 +4,7 @@ import { useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ChevronDown, ChevronLeft, ExternalLink, HelpCircle, LogOut, Menu, X } from "lucide-react";
+import AdminSessionBoundary from "@/components/admin/AdminSessionBoundary";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { adminGroups, getAdminLocation } from "@/lib/admin-navigation";
@@ -21,7 +22,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   if (["/admin/login", "/admin/setup", "/admin/forgot-password", "/admin/reset-password"].includes(pathname)) return <div className="min-h-screen bg-midnight text-platinum"><Navbar /><main>{children}</main><Footer /></div>;
 
-  return <div className="min-h-screen bg-slate-deep text-platinum">
+  return <AdminSessionBoundary><div className="min-h-screen bg-slate-deep text-platinum">
     <a href="#admin-main" className="skip-link">Skip to page content</a>
     <button ref={menuButton} type="button" aria-label="Open site manager menu" aria-expanded={isMobileOpen} aria-controls="admin-sidebar" onClick={() => setIsMobileOpen(true)} className="fixed left-4 top-4 z-40 rounded-lg border border-glass bg-midnight p-2 md:hidden"><Menu className="h-5 w-5" /></button>
     {isMobileOpen && <button aria-label="Close site manager menu" type="button" onClick={closeMobile} className="fixed inset-0 z-40 bg-black/60 md:hidden" />}
@@ -59,5 +60,5 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       </header>
       <main id="admin-main" tabIndex={-1} className="min-w-0 p-4 md:p-8">{children}</main>
     </div>
-  </div>;
+  </div></AdminSessionBoundary>;
 }

@@ -1,9 +1,16 @@
 "use client";
-import React, { useState } from 'react';
+import React, { Suspense, useState } from 'react';
 import { signIn } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Eye, EyeOff, Lock, Mail } from 'lucide-react';
 import Link from 'next/link';
+import { adminIdleTimeoutMs, formatAdminIdleMinutes } from '@/lib/admin-session';
+
+function IdleSessionNotice() {
+  const params = useSearchParams();
+  const minutes = adminIdleTimeoutMs(Number(params.get("minutes"))) / 60_000;
+  return params.get("reason") === "idle" ? <p role="status" className="mb-6 rounded-lg border border-glass bg-white/5 p-3 text-sm text-slate-muted">You were signed out after {formatAdminIdleMinutes(minutes)} of inactivity. Sign in again to continue.</p> : null;
+}
 
 export default function AdminLoginPage() {
   const [showPassword, setShowPassword] = useState(false);
@@ -41,6 +48,7 @@ export default function AdminLoginPage() {
           <p className="text-slate-muted text-sm">Sign in to access the content management system.</p>
         </div>
 
+        <Suspense fallback={null}><IdleSessionNotice /></Suspense>
         <form onSubmit={handleLogin} className="space-y-6">
           <div className="space-y-2">
             <label htmlFor="admin-email" className="text-xs font-medium text-slate-muted flex items-center gap-2">

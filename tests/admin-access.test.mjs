@@ -10,7 +10,7 @@ const require = createRequire(import.meta.url);
 function load(file, mocks = {}) {
   const js = ts.transpileModule(readFileSync(new URL(`../${file}`, import.meta.url), 'utf8'), { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022, esModuleInterop: true } }).outputText;
   const exports = {};
-  new Function('require', 'exports', js)((name) => name in mocks ? mocks[name] : name === '@/lib/admin-allowlist' ? load('src/lib/admin-allowlist.ts') : require(name), exports);
+  new Function('require', 'exports', js)((name) => name in mocks ? mocks[name] : name === '@/lib/admin-session-settings' ? { getAdminIdleTimeoutMinutes: async () => 60 } : name === '@/lib/admin-session' ? load('src/lib/admin-session.ts') : name === '@/lib/admin-allowlist' ? load('src/lib/admin-allowlist.ts') : require(name), exports);
   return exports;
 }
 const env = { ADMIN_EMAIL: 'Owner@Example.com ', ADMIN_PASSWORD: 'eight123', DATABASE_URL: 'postgresql://test', DEMO_MODE: 'false' };

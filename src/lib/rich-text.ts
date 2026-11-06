@@ -1,4 +1,5 @@
 const allowedTags = new Set(["a", "b", "blockquote", "br", "div", "em", "font", "figure", "figcaption", "img", "h2", "h3", "h4", "i", "li", "ol", "p", "span", "strong", "u", "ul"]);
+const fontSizes = ["12px", "14px", "16px", "18px", "24px", "32px", "48px"];
 const allowedFonts = new Set(["Arial", "Georgia", "Helvetica", "Times New Roman", "Courier New", "Verdana"]);
 
 function escapeAttribute(value: string) {
@@ -12,6 +13,7 @@ function safeStyle(rawStyle: string) {
     const value = valueParts.join(":").trim();
     if (!property || !value) return [];
     const normalizedProperty = property.trim().toLowerCase();
+    if (normalizedProperty === "font-size" && fontSizes.includes(value.toLowerCase())) return [`font-size: ${value.toLowerCase()}`];
     if (normalizedProperty === "text-align" && /^(left|center|right|justify)$/i.test(value)) return [`text-align: ${value.toLowerCase()}`];
     if (normalizedProperty === "font-family" && allowedFonts.has(value.replace(/^['"]|['"]$/g, ""))) return [`font-family: ${value}`];
     return [];
@@ -44,7 +46,9 @@ export function sanitizeRichText(input: string) {
 
     if (tag === "font") {
       const face = rawAttributes.match(/face\s*=\s*["']([^"']+)["']/i)?.[1] ?? "";
-      return allowedFonts.has(face) ? `<span style="font-family: ${escapeAttribute(face)}">` : "<span>";
+      const size = rawAttributes.match(/(?:^|\s)size\s*=\s*["']([1-7])["']/i)?.[1];
+      const styles = [allowedFonts.has(face) ? `font-family: ${face}` : "", size ? `font-size: ${fontSizes[Number(size) - 1]}` : ""].filter(Boolean).join("; ");
+      return styles ? `<span style="${escapeAttribute(styles)}">` : "<span>";
     }
 
     const style = rawAttributes.match(/style\s*=\s*["']([^"']*)["']/i)?.[1];

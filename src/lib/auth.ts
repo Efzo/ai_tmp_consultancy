@@ -1,5 +1,7 @@
 import type { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+import { ADMIN_SESSION_MAX_AGE, adminIdleTimeoutMs, adminSessionExpired } from "@/lib/admin-session";
+import { getAdminIdleTimeoutMinutes } from "@/lib/admin-session-settings";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
 import { getDemoPassword } from "@/lib/demo-password";
@@ -57,11 +59,24 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
-    async jwt({ token, user }) {
-      if (user) token.role = (user as { role?: string }).role;
+    async jwt({ token, user, trigger }) {
+      if (user) {
+        token.idleTimeoutMinutes = await getAdminIdleTimeoutMinutes();
+        token.role = (user as { role?: string }).role;
+        token.lastActivityAt = Date.now();
+        return token;
+      }
+      if (adminSessionExpired(token)) return {};
+      // Ignore client-supplied timestamps; an update can only record server time.
+      if (trigger === "update") token.lastActivityAt = Date.now();
       return token;
     },
     async session({ session, token }) {
+      if (adminSessionExpired(token)) {
+        delete session.user;
+        session.expires = new Date(0).toISOString();
+        return session;
+      }
       if (session.user) {
         const user = session.user as { role?: string; id?: string };
         user.role = token.role as string | undefined;
@@ -72,9 +87,10 @@ export const authOptions: NextAuthOptions = {
           user.id = record?.id;
         }
       }
-      return session;
+      return { ...session, idleTimeoutMinutes: adminIdleTimeoutMs(token.idleTimeoutMinutes) / 60_000, idleExpiresAt: (token.lastActivityAt as number) + adminIdleTimeoutMs(token.idleTimeoutMinutes) };
     },
   },
   pages: { signIn: "/admin/login" },
-  session: { strategy: "jwt" },
+  session: { strategy: "jwt", maxAge: ADMIN_SESSION_MAX_AGE },
+  jwt: { maxAge: ADMIN_SESSION_MAX_AGE },
 };
